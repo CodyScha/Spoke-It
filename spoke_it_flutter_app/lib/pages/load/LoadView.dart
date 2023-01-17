@@ -2,6 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:filesystem_picker/filesystem_picker.dart';
+import '../home/homeView.dart';
+import '../Preview/Preview.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter/widgets.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
@@ -26,20 +30,38 @@ class LoadSelection extends StatefulWidget {
 }
 
 class _LoadSelection extends State<LoadSelection> {
-  void pickFile() async {
-    FilesystemPicker.openDialog(
+  /*
+    String? path = await FilesystemPicker.openDialog(
       context: context,
       fsType: FilesystemType.file,
-      rootDirectory: Directory(
-          'C:'), //set to be downloads page(where the txt file will save to automatically)
+      rootDirectory: Directory.current,
       allowedExtensions: ['.txt'],
       fileTileSelectMode: FileTileSelectMode.wholeTile,
     );
-    //FilePickerResult? result = await FilePicker.platform.pickFiles();
-  }
+   */
 
   @override
   Widget build(BuildContext context) {
+    void pickFile() async {
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['txt'],
+      );
+
+      if (result != null) {
+        File file = File(result.files.first.path.toString());
+        //use file
+        //myPreview(File)
+        // ignore: use_build_context_synchronously
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => myPreview(file: file)),
+        );
+      } else {
+        // User canceled the picker
+      }
+    }
+
     return Scaffold(
       appBar: AppBar(
         //top bar
@@ -47,7 +69,7 @@ class _LoadSelection extends State<LoadSelection> {
         centerTitle: true, //centers text
       ),
 
-      drawer: Drawer(
+      /*drawer: Drawer(
         child: ListView(
           // Important: Remove any padding from the ListView.
           //padding: EdgeInsets.zero,
@@ -101,13 +123,98 @@ class _LoadSelection extends State<LoadSelection> {
             ),
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        backgroundColor: Colors.blue[900], //main color
-        hoverColor: Colors.green[700], //changes to color when hovered over
-        //elevation: 12 position in zaxis , further from page
-        child: const Icon(Icons.add),
+      ),*/
+      body: Row(
+        children: [
+          Column(
+            // Center is a layout widget. It takes a single child and positions it
+            // in the middle of the parent.
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Container(
+                color: Colors.grey[300],
+                padding:
+                    EdgeInsets.symmetric(vertical: 20.0, horizontal: 120.0),
+                //child: Text('Load Data'),
+              ),
+              Container(
+                color: Colors.grey[300],
+                padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 92.0),
+                child: TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                MyHomePage(title: 'Prototype: Load')),
+                      );
+                    },
+                    child: Text('Home')),
+              ),
+              Container(
+                color: Colors.grey[300],
+                padding:
+                    EdgeInsets.symmetric(vertical: 20.0, horizontal: 120.0),
+                //child: Text('Inport Data'),
+              ),
+              Container(
+                color: Colors.grey[300],
+                padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 73.0),
+                child: TextButton(
+                    onPressed: () {
+                      pickFile();
+                    },
+                    child: Text('Import Data')),
+              ),
+              Expanded(
+                child: Container(
+                  color: Colors.grey[300],
+                  padding:
+                      EdgeInsets.symmetric(vertical: 20.0, horizontal: 120.0),
+                  //child: Text('empty'),
+                ),
+              ),
+            ],
+          ),
+          Column(
+            children: [
+              Container(
+                padding:
+                    EdgeInsets.symmetric(vertical: 40.0, horizontal: 150.0),
+              ),
+            ],
+          ),
+          Column(
+            children: [
+              Container(
+                padding: EdgeInsets.symmetric(vertical: 40.0, horizontal: 70.0),
+              ),
+              Container(
+                color: Colors.grey[300],
+                padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 70.0),
+                child: TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => Preview()),
+                      );
+                    },
+                    child: Text('option 1')),
+              ),
+              Container(
+                color: Colors.grey[300],
+                padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 70.0),
+                child: TextButton(onPressed: () {}, child: Text('option 2')),
+              ),
+              Container(
+                color: Colors.grey[300],
+                padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 70.0),
+                child: TextButton(onPressed: () {}, child: Text('option 3')),
+              ),
+            ],
+          )
+        ],
       ),
 
       floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,

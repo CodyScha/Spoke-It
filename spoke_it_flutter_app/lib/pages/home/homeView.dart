@@ -3,13 +3,15 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import '../load/LoadView.dart';
 import 'package:filesystem_picker/filesystem_picker.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter/widgets.dart';
+import '../Preview/Preview.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    
     return MaterialApp(
       title: 'Home', //web name
       theme: ThemeData(
@@ -33,32 +35,38 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
-
-  void pickFile() async { 
+  /*void pickFile() async {
     FilesystemPicker.openDialog(
       context: context,
       fsType: FilesystemType.file,
-      rootDirectory: Directory('C:'), //set to be downloads page(where the txt file will save to automatically)
+      rootDirectory: Directory.current,
       allowedExtensions: ['.txt'],
       fileTileSelectMode: FileTileSelectMode.wholeTile,
-    );
-    //FilePickerResult? result = await FilePicker.platform.pickFiles();
-  }
+    ); //FilePickerResult? result = await FilePicker.platform.pickFiles();
+  }*/
 
   @override
   Widget build(BuildContext context) {
+    void pickFile() async {
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['txt'],
+      );
+
+      if (result != null) {
+        File file = File(result.files.first.path.toString());
+        //use file
+        //myPreview(File)
+        // ignore: use_build_context_synchronously
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => myPreview(file: file)),
+        );
+      } else {
+        // User canceled the picker
+      }
+    }
+
     return Scaffold(
       appBar: AppBar(
         //top bar
@@ -66,7 +74,7 @@ class _MyHomePageState extends State<MyHomePage> {
         centerTitle: true, //centers text
       ),
 
-      drawer: Drawer(
+      /*drawer: Drawer(
         child: ListView(
           // Important: Remove any padding from the ListView.
           //padding: EdgeInsets.zero,
@@ -97,8 +105,8 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ],
         ),
-      ),
-      /*body: Row(
+      ),*/
+      body: Row(
         children: [
           Column(
             // Center is a layout widget. It takes a single child and positions it
@@ -108,42 +116,76 @@ class _MyHomePageState extends State<MyHomePage> {
             children: <Widget>[
               Container(
                 color: Colors.grey[300],
-                padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 50.0),
+                padding:
+                    EdgeInsets.symmetric(vertical: 20.0, horizontal: 120.0),
                 //child: Text('Load Data'),
               ),
-              ElevatedButton(onPressed: () {}, child: Text('Load Data')),
               Container(
                 color: Colors.grey[300],
-                padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 50.0),
+                padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 80.0),
+                child: TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => LoadSelection()),
+                      );
+                    },
+                    child: Text('Load Data')),
+              ),
+              Container(
+                color: Colors.grey[300],
+                padding:
+                    EdgeInsets.symmetric(vertical: 20.0, horizontal: 120.0),
                 //child: Text('Inport Data'),
               ),
-              ElevatedButton(onPressed: () {}, child: Text('Inport Data')),
+              Container(
+                color: Colors.grey[300],
+                padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 73.0),
+                child: TextButton(
+                    onPressed: () {
+                      pickFile();
+                    },
+                    child: Text('Import Data')),
+              ),
               Expanded(
                 child: Container(
                   color: Colors.grey[300],
                   padding:
-                      EdgeInsets.symmetric(vertical: 20.0, horizontal: 50.0),
+                      EdgeInsets.symmetric(vertical: 20.0, horizontal: 120.0),
                   //child: Text('empty'),
+                ),
+              ),
+            ],
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(
+                padding: EdgeInsets.only(left: 200.0),
+                child: Text(
+                  'Spoke-It',
+                  textAlign: TextAlign.center,
+                  overflow: TextOverflow.ellipsis,
+                  textScaleFactor: 8.0,
+                  style: TextStyle(
+                      color: Colors.indigo[400],
+                      fontStyle: FontStyle.italic,
+                      fontWeight: FontWeight.bold
+                      //foreground: Paint()
+                      //  ..style = PaintingStyle.stroke
+                      //  ..strokeWidth = 5
+                      // ..color = Colors.indigo[400]!,
+                      ),
                 ),
               ),
             ],
           ),
         ],
       ),
-      */
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        backgroundColor: Colors.blue[900], //main color
-        hoverColor: Colors.green[700], //changes to color when hovered over
-        //elevation: 12 position in zaxis , further from page
-        child: const Icon(Icons.add),
-      ),
 
-      floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
       //adjusts location //https://api.flutter.dev/flutter/material/FloatingActionButtonLocation-class.html
     );
   }
-
-  
-  
 }
