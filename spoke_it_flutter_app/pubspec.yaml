@@ -39,6 +39,7 @@ dependencies:
   cupertino_icons: ^1.0.1
   filesystem_picker: ^3.1.0
   syncfusion_flutter_maps: ^20.4.43
+  syncfusion_flutter_core: ^20.4.44
 
 dev_dependencies:
   flutter_test:
@@ -64,6 +65,8 @@ flutter:
   assets:
     - australia.json
     - world.json
+    - siue.json
+    - siue2.json
 
   # To add assets to your application, add an assets section, like this:
   # assets:
