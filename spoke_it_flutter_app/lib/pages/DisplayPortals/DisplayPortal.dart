@@ -34,9 +34,10 @@ class myDisplay extends StatefulWidget {
 
 class _myDisplayState extends State<myDisplay> {
   late MapShapeSource _dataSource;
-  late List<Model> _data;
+  late List<MarkerModel> _data;
   late List<LineModel> _vectordata;
   late MapZoomPanBehavior _zoomPanBehavior;
+  late MapShapeLayerController _controller;
   bool pressed = false;
 
   @override
@@ -57,14 +58,14 @@ class _myDisplayState extends State<myDisplay> {
     //   Model('Dunham Hall Theatre', 38.793336, -89.998426)
     // ];
 
-    _data = const <Model>[
-      Model('SIUE Art Display', 38.792283, -89.998616),
-      Model('Dunham Hall Theatre', 38.793336, -89.998426),
-      Model('Science East', 38.793988, -89.999159),
-      Model('SIUE Student Art Installation', 38.792097, -89.999033),
-      Model('SIUE Lovejoy Library', 38.793547, -89.997771),
-      Model('SIUE "The Rock"', 38.793189, -89.997956),
-      Model('Peck Hall', 38.793463, -89.996867)
+    _data = <MarkerModel>[
+      MarkerModel('SIUE Art Display', 38.792283, -89.998616),
+      MarkerModel('Dunham Hall Theatre', 38.793336, -89.998426),
+      MarkerModel('Science East', 38.793988, -89.999159),
+      MarkerModel('SIUE Student Art Installation', 38.792097, -89.999033),
+      MarkerModel('SIUE Lovejoy Library', 38.793547, -89.997771),
+      MarkerModel('SIUE "The Rock"', 38.793189, -89.997956),
+      MarkerModel('Peck Hall', 38.793463, -89.996867)
     ];
 
     _vectordata = <LineModel>[
@@ -73,6 +74,8 @@ class _myDisplayState extends State<myDisplay> {
       LineModel(
           MapLatLng(38.793547, -89.997771), MapLatLng(38.793463, -89.996867))
     ];
+
+    _controller = MapShapeLayerController();
 
     super.initState();
   }
@@ -117,7 +120,24 @@ class _myDisplayState extends State<myDisplay> {
                     // iconColor: Colors.red,
                     child: GestureDetector(
                       onTap: () {
-                        print("pressed " + _data[index].country);
+                        // Set of code that will allow the user to delete a portal from the view.
+                        // As far as I can tell, this is the order that actions need to happen to avoid errors.
+                        print("pressed " + _data[index].name);
+                        print(index);
+                        print(_data);
+                        setState(() {
+                          _data.removeAt(index);
+                        });
+                        
+                        _controller.removeMarkerAt(index);
+
+                        var temp = List.generate(_controller.markersCount, (i) => i);
+                        for (var i = 0; i < _data.length; i++) {
+                          temp[i] = i;
+                        }
+
+                        
+                        _controller.updateMarkers(temp);
                       },
                       child: Container(
                         color: Colors.cyan,
@@ -127,16 +147,14 @@ class _myDisplayState extends State<myDisplay> {
                     ),
                   );
                 },
+                controller: _controller, //Needed to update markers
                 markerTooltipBuilder: (BuildContext context, int index) {
                   return Container(
-                    width: 150,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        _data[index].country
-                      ),
-                    )
-                  );
+                      width: 150,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(_data[index].name),
+                      ));
                 },
               ),
             ],
@@ -147,10 +165,10 @@ class _myDisplayState extends State<myDisplay> {
   }
 }
 
-class Model {
-  const Model(this.country, this.latitude, this.longitude);
+class MarkerModel {
+  const MarkerModel(this.name, this.latitude, this.longitude);
 
-  final String country;
+  final String name;
   final double latitude;
   final double longitude;
 }
