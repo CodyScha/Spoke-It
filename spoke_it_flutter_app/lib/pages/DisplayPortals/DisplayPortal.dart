@@ -33,8 +33,8 @@ class myDisplay extends StatefulWidget {
 }
 
 class _myDisplayState extends State<myDisplay> {
-  late MapShapeSource _dataSource;
-  late List<MarkerModel> _data;
+  late MapShapeSource _mapSource;
+  late List<MarkerModel> _markerData;
   late List<LineModel> _vectordata;
   late MapZoomPanBehavior _zoomPanBehavior;
   late MapShapeLayerController _controller;
@@ -44,28 +44,18 @@ class _myDisplayState extends State<myDisplay> {
   void initState() {
     _zoomPanBehavior = MapZoomPanBehavior(
         enableDoubleTapZooming: true, enableMouseWheelZooming: true);
-    _dataSource =
+    _mapSource =
         MapShapeSource.asset('assets/siue2.json', shapeDataField: 'name_en');
 
-    // _data = const <Model>[
-    //   Model('Brazil', -14.235004, -51.92528),
-    //   Model('Germany', 51.16569, 10.451526),
-    //   Model('Australia', -25.274398, 133.775136),
-    //   Model('India', 20.593684, 78.96288),
-    //   Model('Russia', 61.52401, 105.318756),
-    //   Model('Granite City', 38.7014, 90.1487),
-    //   Model('SIUE Art Display', 38.792283, -89.998616),
-    //   Model('Dunham Hall Theatre', 38.793336, -89.998426)
-    // ];
-
-    _data = <MarkerModel>[
-      MarkerModel('SIUE Art Display', 38.792283, -89.998616),
-      MarkerModel('Dunham Hall Theatre', 38.793336, -89.998426),
-      MarkerModel('Science East', 38.793988, -89.999159),
-      MarkerModel('SIUE Student Art Installation', 38.792097, -89.999033),
-      MarkerModel('SIUE Lovejoy Library', 38.793547, -89.997771),
-      MarkerModel('SIUE "The Rock"', 38.793189, -89.997956),
-      MarkerModel('Peck Hall', 38.793463, -89.996867)
+    _markerData = <MarkerModel>[
+      MarkerModel('SIUE Art Display', 38.792283, -89.998616, Colors.cyan),
+      MarkerModel('Dunham Hall Theatre', 38.793336, -89.998426, Colors.cyan),
+      MarkerModel('Science East', 38.793988, -89.999159, Colors.cyan),
+      MarkerModel(
+          'SIUE Student Art Installation', 38.792097, -89.999033, Colors.cyan),
+      MarkerModel('SIUE Lovejoy Library', 38.793547, -89.997771, Colors.cyan),
+      MarkerModel('SIUE "The Rock"', 38.793189, -89.997956, Colors.cyan),
+      MarkerModel('Peck Hall', 38.793463, -89.996867, Colors.cyan)
     ];
 
     _vectordata = <LineModel>[
@@ -88,7 +78,7 @@ class _myDisplayState extends State<myDisplay> {
         centerTitle: true,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(2.0),
+        padding: const EdgeInsets.all(0.0),
         child: SfMapsTheme(
           data: SfMapsThemeData(
               // shapeHoverColor: Color.fromRGBO(46, 46, 46, 0)
@@ -96,10 +86,10 @@ class _myDisplayState extends State<myDisplay> {
           child: SfMaps(
             layers: <MapLayer>[
               MapShapeLayer(
-                source: _dataSource,
+                source: _mapSource,
                 color: Color.fromRGBO(46, 46, 46, 1),
                 zoomPanBehavior: _zoomPanBehavior,
-                initialMarkersCount: _data.length,
+                initialMarkersCount: _markerData.length,
                 sublayers: [
                   MapLineLayer(
                     lines:
@@ -115,32 +105,41 @@ class _myDisplayState extends State<myDisplay> {
                 ],
                 markerBuilder: (BuildContext context, int index) {
                   return MapMarker(
-                    latitude: _data[index].latitude,
-                    longitude: _data[index].longitude,
+                    latitude: _markerData[index].latitude,
+                    longitude: _markerData[index].longitude,
                     // iconColor: Colors.red,
                     child: GestureDetector(
-                      onTap: () {
+                      onLongPress: () {
                         // Set of code that will allow the user to delete a portal from the view.
                         // As far as I can tell, this is the order that actions need to happen to avoid errors.
-                        print("pressed " + _data[index].name);
-                        print(index);
-                        print(_data);
+
+                        print("deleted " + _markerData[index].name);
+                        // print(index);
+                        // print(_data);
                         setState(() {
-                          _data.removeAt(index);
+                          _markerData.removeAt(index);
                         });
-                        
+
                         _controller.removeMarkerAt(index);
 
-                        var temp = List.generate(_controller.markersCount, (i) => i);
-                        for (var i = 0; i < _data.length; i++) {
-                          temp[i] = i;
-                        }
+                        var temp =
+                            List.generate(_controller.markersCount, (i) => i);
 
-                        
+                        _controller.updateMarkers(temp);
+                      },
+                      onTap: () {
+                        print("hid " + _markerData[index].name);
+
+                        setState(() {
+                          _markerData[index].color = Colors.blueGrey;
+                          // _vectordata.removeAt(0);
+                        });
+
+                        var temp = List.generate(1, (i) => index);
                         _controller.updateMarkers(temp);
                       },
                       child: Container(
-                        color: Colors.cyan,
+                        color: _markerData[index].color,
                         height: 10,
                         width: 10,
                       ),
@@ -153,7 +152,7 @@ class _myDisplayState extends State<myDisplay> {
                       width: 150,
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Text(_data[index].name),
+                        child: Text(_markerData[index].name),
                       ));
                 },
               ),
@@ -166,11 +165,12 @@ class _myDisplayState extends State<myDisplay> {
 }
 
 class MarkerModel {
-  const MarkerModel(this.name, this.latitude, this.longitude);
+  MarkerModel(this.name, this.latitude, this.longitude, this.color);
 
   final String name;
   final double latitude;
   final double longitude;
+  Color color;
 }
 
 class LineModel {
