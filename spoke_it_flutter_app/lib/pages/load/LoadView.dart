@@ -192,7 +192,7 @@ class _LoadSelection extends State<LoadSelection> {
               ),
               Container(
                 color: Colors.grey[300],
-                padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 70.0),
+                padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 71.0),
                 child: TextButton(
                     onPressed: () {
                       Navigator.push(
