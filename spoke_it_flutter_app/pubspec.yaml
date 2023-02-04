@@ -63,10 +63,10 @@ flutter:
   # the material Icons class.
   uses-material-design: true
   assets:
-    - australia.json
-    - world.json
-    - siue.json
-    - siue2.json
+    - assets/australia.json
+    - assets/world.json
+    - assets/siue.json
+    - assets/siue2.json
 
   # To add assets to your application, add an assets section, like this:
   # assets:

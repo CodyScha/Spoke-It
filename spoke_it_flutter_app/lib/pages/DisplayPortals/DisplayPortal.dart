@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'dart:math';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_maps/maps.dart';
@@ -17,6 +19,7 @@ class Display extends StatelessWidget {
         // This is the theme of your application.
 
         primarySwatch: Colors.red, //title color
+        // scaffoldBackgroundColor: Color.fromRGBO(46, 46, 46, 1),
       ),
       home: myDisplay(title: 'Prototype: Spoke-It'), //displayed title
     );
@@ -34,7 +37,7 @@ class myDisplay extends StatefulWidget {
 
 class _myDisplayState extends State<myDisplay> {
   late MapShapeSource _mapSource;
-  late List<MarkerModel> _markerData;
+  late List<MarkerModel> _portalData;
   late List<LineModel> _vectordata;
   late MapZoomPanBehavior _zoomPanBehavior;
   late MapShapeLayerController _controller;
@@ -44,10 +47,11 @@ class _myDisplayState extends State<myDisplay> {
   void initState() {
     _zoomPanBehavior = MapZoomPanBehavior(
         enableDoubleTapZooming: true, enableMouseWheelZooming: true);
-    _mapSource =
-        MapShapeSource.asset('assets/siue2.json', shapeDataField: 'name_en');
 
-    _markerData = <MarkerModel>[
+    // _mapSource = MapShapeSource.asset('assets/siue2.json', shapeDataField: 'name_en');
+    // _mapSource = MapShapeSource.memory(getJSON(_markerData));
+
+    _portalData = <MarkerModel>[
       MarkerModel('SIUE Art Display', 38.792283, -89.998616, Colors.cyan),
       MarkerModel('Dunham Hall Theatre', 38.793336, -89.998426, Colors.cyan),
       MarkerModel('Science East', 38.793988, -89.999159, Colors.cyan),
@@ -58,6 +62,15 @@ class _myDisplayState extends State<myDisplay> {
       MarkerModel('Peck Hall', 38.793463, -89.996867, Colors.cyan)
     ];
 
+    // _markerData = <MarkerModel>[
+    //   MarkerModel('Good Samaritan House Mural', 38.700395, -90.152362, Colors.cyan),
+    //   MarkerModel('Abstract Metal Art', 38.701165,-90.152455, Colors.cyan),
+    //   // MarkerModel('SIUE "The Rock"', 38.793189, -89.997956, Colors.cyan),
+    //   MarkerModel('Community Care Center', 38.700642, -90.153146, Colors.cyan)
+    // ];
+
+    _mapSource = MapShapeSource.memory(updateJSONTemplate(_portalData));
+
     _vectordata = <LineModel>[
       LineModel(
           MapLatLng(38.793988, -89.999159), MapLatLng(38.792097, -89.999033)),
@@ -66,6 +79,8 @@ class _myDisplayState extends State<myDisplay> {
     ];
 
     _controller = MapShapeLayerController();
+
+    updateJSONTemplate(_portalData);
 
     super.initState();
   }
@@ -87,9 +102,12 @@ class _myDisplayState extends State<myDisplay> {
             layers: <MapLayer>[
               MapShapeLayer(
                 source: _mapSource,
+                // source: MapShapeSource.memory(
+                //   getJSON(_markerData),
+                // ),
                 color: Color.fromRGBO(46, 46, 46, 1),
                 zoomPanBehavior: _zoomPanBehavior,
-                initialMarkersCount: _markerData.length,
+                initialMarkersCount: _portalData.length,
                 sublayers: [
                   MapLineLayer(
                     lines:
@@ -98,26 +116,26 @@ class _myDisplayState extends State<myDisplay> {
                         from: _vectordata[index].from,
                         to: _vectordata[index].to,
                         color: Colors.white,
-                        width: 3,
+                        width: 5,
                       );
                     }).toSet(),
                   ),
                 ],
                 markerBuilder: (BuildContext context, int index) {
                   return MapMarker(
-                    latitude: _markerData[index].latitude,
-                    longitude: _markerData[index].longitude,
+                    latitude: _portalData[index].latitude,
+                    longitude: _portalData[index].longitude,
                     // iconColor: Colors.red,
                     child: GestureDetector(
                       onLongPress: () {
                         // Set of code that will allow the user to delete a portal from the view.
                         // As far as I can tell, this is the order that actions need to happen to avoid errors.
 
-                        print("deleted " + _markerData[index].name);
+                        print("deleted " + _portalData[index].name);
                         // print(index);
                         // print(_data);
                         setState(() {
-                          _markerData.removeAt(index);
+                          _portalData.removeAt(index);
                         });
 
                         _controller.removeMarkerAt(index);
@@ -128,10 +146,10 @@ class _myDisplayState extends State<myDisplay> {
                         _controller.updateMarkers(temp);
                       },
                       onTap: () {
-                        print("hid " + _markerData[index].name);
+                        print("hid " + _portalData[index].name);
 
                         setState(() {
-                          _markerData[index].color = Colors.blueGrey;
+                          _portalData[index].color = Colors.blueGrey;
                           // _vectordata.removeAt(0);
                         });
 
@@ -139,9 +157,12 @@ class _myDisplayState extends State<myDisplay> {
                         _controller.updateMarkers(temp);
                       },
                       child: Container(
-                        color: _markerData[index].color,
-                        height: 10,
-                        width: 10,
+                        height: 25,
+                        width: 25,
+                        decoration: BoxDecoration(
+                          color: _portalData[index].color,
+                          shape: BoxShape.circle,
+                        ),
                       ),
                     ),
                   );
@@ -152,7 +173,7 @@ class _myDisplayState extends State<myDisplay> {
                       width: 150,
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Text(_markerData[index].name),
+                        child: Text(_portalData[index].name),
                       ));
                 },
               ),
@@ -178,4 +199,80 @@ class LineModel {
 
   final MapLatLng from;
   final MapLatLng to;
+}
+
+Uint8List updateJSONTemplate(List<MarkerModel> markers) {
+  double buffer = 0.00005;
+  String aggregiousTabs = '\t\t\t\t\t\t\t';
+
+  List<int> coordLatLines = [14, 18, 22, 26, 30];
+  List<int> coordLongLines = [13, 17, 21, 25, 29];
+
+  // * First, need to get the JSON from the assets folder
+  var assetFileStr = File('assets/siue2.json').readAsStringSync();
+
+  // * Save a copy of the file in a new dir
+  Directory('map').create();
+  File newFile = File('map/map.json');
+  newFile.writeAsStringSync(assetFileStr);
+
+  // * Now, we need to change the coords in the new file
+  List<String> newFileLines = newFile.readAsLinesSync();
+
+  // * First, find the extremes for latitude and longitude.
+  double maxLat = -91.0;
+  double minLat = 91.0;
+  double maxLong = -181.0;
+  double minLong = 181.0;
+
+  // * Iterate through the markers to find the extremes
+  for (var m in markers) {
+    // * Latitude
+    maxLat = max(m.latitude, maxLat);
+    minLat = min(m.latitude, minLat);
+
+    // * Longitude
+    maxLong = max(m.longitude, maxLong);
+    minLong = min(m.longitude, minLong);
+  }
+
+  // * Print the results
+  print('maxLat: $maxLat');
+  print('minLat: $minLat');
+  print('maxLong: $maxLong');
+  print('minLong: $minLong');
+
+  // * Now, change the newFile lines to the max and mins
+  String minLatStr = aggregiousTabs + (minLat - buffer).toString();
+  String maxLatStr = aggregiousTabs + (maxLat + buffer).toString();
+  String minLongStr = aggregiousTabs + (minLong - buffer).toString() + ',';
+  String maxLongStr = aggregiousTabs + (maxLong + buffer).toString() + ',';
+
+  newFileLines[12] = minLongStr;
+  newFileLines[13] = minLatStr;
+
+  newFileLines[16] = maxLongStr;
+  newFileLines[17] = minLatStr;
+
+  newFileLines[20] = maxLongStr;
+  newFileLines[21] = maxLatStr;
+
+  newFileLines[24] = minLongStr;
+  newFileLines[25] = maxLatStr;
+
+  newFileLines[28] = minLongStr;
+  newFileLines[29] = minLatStr;
+  // * Wasn't that exciting, I love programming 😀
+
+  // newFileLines[16] = '\t\t\t\t\t\t\t-89.850000000,';
+  String combineLines = '';
+  for (var l in newFileLines) {
+    combineLines += '$l\n';
+  }
+  newFile.writeAsStringSync(combineLines);
+
+  // * Then convert to bytes to load to program
+  Uint8List mapFileBytes = (newFile).readAsBytesSync();
+
+  return mapFileBytes;
 }
