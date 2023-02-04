@@ -4,12 +4,13 @@ import 'package:flutter/material.dart';
 import '../load/LoadView.dart';
 import 'package:filesystem_picker/filesystem_picker.dart';
 
+import '../preview/previewPage.dart';
+
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    
     return MaterialApp(
       title: 'Home', //web name
       theme: ThemeData(
@@ -46,11 +47,12 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  void pickFile() async { 
+  void pickFile() async {
     FilesystemPicker.openDialog(
       context: context,
       fsType: FilesystemType.file,
-      rootDirectory: Directory('C:'), //set to be downloads page(where the txt file will save to automatically)
+      rootDirectory: Directory(
+          'C:'), //set to be downloads page(where the txt file will save to automatically)
       allowedExtensions: ['.txt'],
       fileTileSelectMode: FileTileSelectMode.wholeTile,
     );
@@ -132,7 +134,10 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       */
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const Preview()));
+        },
         backgroundColor: Colors.blue[900], //main color
         hoverColor: Colors.green[700], //changes to color when hovered over
         //elevation: 12 position in zaxis , further from page
@@ -143,7 +148,4 @@ class _MyHomePageState extends State<MyHomePage> {
       //adjusts location //https://api.flutter.dev/flutter/material/FloatingActionButtonLocation-class.html
     );
   }
-
-  
-  
 }
