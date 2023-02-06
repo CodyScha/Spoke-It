@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../load/LoadView.dart';
 import 'package:filesystem_picker/filesystem_picker.dart';
 import '../home/homeView.dart';
+import '../../source/portals.dart';
 
 class Preview extends StatelessWidget {
   const Preview({super.key});
@@ -12,22 +13,22 @@ class Preview extends StatelessWidget {
   Widget build(BuildContext context) {
     String dir = Directory.current.toString();
     return MaterialApp(
-      title: 'Spoke-It', //web name
-      theme: ThemeData(
-        // This is the theme of your application.
+        title: 'Spoke-It', //web name
+        theme: ThemeData(
+          // This is the theme of your application.
 
-        primarySwatch: Colors.indigo, //title color
-      ),
-      home: myPreview(
-          file: File('$dir/Saved/SIUE_Gardens.txt')), //displayed title
-    );
+          primarySwatch: Colors.indigo, //title color
+        ),
+        home: myPreview(
+          portals: [], //displayed title
+        ));
   }
 }
 
 class myPreview extends StatefulWidget {
-  const myPreview({super.key, required this.file});
+  const myPreview({super.key, required this.portals});
 
-  final File file;
+  final List<Portal> portals;
 
   @override
   State<myPreview> createState() => _myPreview();

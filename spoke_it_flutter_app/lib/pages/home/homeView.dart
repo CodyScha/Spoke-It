@@ -1,3 +1,5 @@
+import 'dart:async';
+import 'dart:ffi';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -6,6 +8,8 @@ import 'package:filesystem_picker/filesystem_picker.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/widgets.dart';
 import '../Preview/Preview.dart';
+import '../../source/portals.dart';
+import 'dart:typed_data';
 
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
@@ -47,6 +51,33 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    void processLines(List<String> lines) {
+      List<Portal> portals = [];
+
+      for (var line in lines) {
+        List<String> ports = line.split(";");
+        Portal portal = new Portal(
+            name: ports[0],
+            lat: double.parse(ports[1]),
+            long: double.parse(ports[2]),
+            team: ports[3],
+            health: int.parse(ports[4]),
+            shown: true);
+        /*
+        if (ports[5]=="+"){
+          portal.shown = true;
+        }else{
+          portal.shown = false;
+        }*/
+        portals.add(portal);
+      }
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => myPreview(portals: portals)),
+      );
+    }
+
     void pickFile() async {
       FilePickerResult? result = await FilePicker.platform.pickFiles(
         type: FileType.custom,
@@ -55,13 +86,20 @@ class _MyHomePageState extends State<MyHomePage> {
 
       if (result != null) {
         File file = File(result.files.first.path.toString());
+        //? readfile in here or pass to preview and read it there?
+
+        //Uint8List? fileBytes = result.files.first.bytes;
+        //print(fileBytes);
         //use file
         //myPreview(File)
         // ignore: use_build_context_synchronously
+        file.readAsLines().then(processLines); //?
+
+        /*
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => myPreview(file: file)),
-        );
+        );*/
       } else {
         // User canceled the picker
       }

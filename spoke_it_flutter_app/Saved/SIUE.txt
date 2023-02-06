@@ -1,0 +1,189 @@
+Cougar Village Commons;38.805136;-89.997436;RES;70
+Whispering Heights Fountain;38.805159;-89.97022;NEU;0
+Axis Community Sand Volleyball Court;38.803891;-90.012813;NEU;0
+Fountain at Enclave West;38.8035;-90.011837;NEU;0
+Simmons Sports Complex Commemorative;38.79841;-90.01878;NEU;0
+SIUE Vadalabene Center;38.796356;-90.000366;UNK;5
+SIUE Rec Plex;38.796977;-90.004803;NEU;0
+Dinosaur Jungle Gym;38.803469;-90.001186;NEU;0
+SIUE Water Tower;38.800089;-90.004254;NEU;0
+Intramural Softball Field;38.797381;-90.004879;NEU;0
+Intramural Soccer Field;38.797036;-90.005552;NEU;0
+SIUE Vadalabene Steel Sculpture;38.796372;-89.999184;UNK;15
+Cougar Village Basketball Courts;38.804727;-89.997481;RES;70
+SIUE Cougar Lake Pavilion;38.799979;-89.999915;UNK;25
+Cougar Village Volleyball Court;38.803886;-89.994499;NEU;0
+Turtle Lake;38.801338;-89.988805;NEU;0
+Stone Sculptures;38.801155;-89.989592;NEU;0
+In Memory of Carver and Morrison;38.800855;-89.989651;NEU;0
+Arrow in Sphere;38.800424;-89.989893;NEU;0
+Neher Memorial Benches;38.801212;-89.990271;ENL;9
+Benches Oeltjen and Rocky;38.800256;-89.990428;NEU;0
+Bob Hardy Memorial Bridge;38.800635;-89.989275;NEU;0
+Professor Wittig Memorial;38.801082;-89.98928;NEU;0
+The Gardens Wind Catchers;38.800324;-89.990101;NEU;0
+In Memory of Werner & Buxton;38.800592;-89.989676;NEU;0
+B. Barnard Birger Hall;38.798198;-89.998014;UNK;5
+Cougar Village Tennis Court;38.804961;-89.997801;RES;70
+Myer Arboretum;38.800155;-89.993417;NEU;0
+Cougar Village Tennis Courts;38.801812;-89.994254;UNK;10
+Les Memorial tree;38.799923;-89.993138;ENL;7
+Hiking trail map station #3;38.802692;-89.990564;RES;70
+Benches Fischer and Anderson;38.800134;-89.991576;NEU;0
+The Gardens Prairie Portal;38.799776;-89.991861;NEU;0
+The Gardens to want but Little;38.800005;-89.992635;NEU;0
+Mary Ann Boyd Memorial Bench;38.800714;-89.990695;NEU;0
+In Memory of the Monacos;38.801065;-89.992255;NEU;0
+The Hillside Garden;38.802237;-89.991052;NEU;0
+Mosaic of Smoke Statue;38.801095;-89.990719;ENL;10
+In Memory of Nagel and Fowler;38.800172;-89.991279;NEU;0
+The Gardens Information Kiosk;38.801578;-89.991546;NEU;0
+Benches Farrell and Rogier;38.800194;-89.99073;NEU;0
+Mike and Marie Monaco Memorial Bench;38.801089;-89.992488;NEU;0
+In Memory of the Jatcko's;38.801399;-89.991271;ENL;10
+Stone Structure;38.8011;-89.99166;ENL;10
+Merle and Teddi Inman Council Ring;38.80073;-89.99096;NEU;0
+In Memory of the Fowlers;38.801451;-89.990853;ENL;10
+The Gardens Center;38.800937;-89.992742;ENL;10
+Masons Monument;38.796958;-89.979569;NEU;0
+Bench in Memory of Dr Madison;38.800819;-89.988646;NEU;0
+Turtle Lake Gazebo;38.801061;-89.98865;UNK;7
+The Gardens Sundial;38.800596;-89.988386;NEU;0
+Portal Of Indecision;38.800855;-89.987479;NEU;0
+The Gardens at SIUE;38.800523;-89.988115;NEU;0
+Vietnam War memorial;38.79835;-89.98205;RES;85
+Siue Trail map station #5;38.804251;-89.988636;NEU;0
+Edward Coles Commemorative;38.798277;-89.97757;RES;85
+Timberlake Little Free Library;38.804135;-89.979853;NEU;0
+Esic Baptist Church;38.796568;-89.969746;RES;85
+The YMCA gym or shop;38.799163;-89.968554;RES;85
+Sky Gazer Sculpture;38.788644;-90.003097;UNK;5
+Nature Preserve Trail;38.792843;-90.011107;NEU;0
+Memorial To Sarah Schubert;38.789103;-90.009254;NEU;0
+SIUE Tennis Courts;38.796108;-90.0026;NEU;0
+SIUE Student Fitness Center;38.795656;-90.001095;UNK;5
+SIUE Greenhouse;38.794442;-90.00017;NEU;0
+SIUE Metcalf Theater;38.794869;-90.001547;NEU;0
+Bride of the City;38.794644;-90.001255;UNK;10
+SIUE Student Fitness Center;38.79606;-90.001038;UNK;5
+SIUE Engineering Building;38.791718;-90.000818;RES;85
+SIUE Engineering Sculpture;38.791496;-90.001113;RES;100
+SIUE Art and Design Bldg.;38.791153;-90.001165;RES;100
+Sun God to Engineering;38.790949;-90.000835;NEU;0
+SIUE Tunnel Sculpture;38.791481;-90.002256;NEU;0
+SIUE Matador Sculpture;38.790079;-90.001247;UNK;5
+Reverend R. Virgil "Joe" Santee Dedication;38.791101;-90.000349;NEU;0
+SIUE Civil Engineering Tribute;38.791614;-90.000198;RES;100
+SIUE Campus Sculpture;38.7914;-90.001972;NEU;0
+SIUE I-Beam Statue;38.792444;-90.000691;RES;100
+Fowler Student Design Center;38.792494;-90.001157;NEU;0
+SIUE Pyramid Art;38.794238;-90.001153;UNK;10
+SIUE Engineering Building Tower;38.79202;-90.000787;RES;85
+SIUE Homespun Sculpture;38.79431;-90.001976;NEU;0
+The Importance Of Play;38.791923;-90.000367;RES;100
+SIUE Bluff Hall Sand Volleyball Court;38.793647;-90.004037;NEU;0
+Liberty has Fallen!;38.792347;-90.002477;NEU;0
+SIUE Brick Spiral Sculpture;38.7918;-90.002407;NEU;0
+Bluff Hall;38.792472;-90.003549;ENL;85
+Giant Walker Sculpture;38.790379;-90.002467;NEU;0
+SIUE Evergreen Sculpture;38.789613;-90.002606;NEU;0
+MUC Campus Map;38.792013;-89.998528;NEU;0
+SIUE Student Art Installation;38.792097;-89.999033;NEU;0
+SIUE Science West Building;38.793745;-89.999926;NEU;0
+SIUE Campus Cow;38.792666;-89.99989;NEU;0
+Dunham Hall;38.793591;-89.998944;NEU;0
+SIUE Art Display;38.792283;-89.998616;RES;10
+Sasquatch's Outpost;38.792776;-89.998213;RES;10
+SIUE Quadrangle;38.792956;-89.997937;NEU;0
+SIUE "The Rock";38.793189;-89.997956;UNK;20
+SIUE Evoking Light Statue;38.79246;-89.999651;NEU;0
+SIUE Lovejoy Library;38.793547;-89.997771;NEU;0
+SIUE - Student Finacial Aid Legislation Plaque;38.79189;-89.997806;UNK;5
+SIUE 50 Year Bench 1957 to 2007;38.792985;-89.998514;UNK;10
+Dunham Hall Theatre;38.793336;-89.998426;UNK;14
+Science East;38.793988;-89.999159;RES;85
+SIUE Morris University Center;38.792166;-89.998177;UNK;10
+SIUE Nature Preserve Trail Head;38.788243;-89.999062;UNK;5
+SIUE Window Mural;38.796135;-89.999271;UNK;5
+SIUE Circle of Stone Art;38.794678;-89.999703;NEU;0
+Fuller Dome;38.790976;-89.999909;NEU;0
+SIUE Weather Vane;38.791709;-89.99998;RES;100
+Wire Art;38.790879;-89.997831;UNK;5
+SIUE Student Success Center;38.791411;-89.998503;NEU;0
+Woodland Hall Island;38.789719;-89.995116;UNK;5
+Steel Monolith;38.794593;-89.997008;NEU;0
+SIUE Arts Festival Mural;38.795488;-89.996308;UNK;5
+SIUE Founders Hall;38.794584;-89.996136;NEU;0
+Southern Illinois University Beta Gamma Sigma Key;38.79446;-89.996511;NEU;0
+SIUE Alumni Hall;38.796206;-89.996158;UNK;25
+SIUE I Remember Statue;38.794657;-89.995381;NEU;0
+SIUe Nature Preserve;38.788623;-89.996996;NEU;0
+Prairie Hall SIUE;38.787689;-89.996698;NEU;0
+SIUE University Park Sculpture;38.788139;-89.993268;NEU;0
+SIUE -ism Sculpture;38.79358;-89.994593;NEU;0
+T-Bone Steak;38.794287;-89.994492;RES;85
+Tosovsky Memorial Stone Bench;38.792718;-89.994545;UNK;0
+Inside/Outside;38.792627;-89.994797;NEU;0
+School of Pharmacy Sculpture;38.78978;-89.991141;UNK;5
+Famine;38.791278;-89.99749;UNK;5
+SIUE Time Capsule Marker;38.793071;-89.997422;NEU;0
+SIUE Cougar Statue;38.792652;-89.997568;UNK;13
+SIUE Columns;38.793798;-89.997248;RES;78
+SIUE Column Fragments;38.793569;-89.997337;RES;85
+Rendleman Hall;38.792249;-89.996673;UNK;15
+Morris University Center PLAZA;38.791958;-89.997184;UNK;5
+SIUE Builders of the University Plaza;38.793107;-89.996765;RES;85
+SIUE "e" Statue;38.792915;-89.996264;RES;85
+Peck Hall;38.793463;-89.996867;RES;54
+Lovejoy Archway;38.794;-89.996978;RES;85
+SIUE Iron Figures;38.794148;-89.995507;NEU;0
+SIUE Wire Geese Sculptures;38.795121;-89.995265;UNK;25
+County Hearth Gazebo;38.788711;-89.978596;NEU;0
+Ncerc at Siue;38.791696;-89.985537;NEU;0
+Heroic Adventures;38.788778;-89.9819;NEU;0
+Goshen Coffee Shop;38.791448;-89.97775;NEU;0
+Loading Bar;38.794256;-89.976738;NEU;0
+Center Grove Presbyterian Church;38.788148;-89.970817;NEU;0
+Center Grove Prebyterian Church Playground;38.788645;-89.970733;NEU;0
+Edwardsville Arts Center;38.788287;-89.973832;NEU;0
+Eagle Statue;38.795991;-89.968705;NEU;0
+The Center Ice Rink Outdoor Sign;38.790503;-89.971921;NEU;0
+Jack Blake Plaque;38.78312;-90.011873;NEU;0
+Madison County Transit BikeWay Map Station;38.787315;-90.010519;NEU;0
+SIUe Hidden Cabin;38.782028;-90.008278;NEU;0
+Armed Forces Highway Memorial;38.782287;-90.003095;NEU;0
+Korte Stadium;38.783427;-90.011054;NEU;0
+SIUE Police Station;38.783589;-89.989297;NEU;0
+SIUE Observatory;38.786134;-89.999195;NEU;0
+Madison County Transit Bikeway Map station #7;38.785094;-89.992704;NEU;0
+Brick Gazebo;38.786998;-89.980321;RES;55
+EXO Lounge and Nail Bar;38.784731;-89.97967;RES;55
+Robert C. Stile Tennis Courts;38.784757;-89.966921;NEU;0
+Pavilion 1;38.784772;-89.966285;NEU;0
+Pavilion 2;38.78387;-89.967174;NEU;0
+Robert C. Stile Soccer Field;38.783891;-89.966513;NEU;0
+Roy D. Wolfe Memorial Hockey Rink;38.783501;-89.96746;NEU;0
+American Legion Post 199;38.805332;-89.965956;NEU;0
+LeClaire Christian Church;38.788154;-89.965182;NEU;0
+Goshen Trail Hidden Water Tower;38.790121;-89.959501;NEU;0
+Trail Water Tower;38.789292;-89.962;NEU;0
+The wishing well;38.798417;-89.961437;NEU;0
+Children at Play Statue;38.797776;-89.960558;NEU;0
+Gaga Ball Rink;38.784115;-89.964279;NEU;0
+Young People Memorial Fountain;38.78412;-89.965771;NEU;0
+Pavilion 3;38.784524;-89.965695;NEU;0
+Airplane Park;38.784656;-89.96511;NEU;0
+Roy D. Wolfe Memorial Bench;38.784759;-89.965974;NEU;0
+Robert C Stile Park Playground;38.78496;-89.966033;RES;55
+Little Free Library 9481;38.784961;-89.965356;RES;55
+Edwardsville Township Community Park Memorial;38.783432;-89.965178;NEU;0
+Edwardsville Rotary Club Bench;38.782767;-89.965366;NEU;0
+Township Park Walking Trail pavilion;38.782025;-89.965981;NEU;0
+Pavilion 4;38.783829;-89.965763;NEU;0
+Robert C Stile Volleyball Court;38.783422;-89.965752;NEU;0
+Pavilion 5;38.782882;-89.965997;NEU;0
+Donation Bricks For Airplane Park;38.783176;-89.965432;NEU;0
+Concrete Castle Art;38.783908;-89.964393;NEU;0
+Pavilion 5;38.78364;-89.964421;NEU;0
+Pavilion 7;38.783302;-89.96439;NEU;0
+Airplane Park Playland;38.782971;-89.964961;NEU;0
