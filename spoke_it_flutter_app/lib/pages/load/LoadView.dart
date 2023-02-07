@@ -91,6 +91,34 @@ class _LoadSelection extends State<LoadSelection> {
       }
     }
 
+    loadFile() async {
+      String? path = await FilesystemPicker.openDialog(
+        context: context,
+        title: 'Saved Profiles',
+        fsType: FilesystemType.file,
+        rootDirectory: Directory(
+            '../..'), //set to be downloads page(where the txt file will save to automatically)
+        directory: Directory('profiles'),
+        showGoUp: (false),
+        allowedExtensions: ['.txt'],
+        fileTileSelectMode: FileTileSelectMode.wholeTile,
+      );
+
+      if (path != null) {
+        File file = File(path);
+        //use file
+        //myPreview(File)
+        // ignore: use_build_context_synchronously
+        /*Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => myPreview(file: file)),
+        );*/
+        file.readAsLines().then(processLines);
+      } else {
+        // User canceled the picker
+      }
+    }
+
     return Scaffold(
       appBar: AppBar(
         //top bar

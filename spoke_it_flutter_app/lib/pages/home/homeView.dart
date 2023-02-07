@@ -39,16 +39,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  /*void pickFile() async {
-    FilesystemPicker.openDialog(
-      context: context,
-      fsType: FilesystemType.file,
-      rootDirectory: Directory.current,
-      allowedExtensions: ['.txt'],
-      fileTileSelectMode: FileTileSelectMode.wholeTile,
-    ); //FilePickerResult? result = await FilePicker.platform.pickFiles();
-  }*/
-
   @override
   Widget build(BuildContext context) {
     void processLines(List<String> lines) {
@@ -86,20 +76,29 @@ class _MyHomePageState extends State<MyHomePage> {
 
       if (result != null) {
         File file = File(result.files.first.path.toString());
-        //? readfile in here or pass to preview and read it there?
-
-        //Uint8List? fileBytes = result.files.first.bytes;
-        //print(fileBytes);
-        //use file
-        //myPreview(File)
-        // ignore: use_build_context_synchronously
         file.readAsLines().then(processLines); //?
+      } else {
+        // User canceled the picker
+      }
+    }
 
-        /*
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => myPreview(file: file)),
-        );*/
+    loadFile() async {
+      String? path = await FilesystemPicker.openDialog(
+        context: context,
+        title: 'Saved Profiles',
+        fsType: FilesystemType.file,
+        rootDirectory: Directory(
+            '../..'), //set to be downloads page(where the txt file will save to automatically)
+        directory: Directory('profiles'),
+        showGoUp: (false),
+        allowedExtensions: ['.txt'],
+        fileTileSelectMode: FileTileSelectMode.wholeTile,
+      );
+
+      if (path != null) {
+        print(path);
+        File file = File(path);
+        file.readAsLines().then(processLines);
       } else {
         // User canceled the picker
       }
@@ -112,38 +111,6 @@ class _MyHomePageState extends State<MyHomePage> {
         centerTitle: true, //centers text
       ),
 
-      /*drawer: Drawer(
-        child: ListView(
-          // Important: Remove any padding from the ListView.
-          //padding: EdgeInsets.zero,
-          children: [
-            const DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.indigo,
-              ),
-              child: Text('Menu'),
-            ),
-            ListTile(
-              title: const Text('Load Data'),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => LoadSelection()),
-                );
-              },
-            ),
-            ListTile(
-              title: const Text('Import Data'),
-              onTap: () {
-                // Update the state of the app.
-                // ...
-                pickFile();
-                //Navigator.pop(context);
-              },
-            ),
-          ],
-        ),
-      ),*/
       body: Row(
         children: [
           Column(
@@ -160,16 +127,12 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               Container(
                 color: Colors.grey[300],
-                padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 80.0),
+                padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 74.0),
                 child: TextButton(
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => LoadSelection()),
-                      );
+                      loadFile();
                     },
-                    child: Text('Load Data')),
+                    child: Text('Load Profile')),
               ),
               Container(
                 color: Colors.grey[300],
@@ -191,7 +154,6 @@ class _MyHomePageState extends State<MyHomePage> {
                   color: Colors.grey[300],
                   padding:
                       EdgeInsets.symmetric(vertical: 20.0, horizontal: 120.0),
-                  //child: Text('empty'),
                 ),
               ),
             ],
@@ -210,12 +172,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   style: TextStyle(
                       color: Colors.indigo[400],
                       fontStyle: FontStyle.italic,
-                      fontWeight: FontWeight.bold
-                      //foreground: Paint()
-                      //  ..style = PaintingStyle.stroke
-                      //  ..strokeWidth = 5
-                      // ..color = Colors.indigo[400]!,
-                      ),
+                      fontWeight: FontWeight.bold),
                 ),
               ),
             ],
