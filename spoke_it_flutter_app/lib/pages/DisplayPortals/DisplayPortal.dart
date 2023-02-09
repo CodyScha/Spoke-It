@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
 
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_maps/maps.dart';
 import '../load/LoadView.dart';
@@ -70,6 +71,10 @@ class _myDisplayState extends State<myDisplay> {
     // ];
 
     _mapSource = MapShapeSource.memory(updateJSONTemplate(_portalData));
+
+    // updateJSONTemplate(_portalData).then((response) {
+      // _mapSource = MapShapeSource.memory(response);
+    // });
 
     _vectordata = <LineModel>[
       LineModel(
@@ -209,15 +214,24 @@ Uint8List updateJSONTemplate(List<MarkerModel> markers) {
   List<int> coordLongLines = [13, 17, 21, 25, 29];
 
   // * First, need to get the JSON from the assets folder
-  var assetFileStr = File('assets/siue2.json').readAsStringSync();
+  var assetFileStr = File(
+          '/Users/codyschaefer/Documents/SIUE/2023 Spring/CS499/Spoke-It/spoke_it_flutter_app/assets/siue2.json')
+      .readAsStringSync();
+  // var assetFileStr = '';
+  // rootBundle.loadString('assets/siue2.json');
 
   // * Save a copy of the file in a new dir
-  Directory('map').create();
+  if (!Directory('map').existsSync()) {
+    var mapdir = Directory('map').create();
+  }
   File newFile = File('map/map.json');
+  print('testingtesting');
+  print('this is a test $assetFileStr');
   newFile.writeAsStringSync(assetFileStr);
 
   // * Now, we need to change the coords in the new file
   List<String> newFileLines = newFile.readAsLinesSync();
+  // print(newFileLines.length);
 
   // * First, find the extremes for latitude and longitude.
   double maxLat = -91.0;
@@ -245,8 +259,8 @@ Uint8List updateJSONTemplate(List<MarkerModel> markers) {
   // * Now, change the newFile lines to the max and mins
   String minLatStr = aggregiousTabs + (minLat - buffer).toString();
   String maxLatStr = aggregiousTabs + (maxLat + buffer).toString();
-  String minLongStr = aggregiousTabs + (minLong - buffer).toString() + ',';
-  String maxLongStr = aggregiousTabs + (maxLong + buffer).toString() + ',';
+  String minLongStr = '$aggregiousTabs${minLong - buffer},';
+  String maxLongStr = '$aggregiousTabs${maxLong + buffer},';
 
   newFileLines[12] = minLongStr;
   newFileLines[13] = minLatStr;
