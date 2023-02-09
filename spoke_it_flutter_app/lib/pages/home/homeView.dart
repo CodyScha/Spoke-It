@@ -7,7 +7,7 @@ import '../load/LoadView.dart';
 import 'package:filesystem_picker/filesystem_picker.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/widgets.dart';
-import '../Preview/Preview.dart';
+import '../Preview/previewPage.dart';
 import '../../source/portals.dart';
 import 'dart:typed_data';
 
@@ -96,7 +96,6 @@ class _MyHomePageState extends State<MyHomePage> {
       );
 
       if (path != null) {
-        print(path);
         File file = File(path);
         file.readAsLines().then(processLines);
       } else {
@@ -178,13 +177,6 @@ class _MyHomePageState extends State<MyHomePage> {
             ],
           ),
         ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        backgroundColor: Colors.blue[900], //main color
-        hoverColor: Colors.green[700], //changes to color when hovered over
-        //elevation: 12 position in zaxis , further from page
-        child: const Icon(Icons.add),
       ),
 
       //adjusts location //https://api.flutter.dev/flutter/material/FloatingActionButtonLocation-class.html

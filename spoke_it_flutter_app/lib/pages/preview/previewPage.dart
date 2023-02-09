@@ -5,42 +5,51 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_maps/maps.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
+import '../../source/portals.dart';
 
 class Preview extends StatelessWidget {
-  const Preview({super.key});
+  const Preview({super.key, required this.portals});
+
+  final List<Portal> portals;
 
   @override
   Widget build(BuildContext context) {
     String dir = Directory.current.toString();
     return MaterialApp(
-      title: 'Spoke-It', //web name
-      theme: ThemeData(
-        // This is the theme of your application.
+        title: 'Spoke-It', //web name
+        theme: ThemeData(
+          // This is the theme of your application.
 
-        primarySwatch: Colors.indigo, //title color
-      ),
-      home: myPreview(
-          file: File('$dir/Saved/SIUE_Gardens.txt')), //displayed title
-    );
+          primarySwatch: Colors.indigo, //title color
+        ),
+        home: myPreview(
+          portals: [], //displayed title
+        ));
   }
 }
 
 class myPreview extends StatefulWidget {
-  const myPreview({super.key, required this.file});
+  const myPreview({super.key, required this.portals});
 
-  final File file;
+  final List<Portal> portals;
 
   @override
-  State<myPreview> createState() => _myPreview();
+  State<myPreview> createState() => _myPreview(portals: portals);
 }
 
 class _myPreview extends State<myPreview> {
+  _myPreview({required this.portals});
+
+  final List<Portal> portals;
+
   late String test;
   late String test2;
   late MapZoomPanBehavior _zoomPanBehavior;
-  late List<MarkerModel> _portalData;
+  //late List<MarkerModel> _portalData;
+  late List<Portal> _portalData;
   late List<LineModel> _linkData;
   late MapShapeLayerController _controller;
+  late MapShapeSource _mapSource;
 
   void initState() {
     test = 'Center'; // ! Delete l8r
@@ -49,6 +58,9 @@ class _myPreview extends State<myPreview> {
     _zoomPanBehavior = MapZoomPanBehavior(
         enableDoubleTapZooming: true, enableMouseWheelZooming: true);
 
+    _portalData = portals;
+
+/*
     _portalData = <MarkerModel>[
       MarkerModel('SIUE Art Display', 38.792283, -89.998616, Colors.cyan),
       MarkerModel('Dunham Hall Theatre', 38.793336, -89.998426, Colors.cyan),
@@ -59,6 +71,7 @@ class _myPreview extends State<myPreview> {
       MarkerModel('SIUE "The Rock"', 38.793189, -89.997956, Colors.cyan),
       MarkerModel('Peck Hall', 38.793463, -89.996867, Colors.cyan)
     ];
+    */
 
     _linkData = <LineModel>[
       LineModel(
@@ -68,6 +81,7 @@ class _myPreview extends State<myPreview> {
     ];
 
     _controller = MapShapeLayerController();
+    _mapSource = MapShapeSource.memory(updateJSONTemplate(_portalData));
   }
 
   @override
@@ -160,26 +174,27 @@ class _myPreview extends State<myPreview> {
             padding: const EdgeInsets.all(1.0),
             child: SfMaps(layers: <MapLayer>[
               MapShapeLayer(
-                source: MapShapeSource.asset('assets/siue2.json',
-                    shapeDataField: 'name_en'),
+                source: _mapSource,
                 initialMarkersCount: _portalData.length,
-                sublayers: [
-                  MapLineLayer(
-                    lines:
-                        List<MapLine>.generate(_linkData.length, (int index) {
-                      return MapLine(
-                        from: _linkData[index].from,
-                        to: _linkData[index].to,
-                        color: Colors.white,
-                        width: 5,
-                      );
-                    }).toSet(),
-                  )
-                ],
+                // sublayers: [
+
+                //   MapLineLayer(
+                //     lines:
+                //         List<MapLine>.generate(_linkData.length, (int index) {
+                //       return MapLine(
+                //         from: _linkData[index].from,
+                //         to: _linkData[index].to,
+                //         color: Colors.white,
+                //         width: 5,
+                //       );
+                //     }).toSet(),
+
+                //   )
+                // ],
                 markerBuilder: (BuildContext context, int index) {
                   return MapMarker(
-                      latitude: _portalData[index].latitude,
-                      longitude: _portalData[index].longitude,
+                      latitude: _portalData[index].lat,
+                      longitude: _portalData[index].long,
                       child: Container(
                         height: 25,
                         width: 25,
@@ -218,7 +233,7 @@ class LineModel {
   final MapLatLng to;
 }
 
-Uint8List updateJSONTemplate(List<MarkerModel> markers) {
+Uint8List updateJSONTemplate(List<Portal> markers) {
   double buffer = 0.00005;
   String aggregiousTabs = '\t\t\t\t\t\t\t';
 
@@ -227,14 +242,21 @@ Uint8List updateJSONTemplate(List<MarkerModel> markers) {
 
   // * First, need to get the JSON from the assets folder
   var assetFileStr = File('assets/siue2.json').readAsStringSync();
+  // var assetFileStr = '';
+  // rootBundle.loadString('assets/siue2.json');
 
   // * Save a copy of the file in a new dir
-  Directory('map').create();
+  if (!Directory('map').existsSync()) {
+    var mapdir = Directory('map').create();
+  }
   File newFile = File('map/map.json');
+  print('testingtesting');
+  print('this is a test $assetFileStr');
   newFile.writeAsStringSync(assetFileStr);
 
   // * Now, we need to change the coords in the new file
   List<String> newFileLines = newFile.readAsLinesSync();
+  // print(newFileLines.length);
 
   // * First, find the extremes for latitude and longitude.
   double maxLat = -91.0;
@@ -245,12 +267,12 @@ Uint8List updateJSONTemplate(List<MarkerModel> markers) {
   // * Iterate through the markers to find the extremes
   for (var m in markers) {
     // * Latitude
-    maxLat = max(m.latitude, maxLat);
-    minLat = min(m.latitude, minLat);
+    maxLat = max(m.lat, maxLat);
+    minLat = min(m.lat, minLat);
 
     // * Longitude
-    maxLong = max(m.longitude, maxLong);
-    minLong = min(m.longitude, minLong);
+    maxLong = max(m.long, maxLong);
+    minLong = min(m.long, minLong);
   }
 
   // * Print the results
@@ -262,8 +284,8 @@ Uint8List updateJSONTemplate(List<MarkerModel> markers) {
   // * Now, change the newFile lines to the max and mins
   String minLatStr = aggregiousTabs + (minLat - buffer).toString();
   String maxLatStr = aggregiousTabs + (maxLat + buffer).toString();
-  String minLongStr = aggregiousTabs + (minLong - buffer).toString() + ',';
-  String maxLongStr = aggregiousTabs + (maxLong + buffer).toString() + ',';
+  String minLongStr = '$aggregiousTabs${minLong - buffer},';
+  String maxLongStr = '$aggregiousTabs${maxLong + buffer},';
 
   newFileLines[12] = minLongStr;
   newFileLines[13] = minLatStr;
