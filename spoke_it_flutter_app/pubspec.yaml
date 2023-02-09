@@ -39,6 +39,8 @@ dependencies:
   cupertino_icons: ^1.0.1
   filesystem_picker: ^3.1.0
   file_picker: ^5.2.5
+  syncfusion_flutter_maps: ^20.4.43
+  syncfusion_flutter_core: ^20.4.44
 
 dev_dependencies:
   flutter_test:
@@ -61,6 +63,11 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+  assets:
+    - assets/australia.json
+    - assets/world.json
+    - assets/siue.json
+    - assets/siue2.json
 
   # To add assets to your application, add an assets section, like this:
   # assets:

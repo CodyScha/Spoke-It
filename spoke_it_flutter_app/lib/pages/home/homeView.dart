@@ -179,6 +179,13 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ],
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        backgroundColor: Colors.blue[900], //main color
+        hoverColor: Colors.green[700], //changes to color when hovered over
+        //elevation: 12 position in zaxis , further from page
+        child: const Icon(Icons.add),
+      ),
 
       //adjusts location //https://api.flutter.dev/flutter/material/FloatingActionButtonLocation-class.html
     );
