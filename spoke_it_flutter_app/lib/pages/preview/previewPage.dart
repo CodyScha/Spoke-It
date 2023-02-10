@@ -170,46 +170,83 @@ class _myPreview extends State<myPreview> {
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(1.0),
-            child: SfMaps(layers: <MapLayer>[
-              MapShapeLayer(
-                source: _mapSource,
-                initialMarkersCount: _portalData.length,
-                // sublayers: [
+          Container(
+            width: MediaQuery.of(context).size.width - 200,
+            color: Colors.cyan,
+            child: Padding(
+              padding: const EdgeInsets.all(1.0),
+              child: SfMapsTheme(
+                data: SfMapsThemeData(
+                  shapeHoverColor: Colors.white,
+                  // brightness: Brightness.dark
+                ),
+                child: SfMaps(layers: <MapLayer>[
+                  MapShapeLayer(
+                    source: _mapSource,
+                    initialMarkersCount: _portalData.length,
+                    // sublayers: [
 
-                //   MapLineLayer(
-                //     lines:
-                //         List<MapLine>.generate(_linkData.length, (int index) {
-                //       return MapLine(
-                //         from: _linkData[index].from,
-                //         to: _linkData[index].to,
-                //         color: Colors.white,
-                //         width: 5,
-                //       );
-                //     }).toSet(),
+                    //   MapLineLayer(
+                    //     lines:
+                    //         List<MapLine>.generate(_linkData.length, (int index) {
+                    //       return MapLine(
+                    //         from: _linkData[index].from,
+                    //         to: _linkData[index].to,
+                    //         color: Colors.white,
+                    //         width: 5,
+                    //       );
+                    //     }).toSet(),
 
-                //   )
-                // ],
-                markerBuilder: (BuildContext context, int index) {
-                  return MapMarker(
-                      latitude: _portalData[index].lat,
-                      longitude: _portalData[index].long,
-                      child: Container(
-                        height: 25,
-                        width: 25,
-                        color: Colors.red,
-                      ));
-                },
-                controller: _controller,
-                markerTooltipBuilder: (BuildContext context, index) {
-                  return Container(
-                    width: 150,
-                    child: Text(_portalData[index].name),
-                  );
-                },
-              )
-            ]),
+                    //   )
+                    // ],
+                    markerBuilder: (BuildContext context, int index) {
+                      return MapMarker(
+                          latitude: _portalData[index].lat,
+                          longitude: _portalData[index].long,
+                          child: Stack(alignment: Alignment.center, children: [
+                            MouseRegion(
+                              cursor: SystemMouseCursors.click,
+                              child: GestureDetector(
+                                onTap: () {
+                                  print(
+                                      'Pressed the $index: ${_portalData[index].name} Portal.');
+                                },
+                                child: Container(
+                                  height: 25,
+                                  width: 25,
+                                  decoration: BoxDecoration(
+                                      color: Colors.red,
+                                      shape: BoxShape.circle),
+                                ),
+                              ),
+                            ),
+                            IgnorePointer(
+                              child: SizedBox(
+                                width: 125,
+                                child: Padding(
+                                    padding: const EdgeInsets.only(top: 50),
+                                    child: Text(
+                                      _portalData[index].name,
+                                      softWrap: true,
+                                      overflow: TextOverflow.ellipsis,
+                                      textAlign: TextAlign.center,
+                                      maxLines: 2,
+                                    )),
+                              ),
+                            )
+                          ]));
+                    },
+                    controller: _controller,
+                    // markerTooltipBuilder: (BuildContext context, index) {
+                    //   return Container(
+                    //     width: 150,
+                    //     child: Text(_portalData[index].name),
+                    //   );
+                    // },
+                  )
+                ]),
+              ),
+            ),
           ),
         ],
       ),
@@ -234,7 +271,7 @@ class LineModel {
 }
 
 Uint8List updateJSONTemplate(List<Portal> markers) {
-  double buffer = 0.00005;
+  double buffer = 0.0001;
   String aggregiousTabs = '\t\t\t\t\t\t\t';
 
   List<int> coordLatLines = [14, 18, 22, 26, 30];
