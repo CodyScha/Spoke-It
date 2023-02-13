@@ -50,13 +50,15 @@ class _myPreview extends State<myPreview> {
   late List<LineModel> _linkData;
   late MapShapeLayerController _controller;
   late MapShapeSource _mapSource;
+  late int indexPressed;
 
   void initState() {
     test = 'Center'; // ! Delete l8r
     test2 = 'Generate';
 
     _zoomPanBehavior = MapZoomPanBehavior(
-        enableDoubleTapZooming: true, enableMouseWheelZooming: true);
+        enableDoubleTapZooming: true, enableMouseWheelZooming: true,
+        enablePinching: true);
 
     _portalData = portals;
 
@@ -127,62 +129,83 @@ class _myPreview extends State<myPreview> {
                   //       },
                   //       child: Text('')),
                   // ),
-                  Text('Select a center portal'),
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(5),
-                    child: Stack(
-                      children: <Widget>[
-                        Container(
-                          child: TextButton(
-                            onPressed: () {
-                              print('pressed da $test button');
-                            },
-                            child: Text(test),
-                            style: TextButton.styleFrom(
-                                foregroundColor: Colors.white,
-                                textStyle: const TextStyle(fontSize: 35),
-                                backgroundColor: Colors.pink),
-                          ),
-                        )
-                      ],
+                  Padding(
+                    padding: const EdgeInsets.only(top: 25.0),
+                    child: Text(
+                      'Select a center portal',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 25,
+                        fontWeight: FontWeight.bold
+                        
+                      ),
                     ),
                   ),
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(5),
-                    child: Stack(
-                      children: <Widget>[
-                        Container(
-                          child: TextButton(
-                            onPressed: () {
-                              print('pressed da $test2 button');
-                            },
-                            child: Text(test2),
-                            style: TextButton.styleFrom(
-                                foregroundColor: Colors.white,
-                                textStyle: const TextStyle(fontSize: 35),
-                                backgroundColor: Colors.pink),
-                          ),
-                        )
-                      ],
+                  Padding(
+                    padding: const EdgeInsets.only(top: 25),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(5),
+                      child: Stack(
+                        children: <Widget>[
+                          Container(
+                            child: TextButton(
+                              onPressed: () {
+                                print('pressed da $test button');
+                              },
+                              child: Text(test),
+                              style: TextButton.styleFrom(
+                                  foregroundColor: Colors.white,
+                                  textStyle: const TextStyle(fontSize: 35),
+                                  backgroundColor: Colors.indigo),
+                            ),
+                          )
+                        ],
+                      ),
                     ),
                   ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 25.0),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(5),
+                      child: Stack(
+                        children: <Widget>[
+                          Container(
+                            child: TextButton(
+                              onPressed: () {
+                                print('pressed da $test2 button');
+                              },
+                              child: Text(test2),
+                              style: TextButton.styleFrom(
+                                  foregroundColor: Colors.white,
+                                  textStyle: const TextStyle(fontSize: 35),
+                                  backgroundColor: Colors.indigo),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                  // Text(_portalData[indexPressed].name)
                 ],
               ),
             ),
           ),
           Container(
             width: MediaQuery.of(context).size.width - 200,
-            color: Colors.cyan,
+            color: Color.fromRGBO(46, 46, 46, 1),
             child: Padding(
               padding: const EdgeInsets.all(1.0),
               child: SfMapsTheme(
                 data: SfMapsThemeData(
-                  shapeHoverColor: Colors.white,
-                  // brightness: Brightness.dark
-                ),
+                    shapeHoverColor: Color.fromRGBO(46, 46, 46, 1),
+                    layerColor: Color.fromRGBO(46, 46, 46, 1),
+                    layerStrokeWidth: 0
+                    // brightness: Brightness.dark
+                    ),
                 child: SfMaps(layers: <MapLayer>[
                   MapShapeLayer(
                     source: _mapSource,
+                    zoomPanBehavior: _zoomPanBehavior,
                     initialMarkersCount: _portalData.length,
                     // sublayers: [
 
@@ -210,10 +233,11 @@ class _myPreview extends State<myPreview> {
                                 onTap: () {
                                   print(
                                       'Pressed the $index: ${_portalData[index].name} Portal.');
+                                  indexPressed = index;
                                 },
                                 child: Container(
-                                  height: 25,
-                                  width: 25,
+                                  height: 20,
+                                  width: 20,
                                   decoration: BoxDecoration(
                                       color: Colors.red,
                                       shape: BoxShape.circle),
@@ -224,13 +248,15 @@ class _myPreview extends State<myPreview> {
                               child: SizedBox(
                                 width: 125,
                                 child: Padding(
-                                    padding: const EdgeInsets.only(top: 50),
+                                    padding: const EdgeInsets.only(top: 45),
                                     child: Text(
                                       _portalData[index].name,
-                                      softWrap: true,
+                                      // softWrap: true,
                                       overflow: TextOverflow.ellipsis,
                                       textAlign: TextAlign.center,
                                       maxLines: 2,
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 11),
                                     )),
                               ),
                             )
