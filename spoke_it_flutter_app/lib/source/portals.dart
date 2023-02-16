@@ -26,3 +26,16 @@ class Portal {
       required this.health,
       required this.shown});
 }
+
+class Link {
+  Portal to;
+  Portal from;
+  bool isCenterLink;
+  bool isHullLink;
+
+  Link(
+      {required this.to,
+      required this.from,
+      required this.isCenterLink,
+      required this.isHullLink});
+}
