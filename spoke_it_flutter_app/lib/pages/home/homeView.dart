@@ -7,7 +7,7 @@ import '../load/LoadView.dart';
 import 'package:filesystem_picker/filesystem_picker.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/widgets.dart';
-import '../Preview/Preview.dart';
+import '../Preview/previewPage.dart';
 import '../../source/portals.dart';
 import 'dart:typed_data';
 
@@ -64,7 +64,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => myPreview(portals: portals)),
+        MaterialPageRoute(builder: (context) => Preview(portals: portals)),
       );
     }
 

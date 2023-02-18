@@ -15,6 +15,7 @@ class Portal {
   String team;
   int health;
   bool shown;
+  //bool center
 
   Portal({
     required this.name,

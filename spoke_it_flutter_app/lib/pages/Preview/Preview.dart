@@ -7,8 +7,8 @@ import '../home/homeView.dart';
 import '../../source/portals.dart';
 
 class Preview extends StatelessWidget {
-  const Preview({super.key});
-
+  const Preview({super.key, required this.portals});
+  final List<Portal> portals;
   @override
   Widget build(BuildContext context) {
     String dir = Directory.current.toString();
@@ -20,7 +20,7 @@ class Preview extends StatelessWidget {
           primarySwatch: Colors.indigo, //title color
         ),
         home: myPreview(
-          portals: [], //displayed title
+          portals: portals, //displayed title
         ));
   }
 }
@@ -35,13 +35,17 @@ class myPreview extends StatefulWidget {
 }
 
 class _myPreview extends State<myPreview> {
-  void readFile() {}
+  List<Portal> getPortalList() {
+    List<Portal> portalList = widget.portals; //widget.portals is getting from parent stateful widget
+    return portalList;
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         //top bar
+
         title: Text('Preview'),
         centerTitle: true, //centers text
       ),
@@ -64,6 +68,7 @@ class _myPreview extends State<myPreview> {
                 padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 92.0),
                 child: TextButton(
                     onPressed: () {
+                      List<Portal> portal= getPortalList();
                       Navigator.push(
                         context,
                         MaterialPageRoute(

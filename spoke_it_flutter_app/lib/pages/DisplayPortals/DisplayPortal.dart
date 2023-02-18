@@ -6,11 +6,13 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_maps/maps.dart';
 import '../load/LoadView.dart';
+import '../../source/portals.dart';
 import 'package:filesystem_picker/filesystem_picker.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 
 class Display extends StatelessWidget {
-  const Display({super.key});
+  const Display({super.key, required this.portals});
+  final List<Portal> portals;
 
   @override
   Widget build(BuildContext context) {
@@ -22,16 +24,17 @@ class Display extends StatelessWidget {
         primarySwatch: Colors.red, //title color
         // scaffoldBackgroundColor: Color.fromRGBO(46, 46, 46, 1),
       ),
-      home: myDisplay(title: 'Prototype: Spoke-It'), //displayed title
+      home: myDisplay(
+        portals: portals,
+      ), //displayed title
     );
   }
 }
 
 class myDisplay extends StatefulWidget {
-  const myDisplay({super.key, required this.title});
+  const myDisplay({super.key, required this.portals});
 
-  final String title;
-
+  final List<Portal> portals;
   @override
   State<myDisplay> createState() => _myDisplayState();
 }
@@ -73,7 +76,7 @@ class _myDisplayState extends State<myDisplay> {
     _mapSource = MapShapeSource.memory(updateJSONTemplate(_portalData));
 
     // updateJSONTemplate(_portalData).then((response) {
-      // _mapSource = MapShapeSource.memory(response);
+    // _mapSource = MapShapeSource.memory(response);
     // });
 
     _vectordata = <LineModel>[

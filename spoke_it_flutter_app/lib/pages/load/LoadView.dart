@@ -252,10 +252,10 @@ class _LoadSelection extends State<LoadSelection> {
                 padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 71.0),
                 child: TextButton(
                     onPressed: () {
-                      Navigator.push(
+                      /*Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => Preview()),
-                      );
+                      );*/
                     },
                     child: Text('option 1')),
               ),

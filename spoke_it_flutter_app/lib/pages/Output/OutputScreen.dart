@@ -3,44 +3,42 @@ import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:spoke_it_flutter_app/pages/Output/OutputScreen.dart';
 import '../../source/portals.dart';
 import '../DisplayPortals/DisplayPortal.dart';
 import 'package:syncfusion_flutter_maps/maps.dart';
+import '../Preview/previewPage.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 
-class Preview extends StatelessWidget {
-  const Preview({super.key, required this.portals});
+class Output extends StatelessWidget {
+  const Output({super.key, required this.portals});
   final List<Portal> portals;
 
   @override
   Widget build(BuildContext context) {
-    String dir = Directory.current.toString();
     return MaterialApp(
-        title: 'Spoke-It', //web name
-        theme: ThemeData(
-          // This is the theme of your application.
+      title: 'Spoke-It', //web name
+      theme: ThemeData(
+        // This is the theme of your application.
 
-          primarySwatch: Colors.indigo, //title color
-        ),
-        home: myPreview(
-          //file: File('$dir/Saved/SIUE_Gardens.txt')), //displayed title
-          portals: portals,
-        ));
+        primarySwatch: Colors.indigo, //title color
+        // scaffoldBackgroundColor: Color.fromRGBO(46, 46, 46, 1),
+      ),
+      home: myOutput(
+        portals: portals,
+      ), //displayed title
+    );
   }
 }
 
-class myPreview extends StatefulWidget {
-  const myPreview({super.key, required this.portals});
+class myOutput extends StatefulWidget {
+  const myOutput({super.key, required this.portals});
 
   final List<Portal> portals;
-  //final File file;
-
   @override
-  State<myPreview> createState() => _myPreview();
+  State<myOutput> createState() => _myOutputState();
 }
 
-class _myPreview extends State<myPreview> {
+class _myOutputState extends State<myOutput> {
   List<Portal> getPortalList() {
     List<Portal> portalList =
         widget.portals; //widget.portals is getting from parent stateful widget
@@ -128,18 +126,7 @@ class _myPreview extends State<myPreview> {
                   Container(
                     color: Colors.grey[300],
                     padding:
-                        EdgeInsets.symmetric(vertical: 20.0, horizontal: 140.0),
-                    //child: Text('Load Data'),
-                  ),
-                  Text(
-                    'Select a center portal',
-                    textScaleFactor: 1.4,
-                    textAlign: TextAlign.center,
-                  ),
-                  Container(
-                    color: Colors.grey[300],
-                    padding:
-                        EdgeInsets.symmetric(vertical: 25.0, horizontal: 140.0),
+                        EdgeInsets.symmetric(vertical: 15.0, horizontal: 140.0),
                     //child: Text('Load Data'),
                   ),
                   ClipRRect(
@@ -154,9 +141,9 @@ class _myPreview extends State<myPreview> {
                             child: Text(test), //Center
                             style: TextButton.styleFrom(
                                 padding: EdgeInsets.symmetric(
-                                    vertical: 0.0, horizontal: 37.0),
+                                    vertical: 0.0, horizontal: 39.0),
                                 foregroundColor: Colors.white,
-                                textStyle: const TextStyle(fontSize: 35),
+                                textStyle: const TextStyle(fontSize: 30),
                                 backgroundColor: Colors.indigo),
                           ),
                         )
@@ -166,7 +153,38 @@ class _myPreview extends State<myPreview> {
                   Container(
                     color: Colors.grey[300],
                     padding:
-                        EdgeInsets.symmetric(vertical: 25.0, horizontal: 140.0),
+                        EdgeInsets.symmetric(vertical: 10.0, horizontal: 140.0),
+                    //child: Text('Load Data'),
+                  ),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(5),
+                    child: Stack(
+                      children: <Widget>[
+                        Container(
+                          child: TextButton(
+                            onPressed: (
+                                //create a function that when a portal is clicked it will update a Portal variable,
+                                //the hide function will find that portal in the list and update its +/-
+                                ) {
+                              print('pressed da $test button');
+                            },
+                            child: Text("Hide"),
+                            style: TextButton.styleFrom(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 0.0, horizontal: 52.0),
+                                foregroundColor: Colors.white,
+                                textStyle: const TextStyle(fontSize: 30),
+                                backgroundColor:
+                                    Color.fromARGB(255, 99, 96, 102)),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  Container(
+                    color: Colors.grey[300],
+                    padding:
+                        EdgeInsets.symmetric(vertical: 10.0, horizontal: 140.0),
                     //child: Text('Load Data'),
                   ),
                   ClipRRect(
@@ -177,20 +195,88 @@ class _myPreview extends State<myPreview> {
                           child: TextButton(
                             onPressed: () {
                               print('pressed da $test2 button');
+                            },
+                            child: Text("Delete"), //delete
+                            style: TextButton.styleFrom(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 0.0, horizontal: 40.0),
+                                foregroundColor: Colors.white,
+                                textStyle: const TextStyle(fontSize: 30),
+                                backgroundColor:
+                                    Color.fromARGB(255, 163, 6, 6)),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  Container(
+                    color: Colors.grey[300],
+                    padding:
+                        EdgeInsets.symmetric(vertical: 10.0, horizontal: 140.0),
+                    //child: Text('Load Data'),
+                  ),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(5),
+                    child: Stack(
+                      children: <Widget>[
+                        Container(
+                          child: TextButton(
+                            onPressed: () {
+                              print('pressed da $test2 button');
+                            },
+                            child: Text("Save"), //generate
+                            style: TextButton.styleFrom(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 0.0, horizontal: 52.0),
+                                foregroundColor: Colors.white,
+                                textStyle: const TextStyle(fontSize: 30),
+                                backgroundColor:
+                                    Color.fromARGB(255, 18, 153, 6)),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  Container(
+                    color: Colors.grey[300],
+                    padding:
+                        EdgeInsets.symmetric(vertical: 15.0, horizontal: 140.0),
+                    //child: Text('Load Data'),
+                  ),
+                  Container(
+                    color: Color.fromARGB(255, 187, 186, 186),
+                    constraints:
+                        BoxConstraints.expand(width: 180.0, height: 200.0),
+                    child: Text('Portal Info Here'),
+                  ),
+                  Container(
+                    color: Colors.grey[300],
+                    padding:
+                        EdgeInsets.symmetric(vertical: 15.0, horizontal: 140.0),
+                    //child: Text('Load Data'),
+                  ),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(5),
+                    child: Stack(
+                      children: <Widget>[
+                        Container(
+                          child: TextButton(
+                            onPressed: () {
                               List<Portal> portals = getPortalList();
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        Output(portals: portals)),
+                                        Preview(portals: portals)),
                               );
+                              print('pressed da $test2 button');
                             },
-                            child: Text(test2), //generate
+                            child: Text("Go Back"), //generate
                             style: TextButton.styleFrom(
                                 padding: EdgeInsets.symmetric(
-                                    vertical: 0.0, horizontal: 15.0),
+                                    vertical: 0.0, horizontal: 32.0),
                                 foregroundColor: Colors.white,
-                                textStyle: const TextStyle(fontSize: 35),
+                                textStyle: const TextStyle(fontSize: 30),
                                 backgroundColor: Colors.indigo),
                           ),
                         )
