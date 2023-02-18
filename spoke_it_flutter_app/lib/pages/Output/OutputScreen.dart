@@ -3,11 +3,13 @@ import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import '../../source/portals.dart';
-import '../DisplayPortals/DisplayPortal.dart';
 import 'package:syncfusion_flutter_maps/maps.dart';
-import '../Preview/previewPage.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
+
+import '../DisplayPortals/DisplayPortal.dart';
+import '../Preview/previewPage.dart';
+import '../../source/spoke.dart';
+import '../../source/portals.dart';
 
 class Output extends StatelessWidget {
   const Output({super.key, required this.portals});
@@ -49,12 +51,13 @@ class _myOutputState extends State<myOutput> {
   late String test2;
   late MapZoomPanBehavior _zoomPanBehavior;
   late List<MarkerModel> _portalData;
-  late List<LineModel> _linkData;
   late MapShapeLayerController _controller;
+  late List<Link> links;
 
   void initState() {
     test = 'Center'; // ! Delete l8r
     test2 = 'Generate';
+    List<Portal> portals = widget.portals;
 
     _zoomPanBehavior = MapZoomPanBehavior(
         enableDoubleTapZooming: true, enableMouseWheelZooming: true);
@@ -70,12 +73,10 @@ class _myOutputState extends State<myOutput> {
       MarkerModel('Peck Hall', 38.793463, -89.996867, Colors.cyan)
     ];
 
-    _linkData = <LineModel>[
-      LineModel(
-          MapLatLng(38.793988, -89.999159), MapLatLng(38.792097, -89.999033)),
-      LineModel(
-          MapLatLng(38.793547, -89.997771), MapLatLng(38.793463, -89.996867))
-    ];
+    Spoke alg = new Spoke();
+    portals[3].center = true; //for testing PLEASE REMOVE!
+    portals[3].hull = false; //for testing PLEASE REMOVE!
+    links = alg.algorithm(portals);
 
     _controller = MapShapeLayerController();
   }
@@ -85,7 +86,7 @@ class _myOutputState extends State<myOutput> {
     return Scaffold(
       appBar: AppBar(
         //top bar
-        title: Text('Preview Portals'),
+        title: Text('Strategy Output'),
         centerTitle: true, //centers text
       ),
       body: Row(
@@ -296,11 +297,13 @@ class _myOutputState extends State<myOutput> {
                 initialMarkersCount: _portalData.length,
                 sublayers: [
                   MapLineLayer(
-                    lines:
-                        List<MapLine>.generate(_linkData.length, (int index) {
+                    lines: List<MapLine>.generate(links.length, (int index) {
                       return MapLine(
-                        from: _linkData[index].from,
-                        to: _linkData[index].to,
+                        //from: _linkData[index].from,
+                        from: MapLatLng(
+                            links[index].from.lat, links[index].from.long),
+                        to: MapLatLng(
+                            links[index].to.lat, links[index].to.long),
                         color: Colors.white,
                         width: 5,
                       );
@@ -340,13 +343,6 @@ class MarkerModel {
   final double latitude;
   final double longitude;
   Color color;
-}
-
-class LineModel {
-  LineModel(this.from, this.to);
-
-  final MapLatLng from;
-  final MapLatLng to;
 }
 
 Uint8List updateJSONTemplate(List<MarkerModel> markers) {

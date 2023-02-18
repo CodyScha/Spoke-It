@@ -1,6 +1,6 @@
 import 'package:spoke_it_flutter_app/source/portals.dart';
 
-class spoke {
+class Spoke {
   List<Link> algorithm(List<Portal> portals) {
     List<Link> links = [];
 

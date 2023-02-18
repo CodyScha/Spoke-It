@@ -4,10 +4,11 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:spoke_it_flutter_app/pages/Output/OutputScreen.dart';
-import '../../source/portals.dart';
-import '../DisplayPortals/DisplayPortal.dart';
 import 'package:syncfusion_flutter_maps/maps.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
+
+import '../../source/portals.dart';
+import '../DisplayPortals/DisplayPortal.dart';
 
 class Preview extends StatelessWidget {
   const Preview({super.key, required this.portals});
