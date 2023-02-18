@@ -69,10 +69,15 @@ class _MyHomePageState extends State<MyHomePage> {
     }
 
     void pickFile() async {
+      // print(Directory.current);
+      Directory projectDir = Directory.current;
+
       FilePickerResult? result = await FilePicker.platform.pickFiles(
         type: FileType.custom,
         allowedExtensions: ['txt'],
       );
+
+      // print(Directory.current);
 
       if (result != null) {
         File file = File(result.files.first.path.toString());
@@ -80,6 +85,9 @@ class _MyHomePageState extends State<MyHomePage> {
       } else {
         // User canceled the picker
       }
+
+      Directory.current = projectDir;
+      // print(Directory.current);
     }
 
     loadFile() async {
@@ -96,7 +104,6 @@ class _MyHomePageState extends State<MyHomePage> {
       );
 
       if (path != null) {
-        print(path);
         File file = File(path);
         file.readAsLines().then(processLines);
       } else {
@@ -178,13 +185,6 @@ class _MyHomePageState extends State<MyHomePage> {
             ],
           ),
         ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        backgroundColor: Colors.blue[900], //main color
-        hoverColor: Colors.green[700], //changes to color when hovered over
-        //elevation: 12 position in zaxis , further from page
-        child: const Icon(Icons.add),
       ),
 
       //adjusts location //https://api.flutter.dev/flutter/material/FloatingActionButtonLocation-class.html

@@ -8,16 +8,17 @@ import '../../source/portals.dart';
 import '../DisplayPortals/DisplayPortal.dart';
 import 'package:syncfusion_flutter_maps/maps.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
+import '../../source/portals.dart';
 
 class Preview extends StatelessWidget {
   const Preview({super.key, required this.portals});
+
   final List<Portal> portals;
 
   @override
   Widget build(BuildContext context) {
     String dir = Directory.current.toString();
-    return MaterialApp(
-        title: 'Spoke-It', //web name
+    return MaterialApp(//web name
         theme: ThemeData(
           // This is the theme of your application.
 
@@ -37,10 +38,14 @@ class myPreview extends StatefulWidget {
   //final File file;
 
   @override
-  State<myPreview> createState() => _myPreview();
+  State<myPreview> createState() => _myPreview(portals: portals);
 }
 
 class _myPreview extends State<myPreview> {
+  _myPreview({required this.portals});
+
+  final List<Portal> portals;
+
   List<Portal> getPortalList() {
     List<Portal> portalList =
         widget.portals; //widget.portals is getting from parent stateful widget
@@ -50,17 +55,24 @@ class _myPreview extends State<myPreview> {
   late String test;
   late String test2;
   late MapZoomPanBehavior _zoomPanBehavior;
-  late List<MarkerModel> _portalData;
+  //late List<MarkerModel> _portalData;
+  late List<Portal> _portalData;
   late List<LineModel> _linkData;
   late MapShapeLayerController _controller;
+  late MapShapeSource _mapSource;
+  late int indexPressed;
 
   void initState() {
     test = 'Center'; // ! Delete l8r
     test2 = 'Generate';
 
     _zoomPanBehavior = MapZoomPanBehavior(
-        enableDoubleTapZooming: true, enableMouseWheelZooming: true);
+        enableDoubleTapZooming: true, enableMouseWheelZooming: true,
+        enablePinching: true);
 
+    _portalData = portals;
+
+/*
     _portalData = <MarkerModel>[
       MarkerModel('SIUE Art Display', 38.792283, -89.998616, Colors.cyan),
       MarkerModel('Dunham Hall Theatre', 38.793336, -89.998426, Colors.cyan),
@@ -71,6 +83,7 @@ class _myPreview extends State<myPreview> {
       MarkerModel('SIUE "The Rock"', 38.793189, -89.997956, Colors.cyan),
       MarkerModel('Peck Hall', 38.793463, -89.996867, Colors.cyan)
     ];
+    */
 
     _linkData = <LineModel>[
       LineModel(
@@ -80,6 +93,7 @@ class _myPreview extends State<myPreview> {
     ];
 
     _controller = MapShapeLayerController();
+    _mapSource = MapShapeSource.memory(updateJSONTemplate(_portalData));
   }
 
   @override
@@ -201,45 +215,89 @@ class _myPreview extends State<myPreview> {
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(1.0),
-            child: SfMaps(layers: <MapLayer>[
-              MapShapeLayer(
-                source: MapShapeSource.asset('assets/siue2.json',
-                    shapeDataField: 'name_en'),
-                initialMarkersCount: _portalData.length,
-                sublayers: [
-                  MapLineLayer(
-                    lines:
-                        List<MapLine>.generate(_linkData.length, (int index) {
-                      return MapLine(
-                        from: _linkData[index].from,
-                        to: _linkData[index].to,
-                        color: Colors.white,
-                        width: 5,
-                      );
-                    }).toSet(),
+          Container(
+            width: MediaQuery.of(context).size.width - 220,
+            color: Color.fromRGBO(46, 46, 46, 1),
+            child: Padding(
+              padding: const EdgeInsets.all(1.0),
+              child: SfMapsTheme(
+                data: SfMapsThemeData(
+                    shapeHoverColor: Color.fromRGBO(46, 46, 46, 1),
+                    layerColor: Color.fromRGBO(46, 46, 46, 1),
+                    layerStrokeWidth: 0
+                    // brightness: Brightness.dark
+                    ),
+                child: SfMaps(layers: <MapLayer>[
+                  MapShapeLayer(
+                    source: _mapSource,
+                    zoomPanBehavior: _zoomPanBehavior,
+                    initialMarkersCount: _portalData.length,
+                    // sublayers: [
+
+                    //   MapLineLayer(
+                    //     lines:
+                    //         List<MapLine>.generate(_linkData.length, (int index) {
+                    //       return MapLine(
+                    //         from: _linkData[index].from,
+                    //         to: _linkData[index].to,
+                    //         color: Colors.white,
+                    //         width: 5,
+                    //       );
+                    //     }).toSet(),
+
+                    //   )
+                    // ],
+                    markerBuilder: (BuildContext context, int index) {
+                      return MapMarker(
+                          latitude: _portalData[index].lat,
+                          longitude: _portalData[index].long,
+                          child: Stack(alignment: Alignment.center, children: [
+                            MouseRegion(
+                              cursor: SystemMouseCursors.click,
+                              child: GestureDetector(
+                                onTap: () {
+                                  print(
+                                      'Pressed the $index: ${_portalData[index].name} Portal.');
+                                  indexPressed = index;
+                                },
+                                child: Container(
+                                  height: 20,
+                                  width: 20,
+                                  decoration: BoxDecoration(
+                                      color: Colors.red,
+                                      shape: BoxShape.circle),
+                                ),
+                              ),
+                            ),
+                            IgnorePointer(
+                              child: SizedBox(
+                                width: 125,
+                                child: Padding(
+                                    padding: const EdgeInsets.only(top: 45),
+                                    child: Text(
+                                      _portalData[index].name,
+                                      // softWrap: true,
+                                      overflow: TextOverflow.ellipsis,
+                                      textAlign: TextAlign.center,
+                                      maxLines: 2,
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 11),
+                                    )),
+                              ),
+                            )
+                          ]));
+                    },
+                    controller: _controller,
+                    // markerTooltipBuilder: (BuildContext context, index) {
+                    //   return Container(
+                    //     width: 150,
+                    //     child: Text(_portalData[index].name),
+                    //   );
+                    // },
                   )
-                ],
-                markerBuilder: (BuildContext context, int index) {
-                  return MapMarker(
-                      latitude: _portalData[index].latitude,
-                      longitude: _portalData[index].longitude,
-                      child: Container(
-                        height: 25,
-                        width: 25,
-                        color: Colors.red,
-                      ));
-                },
-                controller: _controller,
-                markerTooltipBuilder: (BuildContext context, index) {
-                  return Container(
-                    width: 150,
-                    child: Text(_portalData[index].name),
-                  );
-                },
-              )
-            ]),
+                ]),
+              ),
+            ),
           ),
         ],
       ),
@@ -263,8 +321,8 @@ class LineModel {
   final MapLatLng to;
 }
 
-Uint8List updateJSONTemplate(List<MarkerModel> markers) {
-  double buffer = 0.00005;
+Uint8List updateJSONTemplate(List<Portal> markers) {
+  double buffer = 0.0001;
   String aggregiousTabs = '\t\t\t\t\t\t\t';
 
   List<int> coordLatLines = [14, 18, 22, 26, 30];
@@ -272,14 +330,21 @@ Uint8List updateJSONTemplate(List<MarkerModel> markers) {
 
   // * First, need to get the JSON from the assets folder
   var assetFileStr = File('assets/siue2.json').readAsStringSync();
+  // var assetFileStr = '';
+  // rootBundle.loadString('assets/siue2.json');
 
   // * Save a copy of the file in a new dir
-  Directory('map').create();
+  if (!Directory('map').existsSync()) {
+    var mapdir = Directory('map').create();
+  }
   File newFile = File('map/map.json');
+  print('testingtesting');
+  print('this is a test $assetFileStr');
   newFile.writeAsStringSync(assetFileStr);
 
   // * Now, we need to change the coords in the new file
   List<String> newFileLines = newFile.readAsLinesSync();
+  // print(newFileLines.length);
 
   // * First, find the extremes for latitude and longitude.
   double maxLat = -91.0;
@@ -290,12 +355,12 @@ Uint8List updateJSONTemplate(List<MarkerModel> markers) {
   // * Iterate through the markers to find the extremes
   for (var m in markers) {
     // * Latitude
-    maxLat = max(m.latitude, maxLat);
-    minLat = min(m.latitude, minLat);
+    maxLat = max(m.lat, maxLat);
+    minLat = min(m.lat, minLat);
 
     // * Longitude
-    maxLong = max(m.longitude, maxLong);
-    minLong = min(m.longitude, minLong);
+    maxLong = max(m.long, maxLong);
+    minLong = min(m.long, minLong);
   }
 
   // * Print the results
@@ -307,8 +372,8 @@ Uint8List updateJSONTemplate(List<MarkerModel> markers) {
   // * Now, change the newFile lines to the max and mins
   String minLatStr = aggregiousTabs + (minLat - buffer).toString();
   String maxLatStr = aggregiousTabs + (maxLat + buffer).toString();
-  String minLongStr = aggregiousTabs + (minLong - buffer).toString() + ',';
-  String maxLongStr = aggregiousTabs + (maxLong + buffer).toString() + ',';
+  String minLongStr = '$aggregiousTabs${minLong - buffer},';
+  String maxLongStr = '$aggregiousTabs${maxLong + buffer},';
 
   newFileLines[12] = minLongStr;
   newFileLines[13] = minLatStr;
