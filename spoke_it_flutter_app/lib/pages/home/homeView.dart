@@ -69,10 +69,15 @@ class _MyHomePageState extends State<MyHomePage> {
     }
 
     void pickFile() async {
+      // print(Directory.current);
+      Directory projectDir = Directory.current;
+
       FilePickerResult? result = await FilePicker.platform.pickFiles(
         type: FileType.custom,
         allowedExtensions: ['txt'],
       );
+
+      // print(Directory.current);
 
       if (result != null) {
         File file = File(result.files.first.path.toString());
@@ -80,6 +85,9 @@ class _MyHomePageState extends State<MyHomePage> {
       } else {
         // User canceled the picker
       }
+
+      Directory.current = projectDir;
+      // print(Directory.current);
     }
 
     loadFile() async {
