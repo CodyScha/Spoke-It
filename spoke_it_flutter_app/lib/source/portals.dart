@@ -15,14 +15,27 @@ class Portal {
   String team;
   int health;
   bool shown;
-  //bool center
+  bool hull = false;
+  bool center = false;
 
-  Portal({
-    required this.name,
-    required this.lat,
-    required this.long,
-    required this.team,
-    required this.health,
-    required this.shown});
+  Portal(
+      {required this.name,
+      required this.lat,
+      required this.long,
+      required this.team,
+      required this.health,
+      required this.shown});
+}
 
+class Link {
+  Portal to;
+  Portal from;
+  bool isCenterLink;
+  bool isHullLink;
+
+  Link(
+      {required this.to,
+      required this.from,
+      required this.isCenterLink,
+      required this.isHullLink});
 }
