@@ -40,7 +40,6 @@ class Spoke {
           }
         }
       }
-      break;
     }
     return links;
   }

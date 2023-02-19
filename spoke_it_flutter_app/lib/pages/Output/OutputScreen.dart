@@ -62,7 +62,8 @@ class _myOutputState extends State<myOutput> {
     List<Portal> portals = widget.portals;
 
     _zoomPanBehavior = MapZoomPanBehavior(
-        enableDoubleTapZooming: true, enableMouseWheelZooming: true, 
+        enableDoubleTapZooming: true,
+        enableMouseWheelZooming: true,
         enablePinching: true);
 
     _portalData = portals;
@@ -79,8 +80,6 @@ class _myOutputState extends State<myOutput> {
     // ];
 
     Spoke alg = new Spoke();
-    portals[3].center = true; //for testing PLEASE REMOVE!
-    portals[3].hull = false; //for testing PLEASE REMOVE!
     links = alg.algorithm(portals);
 
     _controller = MapShapeLayerController();
@@ -312,20 +311,18 @@ class _myOutputState extends State<myOutput> {
                     zoomPanBehavior: _zoomPanBehavior,
                     initialMarkersCount: _portalData.length,
                     sublayers: [
-
                       MapLineLayer(
                         lines:
                             List<MapLine>.generate(links.length, (int index) {
                           return MapLine(
                             from: MapLatLng(
-                              links[index].from.lat, links[index].from.long),
+                                links[index].from.lat, links[index].from.long),
                             to: MapLatLng(
-                              links[index].to.lat, links[index].to.long),
+                                links[index].to.lat, links[index].to.long),
                             color: Colors.white,
                             width: 5,
                           );
                         }).toSet(),
-
                       )
                     ],
                     markerBuilder: (BuildContext context, int index) {
