@@ -158,6 +158,7 @@ class _myDisplayState extends State<myDisplay> {
 
                         setState(() {
                           _portalData[index].color = Colors.blueGrey;
+                          
                           // _vectordata.removeAt(0);
                         });
 

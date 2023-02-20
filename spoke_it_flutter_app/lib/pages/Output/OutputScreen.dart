@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_maps/maps.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
+import 'package:filesystem_picker/filesystem_picker.dart';
 
 import '../DisplayPortals/DisplayPortal.dart';
 import '../Preview/previewPage.dart';
@@ -41,16 +42,69 @@ class myOutput extends StatefulWidget {
 }
 
 class _myOutputState extends State<myOutput> {
-  List<Portal> getPortalList() {
-    List<Portal> portalList =
-        widget.portals; //widget.portals is getting from parent stateful widget
-    return portalList;
+  void deletePortal(Portal portal) {
+    //serach through list to find portal, then delete it from the list
+    String name = portal.name;
+    int portalListlen = _portalData.length;
+    setState(() {
+      _portalData.removeAt(_index);
+    });
+
+    _controller.removeMarkerAt(_index);
+    var temp = List.generate(_controller.markersCount, (i) => i);
+    _controller.updateMarkers(temp);
+  }
+
+  void hidePortal(Portal portal) {
+    //serach through list to find portal, then delete it from the list
+    String name = portal.name;
+    //found portal to hide
+    if (_portalData[_index].shown == false) {
+      //switch between hidden and shown
+      _portalData[_index].shown = true;
+    } else {
+      _portalData[_index].shown = false;
+    }
+  }
+
+  void saveFile() async {
+    String? path = await FilesystemPicker.openDialog(
+      context: context,
+      title: 'Saved Profiles',
+      fsType: FilesystemType.file,
+      rootDirectory: Directory(
+          '../..'), //set to be downloads page(where the txt file will save to automatically)
+      directory: Directory('profiles'),
+      showGoUp: (false),
+      allowedExtensions: ['.txt'],
+      fileTileSelectMode: FileTileSelectMode.wholeTile,
+    );
+
+    if (path != null) {
+      File file = File(path);
+
+      int portalListlen = _portalData.length;
+      for (int i = 0; i < portalListlen; i++) {
+        if (_portalData[i].shown == true) {
+          await file.writeAsString(
+              "${_portalData[i].name};${_portalData[i].lat};${_portalData[i].long};${_portalData[i].team};${_portalData[i].health};+ \n",
+              mode: FileMode.append);
+        } else {
+          await file.writeAsString(
+              "${_portalData[i].name};${_portalData[i].lat};${_portalData[i].long};${_portalData[i].team};${_portalData[i].health}; - \n",
+              mode: FileMode.append);
+        }
+      }
+    } else {
+      // User canceled the picker
+    }
   }
 
   late String test;
   late String test2;
   late MapZoomPanBehavior _zoomPanBehavior;
   late List<Portal> _portalData;
+  late int _index;
   late MapShapeLayerController _controller;
   late List<Link> links;
   late MapShapeSource _mapSource;
@@ -172,6 +226,8 @@ class _myOutputState extends State<myOutput> {
                                 //create a function that when a portal is clicked it will update a Portal variable,
                                 //the hide function will find that portal in the list and update its +/-
                                 ) {
+                              Portal portalSelected = _portalData[_index];
+                              hidePortal(portalSelected);
                               print('pressed da $test button');
                             },
                             child: Text("Hide"),
@@ -201,6 +257,8 @@ class _myOutputState extends State<myOutput> {
                           child: TextButton(
                             onPressed: () {
                               print('pressed da $test2 button');
+                              Portal portalSelected = _portalData[_index];
+                              deletePortal(portalSelected);
                             },
                             child: Text("Delete"), //delete
                             style: TextButton.styleFrom(
@@ -268,12 +326,11 @@ class _myOutputState extends State<myOutput> {
                         Container(
                           child: TextButton(
                             onPressed: () {
-                              List<Portal> portals = getPortalList();
-                              Navigator.push(
+                              Navigator.pop(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        Preview(portals: portals)),
+                                        Preview(portals: _portalData)),
                               );
                               print('pressed da $test2 button');
                             },
@@ -337,6 +394,7 @@ class _myOutputState extends State<myOutput> {
                                   print(
                                       'Pressed the $index: ${_portalData[index].name} Portal.');
                                   indexPressed = index;
+                                  _index = index;
                                 },
                                 child: Container(
                                   height: 20,

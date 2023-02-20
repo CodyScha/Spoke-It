@@ -19,7 +19,8 @@ class Preview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String dir = Directory.current.toString();
-    return MaterialApp(//web name
+    return MaterialApp(
+        //web name
         theme: ThemeData(
           // This is the theme of your application.
 
@@ -47,17 +48,12 @@ class _myPreview extends State<myPreview> {
 
   final List<Portal> portals;
 
-  List<Portal> getPortalList() {
-    List<Portal> portalList =
-        widget.portals; //widget.portals is getting from parent stateful widget
-    return portalList;
-  }
-
   late String test;
   late String test2;
   late MapZoomPanBehavior _zoomPanBehavior;
   //late List<MarkerModel> _portalData;
   late List<Portal> _portalData;
+  late int selectIndex;
   late List<LineModel> _linkData;
   late MapShapeLayerController _controller;
   late MapShapeSource _mapSource;
@@ -68,7 +64,8 @@ class _myPreview extends State<myPreview> {
     test2 = 'Generate';
 
     _zoomPanBehavior = MapZoomPanBehavior(
-        enableDoubleTapZooming: true, enableMouseWheelZooming: true,
+        enableDoubleTapZooming: true,
+        enableMouseWheelZooming: true,
         enablePinching: true);
 
     _portalData = portals;
@@ -192,12 +189,11 @@ class _myPreview extends State<myPreview> {
                           child: TextButton(
                             onPressed: () {
                               print('pressed da $test2 button');
-                              List<Portal> portals = getPortalList();
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        Output(portals: portals)),
+                                        Output(portals: _portalData)),
                               );
                             },
                             child: Text(test2), //generate
