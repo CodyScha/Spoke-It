@@ -81,6 +81,13 @@ class _myOutputState extends State<myOutput> {
 
     Spoke alg = new Spoke();
     links = alg.algorithm(portals);
+    
+    Link testLink;
+
+    for (int i = 0; i < links.length; ++i) {
+      testLink = links[i];
+      print('link: $testLink');
+    }
 
     _controller = MapShapeLayerController();
     _mapSource = MapShapeSource.memory(updateJSONTemplate(_portalData));
