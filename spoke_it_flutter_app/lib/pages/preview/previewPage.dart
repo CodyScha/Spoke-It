@@ -87,6 +87,7 @@ class _myPreview extends State<myPreview> {
 
     hasChosenCenter = false;
     chosenCenterIndex = -1;
+    indexPressed = -1;
 
     _centerPortal = Container(
       height: 20,
@@ -97,7 +98,11 @@ class _myPreview extends State<myPreview> {
     _selectedPortal = Container(
       height: 20,
       width: 20,
-      decoration: BoxDecoration(color: Colors.red[800], shape: BoxShape.circle),
+      decoration: BoxDecoration(
+          color: Colors.red,
+          shape: BoxShape.circle,
+          border: Border.all(
+              color: Color.fromARGB(255, 117, 209, 255), width: 4, style: BorderStyle.solid, strokeAlign: BorderSide.strokeAlignOutside)),
     );
   }
 
@@ -294,6 +299,10 @@ class _myPreview extends State<myPreview> {
                                         'Pressed the $index: ${_portalData[index].name} Portal.');
                                     setState(() {
                                       indexPressed = index;
+
+                                      // Update the markers
+                                      _controller.updateMarkers(List.generate(
+                                          _controller.markersCount, (i) => i));
                                     });
                                   },
                                   child: _centerPortal,
@@ -330,9 +339,53 @@ class _myPreview extends State<myPreview> {
                                         'Pressed the $index: ${_portalData[index].name} Portal.');
                                     setState(() {
                                       indexPressed = index;
+
+                                      // Update the markers
+                                      _controller.updateMarkers(List.generate(
+                                          _controller.markersCount, (i) => i));
                                     });
                                   },
                                   child: _hiddenPortal,
+                                ),
+                              ),
+                              IgnorePointer(
+                                child: SizedBox(
+                                  width: 125,
+                                  child: Padding(
+                                      padding: const EdgeInsets.only(top: 45),
+                                      child: Text(
+                                        _portalData[index].name,
+                                        // softWrap: true,
+                                        overflow: TextOverflow.ellipsis,
+                                        textAlign: TextAlign.center,
+                                        maxLines: 2,
+                                        style: TextStyle(
+                                            color: Colors.white, fontSize: 11),
+                                      )),
+                                ),
+                              )
+                            ]));
+                      } else if (index == indexPressed) {
+                        return MapMarker(
+                            latitude: _portalData[index].lat,
+                            longitude: _portalData[index].long,
+                            child:
+                                Stack(alignment: Alignment.center, children: [
+                              MouseRegion(
+                                cursor: SystemMouseCursors.click,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    print(
+                                        'Pressed the $index: ${_portalData[index].name} Portal.');
+                                    setState(() {
+                                      indexPressed = index;
+
+                                      // Update the markers
+                                      _controller.updateMarkers(List.generate(
+                                          _controller.markersCount, (i) => i));
+                                    });
+                                  },
+                                  child: _selectedPortal,
                                 ),
                               ),
                               IgnorePointer(
@@ -366,6 +419,10 @@ class _myPreview extends State<myPreview> {
                                         'Pressed the $index: ${_portalData[index].name} Portal.');
                                     setState(() {
                                       indexPressed = index;
+
+                                      // Update the markers
+                                      _controller.updateMarkers(List.generate(
+                                          _controller.markersCount, (i) => i));
                                     });
                                   },
                                   child: Container(
