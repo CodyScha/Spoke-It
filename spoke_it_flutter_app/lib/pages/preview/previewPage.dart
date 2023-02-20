@@ -168,7 +168,8 @@ class _myPreview extends State<myPreview> {
                                 chosenCenterIndex = indexPressed;
 
                                 // Update the markers
-                                _controller.updateMarkers(List.generate(_controller.markersCount, (i) => i));
+                                _controller.updateMarkers(List.generate(
+                                    _controller.markersCount, (i) => i));
                               });
 
                               for (var p in _portalData) {
@@ -405,22 +406,6 @@ class _myPreview extends State<myPreview> {
       ),
     );
   }
-}
-
-class MarkerModel {
-  MarkerModel(this.name, this.latitude, this.longitude, this.color);
-
-  final String name;
-  final double latitude;
-  final double longitude;
-  Color color;
-}
-
-class LineModel {
-  LineModel(this.from, this.to);
-
-  final MapLatLng from;
-  final MapLatLng to;
 }
 
 Uint8List updateJSONTemplate(List<Portal> markers) {
