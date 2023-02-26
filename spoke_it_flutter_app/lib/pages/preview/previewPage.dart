@@ -57,7 +57,6 @@ class _myPreview extends State<myPreview> {
   late MapZoomPanBehavior _zoomPanBehavior;
   //late List<MarkerModel> _portalData;
   late List<Portal> _portalData;
-  late List<LineModel> _linkData;
   late MapShapeLayerController _controller;
   late MapShapeSource _mapSource;
   late int indexPressed;
@@ -66,6 +65,8 @@ class _myPreview extends State<myPreview> {
   late Widget _hiddenPortal;
   late Widget _selectedPortal;
   late Widget _centerPortal;
+  late Widget _centerSelectedPortal;
+  late Widget _hiddenSelectedPortal;
 
   void initState() {
     _zoomPanBehavior = MapZoomPanBehavior(
@@ -74,13 +75,6 @@ class _myPreview extends State<myPreview> {
         enablePinching: true);
 
     _portalData = portals;
-
-    _linkData = <LineModel>[
-      LineModel(
-          MapLatLng(38.793988, -89.999159), MapLatLng(38.792097, -89.999033)),
-      LineModel(
-          MapLatLng(38.793547, -89.997771), MapLatLng(38.793463, -89.996867))
-    ];
 
     _controller = MapShapeLayerController();
     _mapSource = MapShapeSource.memory(updateJSONTemplate(_portalData));
@@ -102,7 +96,17 @@ class _myPreview extends State<myPreview> {
           color: Colors.red,
           shape: BoxShape.circle,
           border: Border.all(
-              color: Color.fromARGB(255, 117, 209, 255), width: 4, style: BorderStyle.solid, strokeAlign: BorderSide.strokeAlignOutside)),
+              color: Color.fromARGB(255, 117, 209, 255),
+              width: 4,
+              style: BorderStyle.solid,
+              strokeAlign: BorderSide.strokeAlignOutside)),
+    );
+
+    _hiddenPortal = Container(
+      height: 20,
+      width: 20,
+      decoration:
+          BoxDecoration(color: Colors.grey[700], shape: BoxShape.circle),
     );
   }
 
@@ -135,7 +139,7 @@ class _myPreview extends State<myPreview> {
                         EdgeInsets.symmetric(vertical: 20.0, horizontal: 140.0),
                     //child: Text('Load Data'),
                   ),
-                  Text(
+                  const Text(
                     'Select a center portal',
                     textScaleFactor: 1.4,
                     textAlign: TextAlign.center,
@@ -143,7 +147,7 @@ class _myPreview extends State<myPreview> {
                   Container(
                     color: Colors.grey[300],
                     padding:
-                        EdgeInsets.symmetric(vertical: 25.0, horizontal: 140.0),
+                        EdgeInsets.symmetric(vertical: 10.0, horizontal: 140.0),
                     //child: Text('Load Data'),
                   ),
                   ClipRRect(
@@ -186,9 +190,9 @@ class _myPreview extends State<myPreview> {
                             child: Text("Center"), //Center
                             style: TextButton.styleFrom(
                                 padding: EdgeInsets.symmetric(
-                                    vertical: 0.0, horizontal: 37.0),
+                                    vertical: 0.0, horizontal: 39.0),
                                 foregroundColor: Colors.white,
-                                textStyle: const TextStyle(fontSize: 35),
+                                textStyle: const TextStyle(fontSize: 30),
                                 backgroundColor: Colors.indigo),
                           ),
                         )
@@ -207,20 +211,97 @@ class _myPreview extends State<myPreview> {
                       children: <Widget>[
                         Container(
                           child: TextButton(
-                            onPressed: (
-                                //create a function that when a portal is clicked it will update a Portal variable,
-                                //the hide function will find that portal in the list and update its +/-
-                                ) {
-                              print('User pressed the Hide Button');
+                              onPressed: (
+                                  //create a function that when a portal is clicked it will update a Portal variable,
+                                  //the hide function will find that portal in the list and update its +/-
+                                  ) {
+                                print('User pressed the Hide Button');
+
+                                // Use the index pressed to change that portal's state to hidden.
+                                setState(() {
+                                  _portalData[indexPressed].shown = false;
+                                  print(
+                                      "Portal $indexPressed: ${_portalData[indexPressed].name} is now hidden.");
+
+                                  // Update the markers
+                                  _controller.updateMarkers(List.generate(
+                                      _controller.markersCount, (i) => i));
+
+                                  // Update the indexPressed
+                                  indexPressed = -1;
+                                });
+                              },
+                              child: (indexPressed == -1)
+                                  ? Text("Hide")
+                                  : Text(_portalData[indexPressed].shown
+                                      ? "Hide"
+                                      : "Include"),
+                              style: (indexPressed == -1)
+                                  ? TextButton.styleFrom(
+                                      padding: EdgeInsets.symmetric(
+                                          vertical: 0.0, horizontal: 52.0),
+                                      foregroundColor: Colors.white,
+                                      textStyle: const TextStyle(fontSize: 30),
+                                      backgroundColor:
+                                          Color.fromARGB(255, 99, 96, 102))
+                                  : TextButton.styleFrom(
+                                      padding: _portalData[indexPressed].shown
+                                          ? EdgeInsets.symmetric(
+                                              vertical: 0.0, horizontal: 52.0)
+                                          : EdgeInsets.symmetric(
+                                              vertical: 0.0, horizontal: 34.0),
+                                      foregroundColor: Colors.white,
+                                      textStyle: const TextStyle(fontSize: 30),
+                                      backgroundColor:
+                                          Color.fromARGB(255, 99, 96, 102))),
+                        )
+                      ],
+                    ),
+                  ),
+                  Container(
+                    color: Colors.grey[300],
+                    padding:
+                        EdgeInsets.symmetric(vertical: 10.0, horizontal: 140.0),
+                    //child: Text('Load Data'),
+                  ),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(5),
+                    child: Stack(
+                      children: <Widget>[
+                        Container(
+                          child: TextButton(
+                            onPressed: () {
+                              print('User pressed the Delete button');
+
+                              // First, we remove the selected index from the List.
+                              setState(() {
+                                _portalData.removeAt(indexPressed);
+
+                                // Check if this portal was chosen to be a center portal. If so, update the state to reflect that we no longer have a center portal.
+                                hasChosenCenter = false;
+                                chosenCenterIndex = -1;
+                              });
+
+                              // Then, we need to remove the marker from the Map Widget
+                              _controller.removeMarkerAt(indexPressed);
+
+                              // Also, update the indexPressed. Without this, the rebuild will show the next portal being pressed without actually being pressed by the user.
+                              setState(() {
+                                indexPressed = -1;
+                              });
+
+                              // Lastly, update the marker list and tell the Widget to rebuild.
+                              _controller.updateMarkers(List.generate(
+                                  _controller.markersCount, (i) => i));
                             },
-                            child: Text("Hide"),
+                            child: Text("Delete"), //delete
                             style: TextButton.styleFrom(
                                 padding: EdgeInsets.symmetric(
-                                    vertical: 0.0, horizontal: 52.0),
+                                    vertical: 0.0, horizontal: 40.0),
                                 foregroundColor: Colors.white,
                                 textStyle: const TextStyle(fontSize: 30),
                                 backgroundColor:
-                                    Color.fromARGB(255, 99, 96, 102)),
+                                    Color.fromARGB(255, 163, 6, 6)),
                           ),
                         )
                       ],
