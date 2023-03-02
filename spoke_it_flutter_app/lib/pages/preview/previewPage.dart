@@ -99,7 +99,7 @@ class _myPreview extends State<myPreview> {
               color: Color.fromARGB(255, 117, 209, 255),
               width: 4,
               style: BorderStyle.solid,
-              strokeAlign: BorderSide.strokeAlignOutside)),
+              strokeAlign: StrokeAlign.outside)),
     );
 
     _selectedPortal = Container(
@@ -112,7 +112,7 @@ class _myPreview extends State<myPreview> {
               color: Color.fromARGB(255, 117, 209, 255),
               width: 4,
               style: BorderStyle.solid,
-              strokeAlign: BorderSide.strokeAlignOutside)),
+              strokeAlign: StrokeAlign.outside)),
     );
 
     _hiddenPortal = Container(
@@ -132,7 +132,7 @@ class _myPreview extends State<myPreview> {
               color: Color.fromARGB(255, 117, 209, 255),
               width: 4,
               style: BorderStyle.solid,
-              strokeAlign: BorderSide.strokeAlignOutside)),
+              strokeAlign: StrokeAlign.outside)),
     );
   }
 
