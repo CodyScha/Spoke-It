@@ -347,7 +347,7 @@ class _myPreview extends State<myPreview> {
                               ),
                               IgnorePointer(
                                 child: SizedBox(
-                                  width: 125,
+                                  width: 125, 
                                   child: Padding(
                                       padding: const EdgeInsets.only(top: 45),
                                       child: Text(
