@@ -58,7 +58,7 @@ class _myOutputState extends State<myOutput> {
     _controller.updateMarkers(temp);
   }
 
-  void hidePortal(Portal portal) {
+  void hidePortal() {
     //serach through list to find portal, then delete it from the list
 
     //found portal to hide
@@ -88,7 +88,7 @@ class _myOutputState extends State<myOutput> {
     //FIX clear file first
     if (path != null) {
       File file = File(path);
-
+      file.writeAsStringSync('');
       int portalListlen = _portalData.length;
       for (int i = 0; i < portalListlen; i++) {
         if (_portalData[i].shown == true) {
@@ -122,7 +122,7 @@ class _myOutputState extends State<myOutput> {
     path = Directory.current.path;
     File file = File('$path/$filename');
     //FIX clear file first
-
+    file.writeAsStringSync('');
     int portalListlen = _portalData.length;
     for (int i = 0; i < portalListlen; i++) {
       if (_portalData[i].shown == true) {
@@ -197,7 +197,7 @@ class _myOutputState extends State<myOutput> {
 
     Spoke alg = new Spoke();
     links = alg.algorithm(portals);
-    
+
     Link testLink;
 
     for (int i = 0; i < links.length; ++i) {
@@ -361,9 +361,7 @@ class _myOutputState extends State<myOutput> {
                                 //create a function that when a portal is clicked it will update a Portal variable,
                                 //the hide function will find that portal in the list and update its +/-
                                 ) {
-                              Portal portalSelected = _portalData[_index];
-                              print("${_portalData[_index].name}");
-                              hidePortal(portalSelected);
+                              hidePortal();
                               print('pressed da Hide button'); //remove
                             },
                             child: Text("Hide"),
