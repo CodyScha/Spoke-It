@@ -57,7 +57,6 @@ class _myPreview extends State<myPreview> {
   late MapZoomPanBehavior _zoomPanBehavior;
   //late List<MarkerModel> _portalData;
   late List<Portal> _portalData;
-  late List<LineModel> _linkData;
   late MapShapeLayerController _controller;
   late MapShapeSource _mapSource;
   late int indexPressed;
@@ -66,6 +65,8 @@ class _myPreview extends State<myPreview> {
   late Widget _hiddenPortal;
   late Widget _selectedPortal;
   late Widget _centerPortal;
+  late Widget _centerSelectedPortal;
+  late Widget _hiddenSelectedPortal;
 
   void initState() {
     _zoomPanBehavior = MapZoomPanBehavior(
@@ -74,13 +75,6 @@ class _myPreview extends State<myPreview> {
         enablePinching: true);
 
     _portalData = portals;
-
-    _linkData = <LineModel>[
-      LineModel(
-          MapLatLng(38.793988, -89.999159), MapLatLng(38.792097, -89.999033)),
-      LineModel(
-          MapLatLng(38.793547, -89.997771), MapLatLng(38.793463, -89.996867))
-    ];
 
     _controller = MapShapeLayerController();
     _mapSource = MapShapeSource.memory(updateJSONTemplate(_portalData));
@@ -95,6 +89,19 @@ class _myPreview extends State<myPreview> {
       decoration: BoxDecoration(color: Colors.green, shape: BoxShape.circle),
     );
 
+    _centerSelectedPortal = Container(
+      height: 20,
+      width: 20,
+      decoration: BoxDecoration(
+          color: Colors.green,
+          shape: BoxShape.circle,
+          border: Border.all(
+              color: Color.fromARGB(255, 117, 209, 255),
+              width: 4,
+              style: BorderStyle.solid,
+              strokeAlign: BorderSide.strokeAlignOutside)),
+    );
+
     _selectedPortal = Container(
       height: 20,
       width: 20,
@@ -102,7 +109,30 @@ class _myPreview extends State<myPreview> {
           color: Colors.red,
           shape: BoxShape.circle,
           border: Border.all(
-              color: Color.fromARGB(255, 117, 209, 255), width: 4, style: BorderStyle.solid, strokeAlign: BorderSide.strokeAlignOutside)),
+              color: Color.fromARGB(255, 117, 209, 255),
+              width: 4,
+              style: BorderStyle.solid,
+              strokeAlign: BorderSide.strokeAlignOutside)),
+    );
+
+    _hiddenPortal = Container(
+      height: 20,
+      width: 20,
+      decoration:
+          BoxDecoration(color: Colors.grey[700], shape: BoxShape.circle),
+    );
+
+    _hiddenSelectedPortal = Container(
+      height: 20,
+      width: 20,
+      decoration: BoxDecoration(
+          color: Colors.grey[700],
+          shape: BoxShape.circle,
+          border: Border.all(
+              color: Color.fromARGB(255, 117, 209, 255),
+              width: 4,
+              style: BorderStyle.solid,
+              strokeAlign: BorderSide.strokeAlignOutside)),
     );
   }
 
@@ -135,7 +165,7 @@ class _myPreview extends State<myPreview> {
                         EdgeInsets.symmetric(vertical: 20.0, horizontal: 140.0),
                     //child: Text('Load Data'),
                   ),
-                  Text(
+                  const Text(
                     'Select a center portal',
                     textScaleFactor: 1.4,
                     textAlign: TextAlign.center,
@@ -143,7 +173,7 @@ class _myPreview extends State<myPreview> {
                   Container(
                     color: Colors.grey[300],
                     padding:
-                        EdgeInsets.symmetric(vertical: 25.0, horizontal: 140.0),
+                        EdgeInsets.symmetric(vertical: 10.0, horizontal: 140.0),
                     //child: Text('Load Data'),
                   ),
                   ClipRRect(
@@ -169,6 +199,8 @@ class _myPreview extends State<myPreview> {
 
                                 // Update the new center.
                                 _portalData[indexPressed].center = true;
+                                // If the portal was hidden, then it should be shown again.
+                                _portalData[indexPressed].shown = true;
                                 hasChosenCenter = true;
                                 chosenCenterIndex = indexPressed;
 
@@ -186,9 +218,9 @@ class _myPreview extends State<myPreview> {
                             child: Text("Center"), //Center
                             style: TextButton.styleFrom(
                                 padding: EdgeInsets.symmetric(
-                                    vertical: 0.0, horizontal: 37.0),
+                                    vertical: 0.0, horizontal: 39.0),
                                 foregroundColor: Colors.white,
-                                textStyle: const TextStyle(fontSize: 35),
+                                textStyle: const TextStyle(fontSize: 30),
                                 backgroundColor: Colors.indigo),
                           ),
                         )
@@ -207,20 +239,113 @@ class _myPreview extends State<myPreview> {
                       children: <Widget>[
                         Container(
                           child: TextButton(
-                            onPressed: (
-                                //create a function that when a portal is clicked it will update a Portal variable,
-                                //the hide function will find that portal in the list and update its +/-
-                                ) {
-                              print('User pressed the Hide Button');
+                              onPressed: (
+                                  //create a function that when a portal is clicked it will update a Portal variable,
+                                  //the hide function will find that portal in the list and update its +/-
+                                  ) {
+                                print('User pressed the Hide/Include Button');
+
+                                // Use the index pressed to change that portal's state to hidden.
+                                setState(() {
+                                  // Portal is to be hidden
+                                  if (_portalData[indexPressed].shown) {
+                                    // Need to make sure if the portal was the center to maintain state.
+                                    if (_portalData[indexPressed].center) {
+                                      _portalData[indexPressed].center = false;
+                                      hasChosenCenter = false;
+                                      chosenCenterIndex = -1;
+                                    }
+                                    _portalData[indexPressed].shown = false;
+
+                                    print(
+                                        "Portal $indexPressed: ${_portalData[indexPressed].name} is now hidden.");
+                                  }
+                                  // Portal is to be re-included
+                                  else {
+                                    _portalData[indexPressed].shown = true;
+
+                                    print(
+                                        "Portal $indexPressed: ${_portalData[indexPressed].name} is now included.");
+                                  }
+
+                                  // Update the markers
+                                  _controller.updateMarkers(List.generate(
+                                      _controller.markersCount, (i) => i));
+
+                                  // Update the indexPressed
+                                  // indexPressed = -1;
+                                });
+                              },
+                              style: (indexPressed == -1)
+                                  ? TextButton.styleFrom(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 0.0, horizontal: 52.0),
+                                      foregroundColor: Colors.white,
+                                      textStyle: const TextStyle(fontSize: 30),
+                                      backgroundColor:
+                                          Color.fromARGB(255, 99, 96, 102))
+                                  : TextButton.styleFrom(
+                                      padding: _portalData[indexPressed].shown
+                                          ? const EdgeInsets.symmetric(
+                                              vertical: 0.0, horizontal: 52.0)
+                                          : const EdgeInsets.symmetric(
+                                              vertical: 0.0, horizontal: 34.0),
+                                      foregroundColor: Colors.white,
+                                      textStyle: const TextStyle(fontSize: 30),
+                                      backgroundColor: const Color.fromARGB(
+                                          255, 99, 96, 102)),
+                              child: (indexPressed == -1)
+                                  ? Text("Hide")
+                                  : Text(_portalData[indexPressed].shown
+                                      ? "Hide"
+                                      : "Include")),
+                        )
+                      ],
+                    ),
+                  ),
+                  Container(
+                    color: Colors.grey[300],
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10.0, horizontal: 140.0),
+                    //child: Text('Load Data'),
+                  ),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(5),
+                    child: Stack(
+                      children: <Widget>[
+                        Container(
+                          child: TextButton(
+                            onPressed: () {
+                              print('User pressed the Delete button');
+
+                              setState(() {
+                                // Check if this portal was chosen to be a center portal. If so, update the state to reflect that we no longer have a center portal.
+                                if (_portalData[indexPressed].center) {
+                                  hasChosenCenter = false;
+                                  chosenCenterIndex = -1;
+                                }
+
+                                // Remove the portal from the Portal List object.
+                                _portalData.removeAt(indexPressed);
+                                // Then, we need to remove the marker from the Map Widget
+                                _controller.removeMarkerAt(indexPressed);
+
+                                // Also, update the indexPressed. Without this, the rebuild will show the next portal being pressed without actually being pressed by the user.
+                                indexPressed = -1;
+                              });
+
+                              // Lastly, update the marker list and tell the Widget to rebuild.
+                              _controller.updateMarkers(List.generate(
+                                  _controller.markersCount, (i) => i));
                             },
-                            child: Text("Hide"),
+                            child: Text("Delete"), //delete
                             style: TextButton.styleFrom(
                                 padding: EdgeInsets.symmetric(
-                                    vertical: 0.0, horizontal: 52.0),
+                                    vertical: 0.0, horizontal: 40.0),
                                 foregroundColor: Colors.white,
                                 textStyle: const TextStyle(fontSize: 30),
                                 backgroundColor:
-                                    Color.fromARGB(255, 99, 96, 102)),
+                                    Color.fromARGB(255, 163, 6, 6)),
                           ),
                         )
                       ],
@@ -285,172 +410,281 @@ class _myPreview extends State<myPreview> {
                     zoomPanBehavior: _zoomPanBehavior,
                     initialMarkersCount: _portalData.length,
                     markerBuilder: (BuildContext context, int index) {
-                      if (index == chosenCenterIndex) {
-                        return MapMarker(
-                            latitude: _portalData[index].lat,
-                            longitude: _portalData[index].long,
-                            child:
-                                Stack(alignment: Alignment.center, children: [
-                              MouseRegion(
-                                cursor: SystemMouseCursors.click,
-                                child: GestureDetector(
-                                  onTap: () {
-                                    print(
-                                        'Pressed the $index: ${_portalData[index].name} Portal.');
-                                    setState(() {
-                                      indexPressed = index;
+                      // Marker is the currently selected one.
+                      if (index == indexPressed) {
+                        // Marker is the center and selected
+                        if (index == chosenCenterIndex) {
+                          return MapMarker(
+                              latitude: _portalData[index].lat,
+                              longitude: _portalData[index].long,
+                              child:
+                                  Stack(alignment: Alignment.center, children: [
+                                MouseRegion(
+                                  cursor: SystemMouseCursors.click,
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      print(
+                                          'Pressed the $index: ${_portalData[index].name} Portal.');
+                                      setState(() {
+                                        indexPressed = index;
 
-                                      // Update the markers
-                                      _controller.updateMarkers(List.generate(
-                                          _controller.markersCount, (i) => i));
-                                    });
-                                  },
-                                  child: _centerPortal,
-                                ),
-                              ),
-                              IgnorePointer(
-                                child: SizedBox(
-                                  width: 125,
-                                  child: Padding(
-                                      padding: const EdgeInsets.only(top: 45),
-                                      child: Text(
-                                        _portalData[index].name,
-                                        // softWrap: true,
-                                        overflow: TextOverflow.ellipsis,
-                                        textAlign: TextAlign.center,
-                                        maxLines: 2,
-                                        style: TextStyle(
-                                            color: Colors.white, fontSize: 11),
-                                      )),
-                                ),
-                              )
-                            ]));
-                      } else if (!_portalData[index].shown) {
-                        return MapMarker(
-                            latitude: _portalData[index].lat,
-                            longitude: _portalData[index].long,
-                            child:
-                                Stack(alignment: Alignment.center, children: [
-                              MouseRegion(
-                                cursor: SystemMouseCursors.click,
-                                child: GestureDetector(
-                                  onTap: () {
-                                    print(
-                                        'Pressed the $index: ${_portalData[index].name} Portal.');
-                                    setState(() {
-                                      indexPressed = index;
-
-                                      // Update the markers
-                                      _controller.updateMarkers(List.generate(
-                                          _controller.markersCount, (i) => i));
-                                    });
-                                  },
-                                  child: _hiddenPortal,
-                                ),
-                              ),
-                              IgnorePointer(
-                                child: SizedBox(
-                                  width: 125,
-                                  child: Padding(
-                                      padding: const EdgeInsets.only(top: 45),
-                                      child: Text(
-                                        _portalData[index].name,
-                                        // softWrap: true,
-                                        overflow: TextOverflow.ellipsis,
-                                        textAlign: TextAlign.center,
-                                        maxLines: 2,
-                                        style: TextStyle(
-                                            color: Colors.white, fontSize: 11),
-                                      )),
-                                ),
-                              )
-                            ]));
-                      } else if (index == indexPressed) {
-                        return MapMarker(
-                            latitude: _portalData[index].lat,
-                            longitude: _portalData[index].long,
-                            child:
-                                Stack(alignment: Alignment.center, children: [
-                              MouseRegion(
-                                cursor: SystemMouseCursors.click,
-                                child: GestureDetector(
-                                  onTap: () {
-                                    print(
-                                        'Pressed the $index: ${_portalData[index].name} Portal.');
-                                    setState(() {
-                                      indexPressed = index;
-
-                                      // Update the markers
-                                      _controller.updateMarkers(List.generate(
-                                          _controller.markersCount, (i) => i));
-                                    });
-                                  },
-                                  child: _selectedPortal,
-                                ),
-                              ),
-                              IgnorePointer(
-                                child: SizedBox(
-                                  width: 125,
-                                  child: Padding(
-                                      padding: const EdgeInsets.only(top: 45),
-                                      child: Text(
-                                        _portalData[index].name,
-                                        // softWrap: true,
-                                        overflow: TextOverflow.ellipsis,
-                                        textAlign: TextAlign.center,
-                                        maxLines: 2,
-                                        style: TextStyle(
-                                            color: Colors.white, fontSize: 11),
-                                      )),
-                                ),
-                              )
-                            ]));
-                      } else {
-                        return MapMarker(
-                            latitude: _portalData[index].lat,
-                            longitude: _portalData[index].long,
-                            child:
-                                Stack(alignment: Alignment.center, children: [
-                              MouseRegion(
-                                cursor: SystemMouseCursors.click,
-                                child: GestureDetector(
-                                  onTap: () {
-                                    print(
-                                        'Pressed the $index: ${_portalData[index].name} Portal.');
-                                    setState(() {
-                                      indexPressed = index;
-
-                                      // Update the markers
-                                      _controller.updateMarkers(List.generate(
-                                          _controller.markersCount, (i) => i));
-                                    });
-                                  },
-                                  child: Container(
-                                    height: 20,
-                                    width: 20,
-                                    decoration: BoxDecoration(
-                                        color: Colors.red,
-                                        shape: BoxShape.circle),
+                                        // Update the markers
+                                        _controller.updateMarkers(List.generate(
+                                            _controller.markersCount,
+                                            (i) => i));
+                                      });
+                                    },
+                                    child: _centerSelectedPortal,
                                   ),
                                 ),
-                              ),
-                              IgnorePointer(
-                                child: SizedBox(
-                                  width: 125,
-                                  child: Padding(
-                                      padding: const EdgeInsets.only(top: 45),
-                                      child: Text(
-                                        _portalData[index].name,
-                                        // softWrap: true,
-                                        overflow: TextOverflow.ellipsis,
-                                        textAlign: TextAlign.center,
-                                        maxLines: 2,
-                                        style: TextStyle(
-                                            color: Colors.white, fontSize: 11),
-                                      )),
+                                IgnorePointer(
+                                  child: SizedBox(
+                                    width: 125,
+                                    child: Padding(
+                                        padding: const EdgeInsets.only(top: 45),
+                                        child: Text(
+                                          _portalData[index].name,
+                                          // softWrap: true,
+                                          overflow: TextOverflow.ellipsis,
+                                          textAlign: TextAlign.center,
+                                          maxLines: 2,
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 11),
+                                        )),
+                                  ),
+                                )
+                              ]));
+                        }
+                        // Marker is hidden and selected
+                        else if (!_portalData[index].shown) {
+                          return MapMarker(
+                              latitude: _portalData[index].lat,
+                              longitude: _portalData[index].long,
+                              child:
+                                  Stack(alignment: Alignment.center, children: [
+                                MouseRegion(
+                                  cursor: SystemMouseCursors.click,
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      print(
+                                          'Pressed the $index: ${_portalData[index].name} Portal.');
+                                      setState(() {
+                                        indexPressed = index;
+
+                                        // Update the markers
+                                        _controller.updateMarkers(List.generate(
+                                            _controller.markersCount,
+                                            (i) => i));
+                                      });
+                                    },
+                                    child: _hiddenSelectedPortal,
+                                  ),
                                 ),
-                              )
-                            ]));
+                                IgnorePointer(
+                                  child: SizedBox(
+                                    width: 125,
+                                    child: Padding(
+                                        padding: const EdgeInsets.only(top: 45),
+                                        child: Text(
+                                          _portalData[index].name,
+                                          // softWrap: true,
+                                          overflow: TextOverflow.ellipsis,
+                                          textAlign: TextAlign.center,
+                                          maxLines: 2,
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 11),
+                                        )),
+                                  ),
+                                )
+                              ]));
+                        }
+                        // Regular marker and selected
+                        else {
+                          return MapMarker(
+                              latitude: _portalData[index].lat,
+                              longitude: _portalData[index].long,
+                              child:
+                                  Stack(alignment: Alignment.center, children: [
+                                MouseRegion(
+                                  cursor: SystemMouseCursors.click,
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      print(
+                                          'Pressed the $index: ${_portalData[index].name} Portal.');
+                                      setState(() {
+                                        indexPressed = index;
+
+                                        // Update the markers
+                                        _controller.updateMarkers(List.generate(
+                                            _controller.markersCount,
+                                            (i) => i));
+                                      });
+                                    },
+                                    child: _selectedPortal,
+                                  ),
+                                ),
+                                IgnorePointer(
+                                  child: SizedBox(
+                                    width: 125,
+                                    child: Padding(
+                                        padding: const EdgeInsets.only(top: 45),
+                                        child: Text(
+                                          _portalData[index].name,
+                                          // softWrap: true,
+                                          overflow: TextOverflow.ellipsis,
+                                          textAlign: TextAlign.center,
+                                          maxLines: 2,
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 11),
+                                        )),
+                                  ),
+                                )
+                              ]));
+                        }
+                      }
+                      // Marker is not currently selected
+                      else {
+                        // Marker is the center
+                        if (index == chosenCenterIndex) {
+                          return MapMarker(
+                              latitude: _portalData[index].lat,
+                              longitude: _portalData[index].long,
+                              child:
+                                  Stack(alignment: Alignment.center, children: [
+                                MouseRegion(
+                                  cursor: SystemMouseCursors.click,
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      print(
+                                          'Pressed the $index: ${_portalData[index].name} Portal.');
+                                      setState(() {
+                                        indexPressed = index;
+
+                                        // Update the markers
+                                        _controller.updateMarkers(List.generate(
+                                            _controller.markersCount,
+                                            (i) => i));
+                                      });
+                                    },
+                                    child: _centerPortal,
+                                  ),
+                                ),
+                                IgnorePointer(
+                                  child: SizedBox(
+                                    width: 125,
+                                    child: Padding(
+                                        padding: const EdgeInsets.only(top: 45),
+                                        child: Text(
+                                          _portalData[index].name,
+                                          // softWrap: true,
+                                          overflow: TextOverflow.ellipsis,
+                                          textAlign: TextAlign.center,
+                                          maxLines: 2,
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 11),
+                                        )),
+                                  ),
+                                )
+                              ]));
+                        }
+                        // Marker is hidden
+                        else if (!_portalData[index].shown) {
+                          return MapMarker(
+                              latitude: _portalData[index].lat,
+                              longitude: _portalData[index].long,
+                              child:
+                                  Stack(alignment: Alignment.center, children: [
+                                MouseRegion(
+                                  cursor: SystemMouseCursors.click,
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      print(
+                                          'Pressed the $index: ${_portalData[index].name} Portal.');
+                                      setState(() {
+                                        indexPressed = index;
+
+                                        // Update the markers
+                                        _controller.updateMarkers(List.generate(
+                                            _controller.markersCount,
+                                            (i) => i));
+                                      });
+                                    },
+                                    child: _hiddenPortal,
+                                  ),
+                                ),
+                                IgnorePointer(
+                                  child: SizedBox(
+                                    width: 125,
+                                    child: Padding(
+                                        padding: const EdgeInsets.only(top: 45),
+                                        child: Text(
+                                          _portalData[index].name,
+                                          // softWrap: true,
+                                          overflow: TextOverflow.ellipsis,
+                                          textAlign: TextAlign.center,
+                                          maxLines: 2,
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 11),
+                                        )),
+                                  ),
+                                )
+                              ]));
+                        }
+                        // Regular marker
+                        else {
+                          return MapMarker(
+                              latitude: _portalData[index].lat,
+                              longitude: _portalData[index].long,
+                              child:
+                                  Stack(alignment: Alignment.center, children: [
+                                MouseRegion(
+                                  cursor: SystemMouseCursors.click,
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      print(
+                                          'Pressed the $index: ${_portalData[index].name} Portal.');
+                                      setState(() {
+                                        indexPressed = index;
+
+                                        // Update the markers
+                                        _controller.updateMarkers(List.generate(
+                                            _controller.markersCount,
+                                            (i) => i));
+                                      });
+                                    },
+                                    child: Container(
+                                      height: 20,
+                                      width: 20,
+                                      decoration: BoxDecoration(
+                                          color: Colors.red,
+                                          shape: BoxShape.circle),
+                                    ),
+                                  ),
+                                ),
+                                IgnorePointer(
+                                  child: SizedBox(
+                                    width: 125,
+                                    child: Padding(
+                                        padding: const EdgeInsets.only(top: 45),
+                                        child: Text(
+                                          _portalData[index].name,
+                                          // softWrap: true,
+                                          overflow: TextOverflow.ellipsis,
+                                          textAlign: TextAlign.center,
+                                          maxLines: 2,
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 11),
+                                        )),
+                                  ),
+                                )
+                              ]));
+                        }
                       }
                     },
                     controller: _controller,
@@ -465,7 +699,7 @@ class _myPreview extends State<myPreview> {
   }
 }
 
-Uint8List updateJSONTemplate(List<Portal> markers) {
+Uint8List updateJSONTemplate(List<Portal> portals) {
   double buffer = 0.0001;
   String aggregiousTabs = '\t\t\t\t\t\t\t';
 
@@ -482,8 +716,8 @@ Uint8List updateJSONTemplate(List<Portal> markers) {
     var mapdir = Directory('map').create();
   }
   File newFile = File('map/map.json');
-  print('testingtesting');
-  print('this is a test $assetFileStr');
+  // print('testingtesting');
+  // print('this is a test $assetFileStr');
   newFile.writeAsStringSync(assetFileStr);
 
   // * Now, we need to change the coords in the new file
@@ -497,7 +731,7 @@ Uint8List updateJSONTemplate(List<Portal> markers) {
   double minLong = 181.0;
 
   // * Iterate through the markers to find the extremes
-  for (var m in markers) {
+  for (var m in portals) {
     // * Latitude
     maxLat = max(m.lat, maxLat);
     minLat = min(m.lat, minLat);
