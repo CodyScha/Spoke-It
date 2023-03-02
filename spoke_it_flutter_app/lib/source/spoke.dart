@@ -10,6 +10,9 @@ class Spoke {
     //connect hull to center
     links.addAll(hullToCenter(portals));
 
+    //connect internal portals to center
+    links.addAll(internalToCenter(portals));
+
     //calculate links of portals inside hull
     links.addAll(internalLinks(portals));
 
@@ -51,8 +54,7 @@ class Spoke {
                 (portals[q].long - portals[i].long);
         if (val > 0) {
           val = 1;
-        }
-        else if (val < 0) {
+        } else if (val < 0) {
           val = 2;
         }
         if (val == 2) q = i;
@@ -92,6 +94,28 @@ class Spoke {
         for (var portal in portals) {
           //if portal is hull, link to center
           if (portal.hull == true) {
+            Link link = new Link(
+                from: portal,
+                to: isCenter,
+                isCenterLink: true,
+                isHullLink: false);
+            links.add(link);
+          }
+        }
+      }
+    }
+    return links;
+  }
+
+  List<Link> internalToCenter(List<Portal> portals) {
+    List<Link> links = [];
+
+    for (var isCenter in portals) {
+      //if portal is the center, find internal portals
+      if (isCenter.center == true) {
+        for (var portal in portals) {
+          //if portal is internal, link to center
+          if (portal.hull == false) {
             Link link = new Link(
                 from: portal,
                 to: isCenter,
