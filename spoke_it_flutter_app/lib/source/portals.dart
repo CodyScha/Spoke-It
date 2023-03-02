@@ -15,7 +15,7 @@ class Portal {
   String team;
   int health;
   bool shown;
-  bool hull = true;
+  bool hull = false;
   bool center = false;
 
   Portal(

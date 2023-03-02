@@ -166,6 +166,7 @@ class _myOutputState extends State<myOutput> {
   late int _index = -1;
   late List<LineModel> _linkData;
   late MapShapeLayerController _controller;
+  late List<Link> links;
   late MapShapeSource _mapSource;
   late int indexPressed;
   late bool hasChosenCenter;
@@ -183,12 +184,26 @@ class _myOutputState extends State<myOutput> {
 
     _portalData = portals;
 
-    _linkData = <LineModel>[
-      LineModel(
-          MapLatLng(38.793988, -89.999159), MapLatLng(38.792097, -89.999033)),
-      LineModel(
-          MapLatLng(38.793547, -89.997771), MapLatLng(38.793463, -89.996867))
-    ];
+    // _portalData = <MarkerModel>[
+    //   MarkerModel('SIUE Art Display', 38.792283, -89.998616, Colors.cyan),
+    //   MarkerModel('Dunham Hall Theatre', 38.793336, -89.998426, Colors.cyan),
+    //   MarkerModel('Science East', 38.793988, -89.999159, Colors.cyan),
+    //   MarkerModel(
+    //       'SIUE Student Art Installation', 38.792097, -89.999033, Colors.cyan),
+    //   MarkerModel('SIUE Lovejoy Library', 38.793547, -89.997771, Colors.cyan),
+    //   MarkerModel('SIUE "The Rock"', 38.793189, -89.997956, Colors.cyan),
+    //   MarkerModel('Peck Hall', 38.793463, -89.996867, Colors.cyan)
+    // ];
+
+    Spoke alg = new Spoke();
+    links = alg.algorithm(portals);
+    
+    Link testLink;
+
+    for (int i = 0; i < links.length; ++i) {
+      testLink = links[i];
+      print('link: $testLink');
+    }
 
     _controller = MapShapeLayerController();
     _mapSource = MapShapeSource.memory(updateJSONTemplate(_portalData));
