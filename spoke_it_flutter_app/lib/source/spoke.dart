@@ -134,4 +134,40 @@ class Spoke {
 
     return links;
   }
+
+  int calculatePoints(int portalCount, int wedgeCount, int linkCount) {
+    int totalPoints = 0,
+        portalPoints = 675,//for getting portal
+        resPoints = 125,//deploying a resonator
+        eightResPoints = 250,//deploying the last Resinator
+        modPoints = 125,//deploying a mod
+        linkPoints = 313,//creating a link
+        fieldPoints = 1250;//creating a field
+
+    //calculate Portal Points
+    totalPoints += (portalCount * portalPoints) +
+        (portalCount*resPoints*8)+
+        (portalCount * eightResPoints) +
+        (portalCount * 2 * modPoints);
+    //calculate Link Points
+    totalPoints+=(linkPoints*linkCount);
+    //calculate Field Points
+    totalPoints+=(fieldPoints*wedgeCount);
+
+    return totalPoints;
+  }
+  /* List<int> calculatePointsArray(int portalCount, int wedgeCount, int linkCount){
+    int portalPoints=675, eightResPoints=250, modPoints=125,linkPoints=313, fieldPoints=1250;
+    List<int> totalPoints;
+
+
+    return totalPoints;
+  } */ //for if we decide to do an array of points vs one total points
+  List<Field>(){
+    List<Field> fields=[];
+
+    
+
+    return fields;
+  }
 }
