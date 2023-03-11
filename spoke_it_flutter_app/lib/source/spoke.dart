@@ -137,36 +137,71 @@ class Spoke {
 
   int calculatePoints(int portalCount, int wedgeCount, int linkCount) {
     int totalPoints = 0,
-        portalPoints = 675,//for getting portal
-        resPoints = 125,//deploying a resonator
-        eightResPoints = 250,//deploying the last Resinator
-        modPoints = 125,//deploying a mod
-        linkPoints = 313,//creating a link
-        fieldPoints = 1250;//creating a field
+        portalPoints = 675, //for getting portal
+        resPoints = 125, //deploying a resonator
+        eightResPoints = 250, //deploying the last Resinator
+        modPoints = 125, //deploying a mod
+        linkPoints = 313, //creating a link
+        fieldPoints = 1250; //creating a field
 
     //calculate Portal Points
     totalPoints += (portalCount * portalPoints) +
-        (portalCount*resPoints*8)+
+        (portalCount * resPoints * 8) +
         (portalCount * eightResPoints) +
         (portalCount * 2 * modPoints);
     //calculate Link Points
-    totalPoints+=(linkPoints*linkCount);
+    totalPoints += (linkPoints * linkCount);
     //calculate Field Points
-    totalPoints+=(fieldPoints*wedgeCount);
+    totalPoints += (fieldPoints * wedgeCount);
 
     return totalPoints;
   }
+
   /* List<int> calculatePointsArray(int portalCount, int wedgeCount, int linkCount){
     int portalPoints=675, eightResPoints=250, modPoints=125,linkPoints=313, fieldPoints=1250;
-    List<int> totalPoints;
+    List<int> totalPoints = [];
 
 
     return totalPoints;
   } */ //for if we decide to do an array of points vs one total points
-  List<Field>(){
-    List<Field> fields=[];
+  List<Field> createFieldList(List<Link> links) {
+    List<Field> fields = [];
 
-    
+    for (int i = 0; i < links.length; i++) {
+      //This loads fields with the links
+      for (int j = 0; j < links.length; j++) {
+        for (int k = 0; k < links.length; k++) {
+          if (links[i].from == links[k].to && //first portal check
+              links[j].from == links[i].to && //second portal check
+              links[k].from == links[j].to) //third portal check
+          {
+            Field field = new Field(
+              portalOne: links[i].from,
+              portalTwo: links[j].from,
+              portalThree: links[k].from,
+            );
+            fields.add(field);
+          }
+        }
+      }
+    }
+  //used for deleting duplicates
+    for (int i = 0; i < fields.length; i++) {
+      for (int j = 0; j < fields.length; j++) {
+        if (fields[i].portalOne == fields[j].portalTwo ||
+            fields[i].portalOne == fields[j].portalThree) {
+
+          if (fields[i].portalTwo == fields[j].portalOne ||
+              fields[i].portalOne == fields[j].portalThree) {
+
+            if (fields[i].portalThree == fields[j].portalTwo ||
+                fields[i].portalOne == fields[j].portalOne) {
+              fields.removeAt(j);
+            }
+          }
+        }
+      }
+    }
 
     return fields;
   }

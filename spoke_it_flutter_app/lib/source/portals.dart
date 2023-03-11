@@ -41,12 +41,12 @@ class Link {
 }
 
 class Field {
-  Portal one;
-  Portal two;
-  Portal three;
+  Portal portalOne;
+  Portal portalTwo;
+  Portal portalThree;
 
   Field(
-    {required this.one,
-    required this.two,
-    required this.three});
+    {required this.portalOne,
+    required this.portalTwo,
+    required this.portalThree});
 }
