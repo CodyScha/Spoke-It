@@ -192,10 +192,10 @@ class Spoke {
             fields[i].portalOne == fields[j].portalThree) {
 
           if (fields[i].portalTwo == fields[j].portalOne ||
-              fields[i].portalOne == fields[j].portalThree) {
+              fields[i].portalTwo == fields[j].portalThree) {
 
             if (fields[i].portalThree == fields[j].portalTwo ||
-                fields[i].portalOne == fields[j].portalOne) {
+                fields[i].portalThree == fields[j].portalOne) {
               fields.removeAt(j);
             }
           }
