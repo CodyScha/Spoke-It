@@ -229,7 +229,7 @@ class _myOutputState extends State<myOutput> {
               color: Color.fromARGB(255, 117, 209, 255),
               width: 4,
               style: BorderStyle.solid,
-              strokeAlign: StrokeAlign.outside)),
+              strokeAlign: BorderSide.strokeAlignOutside)),
     );
     _hiddenPortal = Container(
       height: 20,
@@ -248,7 +248,7 @@ class _myOutputState extends State<myOutput> {
               color: Color.fromARGB(255, 117, 209, 255),
               width: 4,
               style: BorderStyle.solid,
-              strokeAlign: StrokeAlign.outside)),
+              strokeAlign: BorderSide.strokeAlignOutside)),
     );
 
     _selectedHiddenPortal = Container(
@@ -261,7 +261,7 @@ class _myOutputState extends State<myOutput> {
               color: Color.fromARGB(255, 117, 209, 255),
               width: 4,
               style: BorderStyle.solid,
-              strokeAlign: StrokeAlign.outside)),
+              strokeAlign: BorderSide.strokeAlignOutside)),
     );
   }
 
