@@ -82,6 +82,13 @@ class _myPreview extends State<myPreview> {
     hasChosenCenter = false;
     chosenCenterIndex = -1;
     indexPressed = -1;
+    for (int i = 0; i < _portalData.length; i++) {
+      if (_portalData[i].center) {
+        hasChosenCenter = true;
+        chosenCenterIndex = i;
+        break;
+      }
+    }
 
     _centerPortal = Container(
       height: 20,
@@ -413,7 +420,7 @@ class _myPreview extends State<myPreview> {
                       // Marker is the currently selected one.
                       if (index == indexPressed) {
                         // Marker is the center and selected
-                        if (index == chosenCenterIndex) {
+                        if (_portalData[index].center) {
                           return MapMarker(
                               latitude: _portalData[index].lat,
                               longitude: _portalData[index].long,
@@ -548,7 +555,7 @@ class _myPreview extends State<myPreview> {
                       // Marker is not currently selected
                       else {
                         // Marker is the center
-                        if (index == chosenCenterIndex) {
+                        if (_portalData[index].center) {
                           return MapMarker(
                               latitude: _portalData[index].lat,
                               longitude: _portalData[index].long,
