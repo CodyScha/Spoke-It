@@ -106,20 +106,68 @@ class _myOutputState extends State<myOutput> {
     }
   }
 
-  void saveNewFile(String filename) async {
-    String? path;
-    /* = await FilesystemPicker.openDialog(
+  TextEditingController _textFieldController = TextEditingController();
+
+  void nameNewFile() async {
+    String value = '';
+    String fname;
+    String fnameWithTxt;
+    var result = await showDialog(
       context: context,
-      title: 'Saved Profiles',
-      fsType: FilesystemType.file,
-      rootDirectory: Directory(
-          '../..'), //set to be downloads page(where the txt file will save to automatically)
-      directory: Directory('profiles'),
-      showGoUp: (false),
-      allowedExtensions: ['.txt'],
-      fileTileSelectMode: FileTileSelectMode.wholeTile,
-    );*/
-    path = Directory.current.path;
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Save under this name:'),
+          content: TextField(
+            controller: _textFieldController,
+            decoration: InputDecoration(hintText: "Name your file:"),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('CANCEL'),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+            TextButton(
+              child: Text('OK'),
+              onPressed: () {
+                // setState(() {
+                fname = _textFieldController.text;
+                if (fname.endsWith('.txt')) {
+                  Navigator.pop(context);
+                  saveNewFile(fname);
+                } else {
+                  fnameWithTxt = fname + ".txt";
+                  saveNewFile(fnameWithTxt);
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
+    // result = _textFieldController.text;
+    // print(result);
+    // return saveNewFile(result);
+  }
+
+  void saveNewFile(String filename) async {
+    print('hello');
+    String path;
+    // String? path = await FilesystemPicker.openDialog(
+    //   context: context,
+    //   title: 'Saved Profiles',
+    //   fsType: FilesystemType.file,
+    //   rootDirectory: Directory(
+    //       '../..'), //set to be downloads page(where the txt file will save to automatically)
+    //   directory: Directory('profiles'),
+    //   showGoUp: (false),
+    //   allowedExtensions: ['.txt'],
+    //   fileTileSelectMode: FileTileSelectMode.wholeTile,
+    // );
+    // path = Directory.current.path;
+    path = Directory("profiles").path;
+    print(path);
     File file = File('$path/$filename');
     //FIX clear file first
     file.writeAsStringSync('');
@@ -422,7 +470,16 @@ class _myOutputState extends State<myOutput> {
                             onPressed: () {
                               print('pressed da Save button'); //remove
 
-                              saveFile();
+                              nameNewFile();
+                              // print(nameNewFile());
+                              // Future<String> filename = nameNewFile();
+                              // print("right before if statement");
+                              // print(filename);
+                              // print("right after filenmae before if statement");
+                              // // if (filename is Future<String>) {
+                              // //   print("in if statement" + filename);
+                              // saveNewFile(filename);
+                              // }
                             },
                             child: Text("Save"), //generate
                             style: TextButton.styleFrom(
