@@ -235,7 +235,7 @@ class _myOutputState extends State<myOutput> {
       height: 20,
       width: 20,
       decoration: BoxDecoration(
-          color: Color.fromARGB(255, 221, 150, 186), shape: BoxShape.circle),
+          color: Colors.grey[700], shape: BoxShape.circle),
     );
 
     _selectedPortal = Container(
@@ -255,7 +255,7 @@ class _myOutputState extends State<myOutput> {
       height: 20,
       width: 20,
       decoration: BoxDecoration(
-          color: Color.fromARGB(255, 221, 150, 186),
+          color: Colors.grey[700],
           shape: BoxShape.circle,
           border: Border.all(
               color: Color.fromARGB(255, 117, 209, 255),
