@@ -141,7 +141,7 @@ class _myOutputState extends State<myOutput> {
     String portalInfo = "";
     if (_index >= 0) {
       portalInfo =
-          "\n Coordinates: ${_portalData[_index].lat},${_portalData[_index].long}\n Team: ${_portalData[_index].team}\n Health: ${_portalData[_index].health}";
+          "\n Coordinates: ${_portalData[_index].lat},${_portalData[_index].long}\n Team: ${_portalData[_index].team}\n Health: ${_portalData[_index].health}\nPoints: 0, loser :( )";
     } else {
       portalInfo = "Please select a portal for more information";
     }
