@@ -47,7 +47,7 @@ class _MyHomePageState extends State<MyHomePage> {
       for (var line in lines) {
         List<String> ports = line.split(";");
         bool isShown = true;
-        if (ports[5] == "+") {
+        if (ports[5] == "+ " || ports[5] == "+") {
           isShown = true;
         } else {
           isShown = false;

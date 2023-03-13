@@ -90,6 +90,7 @@ class _myPreview extends State<myPreview> {
   late Widget _hiddenPortal;
   late Widget _selectedPortal;
   late Widget _selectedHiddenPortal;
+  late Widget _selectedCenterPortal;
   late Widget _centerPortal;
 
   void initState() {
@@ -132,6 +133,19 @@ class _myPreview extends State<myPreview> {
       width: 20,
       decoration: BoxDecoration(
           color: Color.fromARGB(255, 221, 150, 186), shape: BoxShape.circle),
+    );
+
+    _selectedCenterPortal = Container(
+      height: 20,
+      width: 20,
+      decoration: BoxDecoration(
+          color: Colors.green,
+          shape: BoxShape.circle,
+          border: Border.all(
+              color: Color.fromARGB(255, 117, 209, 255),
+              width: 4,
+              style: BorderStyle.solid,
+              strokeAlign: StrokeAlign.outside)),
     );
 
     _selectedPortal = Container(
@@ -238,7 +252,7 @@ class _myPreview extends State<myPreview> {
                                 }
                               }
                             },
-                            child: Text("Center"), //Center
+                            child: Text("Center"),
                             style: TextButton.styleFrom(
                                 padding: EdgeInsets.symmetric(
                                     vertical: 0.0, horizontal: 37.0),
@@ -424,6 +438,7 @@ class _myPreview extends State<myPreview> {
                               )
                             ]));
                       } else if (!_portalData[index].shown) {
+                        //hidden
                         return MapMarker(
                             latitude: _portalData[index].lat,
                             longitude: _portalData[index].long,
@@ -506,7 +521,32 @@ class _myPreview extends State<myPreview> {
                             ]));
                       }
                       // Marker is not currently selected
-                      else if (_portalData[index].center) {
+                      else if (_portalData[index].center &&
+                          index == indexPressed) {
+                        return MapMarker(
+                            latitude: _portalData[index].lat,
+                            longitude: _portalData[index].long,
+                            child:
+                                Stack(alignment: Alignment.center, children: [
+                              MouseRegion(
+                                cursor: SystemMouseCursors.click,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    print(
+                                        'Pressed the $index: ${_portalData[index].name} Portal.');
+                                    setState(() {
+                                      indexPressed = index;
+
+                                      // Update the markers
+                                      _controller.updateMarkers(List.generate(
+                                          _controller.markersCount, (i) => i));
+                                    });
+                                  },
+                                  child: _selectedCenterPortal,
+                                ),
+                              ),
+                            ]));
+                      } else if (_portalData[index].center) {
                         return MapMarker(
                             latitude: _portalData[index].lat,
                             longitude: _portalData[index].long,
