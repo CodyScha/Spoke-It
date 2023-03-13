@@ -7,6 +7,6 @@ Benches Fischer and Anderson;38.800134;-89.991576;NEU;0;+
 The Gardens Prairie Portal;38.799776;-89.991861;NEU;0;+ 
 The Gardens to want but Little;38.800005;-89.992635;NEU;0;+ 
 Mary Ann Boyd Memorial Bench;38.800714;-89.990695;NEU;0;+ 
-In Memory of the Monacos;38.801065;-89.992255;NEU;0;+ 
+In Memory of the Monacos;38.801065;-89.992255;NEU;0; - 
 The Hillside Garden;38.802237;-89.991052;NEU;0;+ 
 Mosaic of Smoke Statue;38.801095;-89.990719;ENL;10;+ 

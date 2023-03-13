@@ -24,7 +24,8 @@ class Portal {
       required this.long,
       required this.team,
       required this.health,
-      required this.shown});
+      required this.shown,
+      required this.center});
 }
 
 class Link {

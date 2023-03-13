@@ -58,7 +58,8 @@ class _MyHomePageState extends State<MyHomePage> {
             long: double.parse(ports[2]),
             team: ports[3],
             health: int.parse(ports[4]),
-            shown: isShown);
+            shown: isShown,
+            center: false);
 
         portals.add(portal);
       }
