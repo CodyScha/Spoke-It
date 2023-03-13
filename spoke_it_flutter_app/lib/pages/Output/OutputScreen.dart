@@ -527,6 +527,7 @@ class _myOutputState extends State<myOutput> {
                                         'Pressed the $index: ${_portalData[index].name} Portal.');
                                     setState(() {
                                       indexPressed = index;
+                                      _index = index;
 
                                       // Update the markers
                                       _controller.updateMarkers(List.generate(
@@ -568,7 +569,7 @@ class _myOutputState extends State<myOutput> {
                                           'Pressed the $index: ${_portalData[index].name} Portal.');
                                       setState(() {
                                         indexPressed = index;
-
+                                        _index = index;
                                         // Update the markers
                                         _controller.updateMarkers(List.generate(
                                             _controller.markersCount,
@@ -608,6 +609,7 @@ class _myOutputState extends State<myOutput> {
                                           'Pressed the $index: ${_portalData[index].name} Portal.');
                                       setState(() {
                                         indexPressed = index;
+                                        _index = index;
 
                                         // Update the markers
                                         _controller.updateMarkers(List.generate(
@@ -648,7 +650,7 @@ class _myOutputState extends State<myOutput> {
                                         'Pressed the $index: ${_portalData[index].name} Portal.');
                                     setState(() {
                                       indexPressed = index;
-                                      //_index = index;
+                                      _index = index;
                                       // Update the markers
                                       _controller.updateMarkers(List.generate(
                                           _controller.markersCount, (i) => i));
@@ -734,6 +736,8 @@ class _myOutputState extends State<myOutput> {
     );
   }
 }
+
+
 
 Uint8List updateJSONTemplate(List<Portal> markers) {
   double buffer = 0.0001;
