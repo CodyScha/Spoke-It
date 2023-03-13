@@ -1,0 +1,12 @@
+Cougar Village Tennis Court;38.804961;-89.997801;RES;70;- 
+Myer Arboretum;38.800155;-89.993417;NEU;0;- 
+Cougar Village Tennis Courts;38.801812;-89.994254;UNK;10;- 
+Les Memorial tree;38.799923;-89.993138;ENL;7;- 
+Hiking trail map station #3;38.802692;-89.990564;RES;70;- 
+Benches Fischer and Anderson;38.800134;-89.991576;NEU;0;- 
+The Gardens Prairie Portal;38.799776;-89.991861;NEU;0;- 
+The Gardens to want but Little;38.800005;-89.992635;NEU;0;- 
+Mary Ann Boyd Memorial Bench;38.800714;-89.990695;NEU;0;- 
+In Memory of the Monacos;38.801065;-89.992255;NEU;0;- 
+The Hillside Garden;38.802237;-89.991052;NEU;0;- 
+Mosaic of Smoke Statue;38.801095;-89.990719;ENL;10;- 

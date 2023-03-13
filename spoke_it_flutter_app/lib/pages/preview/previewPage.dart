@@ -143,8 +143,10 @@ class _myPreview extends State<myPreview> {
           border: Border.all(
               color: Color.fromARGB(255, 117, 209, 255),
               width: 4,
-              style: BorderStyle.solid,
-              strokeAlign: StrokeAlign.outside)),
+              style: BorderStyle.solid
+              // ,
+              // strokeAlign: StrokeAlign.outside
+              )),
     );
 
     _selectedHiddenPortal = Container(
@@ -156,8 +158,10 @@ class _myPreview extends State<myPreview> {
           border: Border.all(
               color: Color.fromARGB(255, 117, 209, 255),
               width: 4,
-              style: BorderStyle.solid,
-              strokeAlign: StrokeAlign.outside)),
+              style: BorderStyle.solid
+              // ,
+              // strokeAlign: StrokeAlign.outside
+              )),
     );
   }
 
