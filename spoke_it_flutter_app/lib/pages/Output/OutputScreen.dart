@@ -120,7 +120,7 @@ class _myOutputState extends State<myOutput> {
       fileTileSelectMode: FileTileSelectMode.wholeTile,
     );*/
     path = Directory.current.path;
-    File file = File('$path/$filename');
+    File file = File('$path/$filename.txt');
     //FIX clear file first
     file.writeAsStringSync('');
     int portalListlen = _portalData.length;
