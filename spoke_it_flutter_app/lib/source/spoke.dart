@@ -35,7 +35,7 @@ class Spoke {
     return shownPortals;
   }
 
-  //returns tuple with list of links of the convex hull and the number of portals in the convex hull
+  //returns tuple with list of links of the convex hull and list of portals in the convex hull
   List jarvis(List<Portal> portals) {
     List<Link> links = [];
     double val;
@@ -99,7 +99,7 @@ class Spoke {
         links.add(link);
       }
     }
-    return [links, hullList.length];
+    return [links, hullList];
   }
 
   List<Link> hullToCenter(List<Portal> portals) {
@@ -148,17 +148,20 @@ class Spoke {
 
   List<Link> internalLinks(List<Portal> portals) {
     List<Link> links = [];
+    List<Portal> hullPortals = jarvis(portals)[1];
 
     //for all wedges in G, call maxWedge(list of portals in wedge, hull point 1, hull point 2)
-
+    for (int i = 0; i < hullPortals.length - 1; ++i) {
+    } 
+    
     return links;
   }
 
-  List<Link> maxWedge(List<Portal> portals, Portal wedgeOne, Portal wedgeTwo) {
+  List<Link> maxWedge(List<Portal> wedgePortals, Portal wedgeOne, Portal wedgeTwo) {
     List<Link> links = [];
     //checking if there are portals within the wedge (base case is empty wedge)
-    if (portals.length != 3) {
-      //find farthest portal from center (P) in the wedge
+    if (wedgePortals.length != 3) {
+      //find farthest portal (P) from center in the wedge
       //link to wedge 1 and wedge 2
       //links.addAll(maxWedge(left wedge portals, wedgeOne, P))
       //links.addAll(maxWedge(right wedge portals, P, wedgeTwo))
@@ -192,5 +195,11 @@ class Spoke {
     }
 
     return furthest;
+  }
+
+  bool determineInWedge(List<Portal> portals) {
+    List<Portal> temp = portals;
+
+    return jarvis(temp)[1].length == 3 ? true : false;
   }
 }
