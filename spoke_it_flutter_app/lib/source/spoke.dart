@@ -2,21 +2,35 @@ import 'package:spoke_it_flutter_app/source/portals.dart';
 
 class Spoke {
   List<Link> algorithm(List<Portal> portals) {
+    //the list of links created by the algorithm
     List<Link> links = [];
 
+    //use only shown portals (non-hidden portals)
+    List<Portal> shownPortalList = shownPortals(portals);
+
     //calculate links in hull
-    links.addAll(jarvis(portals));
+    links.addAll(jarvis(shownPortalList));
 
     //connect hull to center
-    links.addAll(hullToCenter(portals));
+    links.addAll(hullToCenter(shownPortalList));
 
     //connect internal portals to center
-    links.addAll(internalToCenter(portals));
+    links.addAll(internalToCenter(shownPortalList));
 
     //calculate links of portals inside hull
-    links.addAll(internalLinks(portals));
+    links.addAll(internalLinks(shownPortalList));
 
     return links;
+  }
+
+  List<Portal> shownPortals(List<Portal> portals) {
+    List<Portal> shownPortals = [];
+
+    for (Portal portal in portals) {
+      if (portal.shown == true) shownPortals.add(portal);
+    }
+
+    return shownPortals;
   }
 
   List<Link> jarvis(List<Portal> portals) {
