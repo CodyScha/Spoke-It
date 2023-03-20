@@ -111,7 +111,6 @@ class _myOutputState extends State<myOutput> {
   void nameNewFile() async {
     String value = '';
     String fname;
-    String fnameWithTxt;
     var result = await showDialog(
       context: context,
       builder: (context) {
@@ -133,12 +132,52 @@ class _myOutputState extends State<myOutput> {
               onPressed: () {
                 // setState(() {
                 fname = _textFieldController.text;
-                if (fname.endsWith('.txt')) {
+                if (!fname.endsWith('.txt')) {
+                  fname = fname + ".txt";
                   Navigator.pop(context);
-                  saveNewFile(fname);
+                }
+
+                if (saveNewFile(fname) != null) {
+                  print("file was saved");
+                  showDialog(
+                    context: context,
+                    builder: (context2) => AlertDialog(
+                      title: Center(child: const Text('File saved!')),
+                      backgroundColor: Colors.green,
+                      actions: <Widget>[
+                        TextButton(
+                          child: const Align(
+                            alignment: Alignment.center,
+                            child: Text('OK'),
+                          ),
+                          onPressed: () {
+                            Navigator.pop(context2);
+                          },
+                        ),
+                      ],
+                    ),
+                  );
                 } else {
-                  fnameWithTxt = fname + ".txt";
-                  saveNewFile(fnameWithTxt);
+                  showDialog(
+                    context: context,
+                    builder: (context3) => AlertDialog(
+                      title: Center(
+                          child:
+                              const Text('File not saved, please try again')),
+                      backgroundColor: Colors.red,
+                      actions: <Widget>[
+                        TextButton(
+                          child: const Align(
+                            alignment: Alignment.center,
+                            child: Text('OK'),
+                          ),
+                          onPressed: () {
+                            Navigator.pop(context3);
+                          },
+                        ),
+                      ],
+                    ),
+                  );
                 }
               },
             ),
@@ -151,8 +190,10 @@ class _myOutputState extends State<myOutput> {
     // return saveNewFile(result);
   }
 
-  void saveNewFile(String filename) async {
-    print('hello');
+  Future<File> saveNewFile(
+    String filename,
+  ) async {
+    bool saved = false;
     String path;
     // String? path = await FilesystemPicker.openDialog(
     //   context: context,
@@ -183,6 +224,7 @@ class _myOutputState extends State<myOutput> {
             mode: FileMode.append);
       }
     }
+    return file;
   }
 
   String selectPortalInfo() {
@@ -283,7 +325,7 @@ class _myOutputState extends State<myOutput> {
               color: Color.fromARGB(255, 117, 209, 255),
               width: 4,
               style: BorderStyle.solid,
-              strokeAlign: StrokeAlign.outside)),
+              strokeAlign: BorderSide.strokeAlignOutside)),
     );
 
     _selectedHiddenPortal = Container(
@@ -296,7 +338,7 @@ class _myOutputState extends State<myOutput> {
               color: Color.fromARGB(255, 117, 209, 255),
               width: 4,
               style: BorderStyle.solid,
-              strokeAlign: StrokeAlign.outside)),
+              strokeAlign: BorderSide.strokeAlignOutside)),
     );
   }
 
