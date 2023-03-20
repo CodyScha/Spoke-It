@@ -160,10 +160,10 @@ class Spoke {
     //for all wedges in G, call maxWedge(list of portals in wedge, hull point 1, hull point 2)
     for (int i = 0; i < hullPortals.length - 1; ++i) {
       //find the portals in the wedge, including the center and two "hull points"
-      //BUG******** this might be the issue
       List<Portal> wedgePortals =
           portalsInWedge(portals, hullPortals[i], hullPortals[i + 1]);
-      links.addAll(maxWedge(wedgePortals, hullPortals[i], hullPortals[i + 1]));
+      links.addAll(
+          maxWedge(wedgePortals, hullPortals[i], hullPortals[i + 1]));
     }
 
     //Previous loop doesn't find links in the wedge between last hull portal and first hull portal
@@ -177,8 +177,7 @@ class Spoke {
   }
 
   //recursively make all links within each wedge
-  //this might make duplicates that we'd want to deal with
-  //I think theres a bug in this causing the wedgePortals list to stay the same after first iteration
+  //TODO: this might make duplicates that we'd want to deal with
   List<Link> maxWedge(
       List<Portal> wedgePortals, Portal wedgeOne, Portal wedgeTwo) {
     List<Link> links = [];
@@ -186,7 +185,7 @@ class Spoke {
     if (wedgePortals.length != 3) {
       //find farthest portal (P) from center in the wedge
       Portal furthest =
-          findFurthestFromCenter(wedgePortals, wedgeOne, wedgeTwo);
+          findClosestToWedgePortals(wedgePortals, wedgeOne, wedgeTwo);
       //link to wedge 1 and wedge 2
       Link linkToWedgeOne = Link(
           from: furthest, to: wedgeOne, isCenterLink: false, isHullLink: false);
@@ -205,18 +204,18 @@ class Spoke {
       //links.addAll(maxWedge(right wedge portals, P, wedgeTwo))
       List<Portal> rightWedgePortals =
           portalsInWedge(wedgePortals, furthest, wedgeTwo);
-      links.addAll(maxWedge(leftWedgePortals, furthest, wedgeTwo));
+      links.addAll(maxWedge(rightWedgePortals, furthest, wedgeTwo));
     }
 
     return links;
   }
 
   //find the furthest portal in a wedge from the center portal
-  Portal findFurthestFromCenter(
+  Portal findClosestToWedgePortals(
       List<Portal> portals, Portal wedgeOne, Portal wedgeTwo) {
     Portal furthest, center;
-    double distance = 0;
-    double xDif, yDif;
+    double distance = double.maxFinite;
+    double xDifOne, yDifOne, xDifTwo, yDifTwo;
 
     //initialize non-nullable furthest and center (will be overridden)
     center = portals[0];
@@ -227,15 +226,17 @@ class Spoke {
       if (portal.center == true) center = portal;
     }
 
-    //find furthest from center (uses distance equation)
+    //find closest to wedge portals (sum result of distance equation)
     for (Portal portal in portals) {
       //make sure portal is not one of the wedge portals,
       //since we want the portal to be inside the wedge
       if (portal != wedgeOne && portal != wedgeTwo) {
-        xDif = center.lat - portal.lat;
-        yDif = center.long - portal.long;
-        if (sqrt(pow(xDif, 2) + pow(yDif, 2)) > distance) {
-          distance = sqrt(pow(xDif, 2) + pow(yDif, 2));
+        xDifOne = wedgeOne.lat - portal.lat;
+        yDifOne = wedgeOne.long - portal.long;
+        xDifTwo = wedgeTwo.lat - portal.lat;
+        yDifTwo = wedgeTwo.long - portal.long;
+        if (sqrt(pow(xDifOne, 2) + pow(yDifOne, 2)) + sqrt(pow(xDifTwo, 2) + pow(yDifTwo, 2)) < distance) {
+          distance = sqrt(pow(xDifOne, 2) + pow(yDifOne, 2)) + sqrt(pow(xDifTwo, 2) + pow(yDifTwo, 2));
           furthest = portal;
         }
       }
@@ -266,7 +267,7 @@ class Spoke {
         List<Portal> temp = [center, wedgeOne, wedgeTwo];
         temp.add(portal);
         //if portal is in the wedge, add it to portalsInWedge
-        if (determineInWedge(temp)) {
+        if (determineInWedge(temp, wedgeOne, wedgeTwo)) {
           portalsInWedge.add(portal);
         }
       }
@@ -278,7 +279,8 @@ class Spoke {
   //determines if a specific portal is in wedge
   //takes in a list of 4 portals, 3 being the center and two wedge portals
   //the fourth portal is the portal we are testing
-  bool determineInWedge(List<Portal> portals) {
+  bool determineInWedge(
+      List<Portal> portals, Portal wedgeOne, Portal wedgeTwo) {
     List<Portal> temp = [];
 
     //create copy of portals list so our real portals don't get edited by jarvis march
@@ -287,12 +289,21 @@ class Spoke {
       temp.add(tempPortal);
     }
 
-    //if the convex hull has three portals, the portal is inside the wedge
+    //portals in new hull created
+    List<Portal> hull = jarvis(temp)[1];
+
+    //if the convex hull has three portals, the portal might be inside the wedge
     //if the convex hull has four portals, the portal is outside the wedge
-    int numInHull = jarvis(temp)[1].length;
-    if (numInHull == 3)
-      return true;
-    else
-      return false;
+    if (hull.length != 3) return false;
+
+    //if any of the three portals in the hull are not the center or two wedge portals, 
+    //the portal is outside of the wedge
+    for (Portal portal in hull) {
+      if (!portal.center && portal != wedgeOne && portal != wedgeTwo) {
+        return false;
+      }
+    }
+
+    return true;
   }
 }

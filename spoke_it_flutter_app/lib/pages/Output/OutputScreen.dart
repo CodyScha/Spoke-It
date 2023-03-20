@@ -97,7 +97,7 @@ class _myOutputState extends State<myOutput> {
               mode: FileMode.append);
         } else {
           await file.writeAsString(
-              "${_portalData[i].name};${_portalData[i].lat};${_portalData[i].long};${_portalData[i].team};${_portalData[i].health}; - \n",
+              "${_portalData[i].name};${_portalData[i].lat};${_portalData[i].long};${_portalData[i].team};${_portalData[i].health};- \n",
               mode: FileMode.append);
         }
       }
