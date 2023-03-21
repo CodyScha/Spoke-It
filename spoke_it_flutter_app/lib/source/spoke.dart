@@ -19,6 +19,14 @@ class Spoke {
     return links;
   }
 
+  int totalPoints(List<Portal> portals, List<Link> links) {
+    int points;
+    List<Field> fields = [];
+    fields.addAll(createFieldList(links));
+    points = calculatePoints(portals.length, fields.length, links.length);
+    return points;
+  }
+
   List<Link> jarvis(List<Portal> portals) {
     List<Link> links = [];
     double val;
@@ -185,15 +193,13 @@ class Spoke {
         }
       }
     }
-  //used for deleting duplicates
+    //used for deleting duplicates
     for (int i = 0; i < fields.length; i++) {
       for (int j = 0; j < fields.length; j++) {
         if (fields[i].portalOne == fields[j].portalTwo ||
             fields[i].portalOne == fields[j].portalThree) {
-
           if (fields[i].portalTwo == fields[j].portalOne ||
               fields[i].portalTwo == fields[j].portalThree) {
-
             if (fields[i].portalThree == fields[j].portalTwo ||
                 fields[i].portalThree == fields[j].portalOne) {
               fields.removeAt(j);
