@@ -225,18 +225,18 @@ packages:
     dependency: "direct main"
     description:
       name: syncfusion_flutter_core
-      sha256: b5cb2525beb38fae36a363f72f8a2db92ed3995d6f0695968412cc6836e3a7b7
+      sha256: "33141f9073c607bd113898d241aa6a03ccc1856a314bd061015180c35d47012f"
       url: "https://pub.dev"
     source: hosted
-    version: "20.4.49"
+    version: "20.4.50"
   syncfusion_flutter_maps:
     dependency: "direct main"
     description:
       name: syncfusion_flutter_maps
-      sha256: bf098b3d4a70216846d7eece9b7776639a18ab427f8a00ad8e33dfb653b352ca
+      sha256: "98387fce401d7e1c0538f3b5a2ff06ad16dbc8725789ed37ef4870df0cd54df5"
       url: "https://pub.dev"
     source: hosted
-    version: "20.4.49"
+    version: "20.4.50"
   term_glyph:
     dependency: transitive
     description:
@@ -278,5 +278,5 @@ packages:
     source: hosted
     version: "3.1.3"
 sdks:
-  dart: ">=2.18.0 <4.0.0"
+  dart: ">=2.18.0 <3.0.0"
   flutter: ">=3.0.0"

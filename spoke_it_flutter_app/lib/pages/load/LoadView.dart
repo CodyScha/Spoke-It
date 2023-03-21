@@ -54,7 +54,8 @@ class _LoadSelection extends State<LoadSelection> {
             long: double.parse(ports[2]),
             team: ports[3],
             health: int.parse(ports[4]),
-            shown: true);
+            shown: true,
+            center:false);
 
         if (ports[5] == "+") {
           portal.shown = true;

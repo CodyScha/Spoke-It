@@ -46,19 +46,21 @@ class _MyHomePageState extends State<MyHomePage> {
 
       for (var line in lines) {
         List<String> ports = line.split(";");
+        bool isShown = true;
+        if (ports[5] == "+ " || ports[5] == "+") {
+          isShown = true;
+        } else {
+          isShown = false;
+        }
         Portal portal = new Portal(
             name: ports[0],
             lat: double.parse(ports[1]),
             long: double.parse(ports[2]),
             team: ports[3],
             health: int.parse(ports[4]),
-            shown: true);
-        /*
-        if (ports[5]=="+"){
-          portal.shown = true;
-        }else{
-          portal.shown = false;
-        }*/
+            shown: isShown,
+            center: false);
+
         portals.add(portal);
       }
 
