@@ -97,7 +97,7 @@ class _myOutputState extends State<myOutput> {
               mode: FileMode.append);
         } else {
           await file.writeAsString(
-              "${_portalData[i].name};${_portalData[i].lat};${_portalData[i].long};${_portalData[i].team};${_portalData[i].health}; - \n",
+              "${_portalData[i].name};${_portalData[i].lat};${_portalData[i].long};${_portalData[i].team};${_portalData[i].health};- \n",
               mode: FileMode.append);
         }
       }
@@ -231,7 +231,7 @@ class _myOutputState extends State<myOutput> {
     String portalInfo = "";
     if (_index >= 0) {
       portalInfo =
-          "\n Coordinates: ${_portalData[_index].lat},${_portalData[_index].long}\n Team: ${_portalData[_index].team}\n Health: ${_portalData[_index].health}";
+          "\n Coordinates: ${_portalData[_index].lat},${_portalData[_index].long}\n Team: ${_portalData[_index].team}\n Health: ${_portalData[_index].health}\nPoints: 0, loser :( )";
     } else {
       portalInfo = "Please select a portal for more information";
     }
@@ -265,6 +265,7 @@ class _myOutputState extends State<myOutput> {
   late Widget _selectedPortal;
   late Widget _selectedHiddenPortal;
   late Widget _centerPortal;
+  late Widget _selectedCenterPortal;
 
   void initState() {
     _zoomPanBehavior = MapZoomPanBehavior(
@@ -308,11 +309,23 @@ class _myOutputState extends State<myOutput> {
       decoration: BoxDecoration(color: Colors.green, shape: BoxShape.circle),
     );
 
-    _hiddenPortal = Container(
+    _selectedCenterPortal = Container(
       height: 20,
       width: 20,
       decoration: BoxDecoration(
-          color: Color.fromARGB(255, 221, 150, 186), shape: BoxShape.circle),
+          color: Colors.green,
+          shape: BoxShape.circle,
+          border: Border.all(
+              color: Color.fromARGB(255, 117, 209, 255),
+              width: 4,
+              style: BorderStyle.solid,
+              strokeAlign: BorderSide.strokeAlignOutside)),
+    );
+    _hiddenPortal = Container(
+      height: 20,
+      width: 20,
+      decoration:
+          BoxDecoration(color: Colors.grey[700], shape: BoxShape.circle),
     );
 
     _selectedPortal = Container(
@@ -332,7 +345,7 @@ class _myOutputState extends State<myOutput> {
       height: 20,
       width: 20,
       decoration: BoxDecoration(
-          color: Color.fromARGB(255, 221, 150, 186),
+          color: Colors.grey[700],
           shape: BoxShape.circle,
           border: Border.all(
               color: Color.fromARGB(255, 117, 209, 255),
@@ -611,8 +624,23 @@ class _myOutputState extends State<myOutput> {
                     source: _mapSource,
                     zoomPanBehavior: _zoomPanBehavior,
                     initialMarkersCount: _portalData.length,
+                    sublayers: [
+                      MapLineLayer(
+                        lines:
+                            List<MapLine>.generate(links.length, (int index) {
+                          return MapLine(
+                            from: MapLatLng(
+                                links[index].from.lat, links[index].from.long),
+                            to: MapLatLng(
+                                links[index].to.lat, links[index].to.long),
+                            color: Colors.white,
+                            width: 5,
+                          );
+                        }).toSet(),
+                      )
+                    ],
                     markerBuilder: (BuildContext context, int index) {
-                      if (index == chosenCenterIndex) {
+                      if (_portalData[index].center && index == indexPressed) {
                         return MapMarker(
                             latitude: _portalData[index].lat,
                             longitude: _portalData[index].long,
@@ -626,7 +654,47 @@ class _myOutputState extends State<myOutput> {
                                         'Pressed the $index: ${_portalData[index].name} Portal.');
                                     setState(() {
                                       indexPressed = index;
-
+                                      _index = index;
+                                      // Update the markers
+                                      _controller.updateMarkers(List.generate(
+                                          _controller.markersCount, (i) => i));
+                                    });
+                                  },
+                                  child: _selectedCenterPortal,
+                                ),
+                              ),
+                              IgnorePointer(
+                                child: SizedBox(
+                                  width: 125,
+                                  child: Padding(
+                                      padding: const EdgeInsets.only(top: 45),
+                                      child: Text(
+                                        _portalData[index].name,
+                                        // softWrap: true,
+                                        overflow: TextOverflow.ellipsis,
+                                        textAlign: TextAlign.center,
+                                        maxLines: 2,
+                                        style: TextStyle(
+                                            color: Colors.white, fontSize: 11),
+                                      )),
+                                ),
+                              )
+                            ]));
+                      } else if (_portalData[index].center) {
+                        return MapMarker(
+                            latitude: _portalData[index].lat,
+                            longitude: _portalData[index].long,
+                            child:
+                                Stack(alignment: Alignment.center, children: [
+                              MouseRegion(
+                                cursor: SystemMouseCursors.click,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    print(
+                                        'Pressed the $index: ${_portalData[index].name} Portal.');
+                                    setState(() {
+                                      indexPressed = index;
+                                      _index = index;
                                       // Update the markers
                                       _controller.updateMarkers(List.generate(
                                           _controller.markersCount, (i) => i));
@@ -667,7 +735,7 @@ class _myOutputState extends State<myOutput> {
                                           'Pressed the $index: ${_portalData[index].name} Portal.');
                                       setState(() {
                                         indexPressed = index;
-
+                                        _index = index;
                                         // Update the markers
                                         _controller.updateMarkers(List.generate(
                                             _controller.markersCount,
@@ -707,6 +775,7 @@ class _myOutputState extends State<myOutput> {
                                           'Pressed the $index: ${_portalData[index].name} Portal.');
                                       setState(() {
                                         indexPressed = index;
+                                        _index = index;
 
                                         // Update the markers
                                         _controller.updateMarkers(List.generate(
@@ -747,7 +816,7 @@ class _myOutputState extends State<myOutput> {
                                         'Pressed the $index: ${_portalData[index].name} Portal.');
                                     setState(() {
                                       indexPressed = index;
-                                      //_index = index;
+                                      _index = index;
                                       // Update the markers
                                       _controller.updateMarkers(List.generate(
                                           _controller.markersCount, (i) => i));
@@ -832,6 +901,15 @@ class _myOutputState extends State<myOutput> {
       ),
     );
   }
+}
+
+class MarkerModel {
+  MarkerModel(this.name, this.latitude, this.longitude, this.color);
+
+  final String name;
+  final double latitude;
+  final double longitude;
+  Color color;
 }
 
 Uint8List updateJSONTemplate(List<Portal> markers) {

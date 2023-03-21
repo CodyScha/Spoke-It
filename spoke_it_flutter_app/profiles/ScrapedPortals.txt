@@ -1,12 +1,65 @@
-Cougar Village Tennis Court;38.804961;-89.997801;RES;70; - 
-Myer Arboretum;38.800155;-89.993417;NEU;0; - 
-Cougar Village Tennis Courts;38.801812;-89.994254;UNK;10; - 
-Les Memorial tree;38.799923;-89.993138;ENL;7; - 
-Hiking trail map station #3;38.802692;-89.990564;RES;70; - 
-Benches Fischer and Anderson;38.800134;-89.991576;NEU;0; - 
-The Gardens Prairie Portal;38.799776;-89.991861;NEU;0; - 
-The Gardens to want but Little;38.800005;-89.992635;NEU;0; - 
-Mary Ann Boyd Memorial Bench;38.800714;-89.990695;NEU;0; - 
-In Memory of the Monacos;38.801065;-89.992255;NEU;0; - 
-The Hillside Garden;38.802237;-89.991052;NEU;0; - 
-Mosaic of Smoke Statue;38.801095;-89.990719;ENL;10; - 
+SIUE Greenhouse;38.794442;-90.00017;NEU;0;+
+Bride of the City;38.794644;-90.001255;UNK;5;+
+SIUE Metcalf Theater;38.794869;-90.001547;UNK;15;+
+Reverend R. Virgil "Joe" Santee Dedication;38.791101;-90.000349;UNK;5;+
+Sun God to Engineering;38.790949;-90.000835;UNK;10;+
+SIUE Civil Engineering Tribute;38.791614;-90.000198;NEU;0;+
+SIUE Matador Sculpture;38.790079;-90.001247;UNK;5;+
+SIUE Art and Design Bldg.;38.791153;-90.001165;NEU;0;+
+SIUE Tunnel Sculpture;38.791481;-90.002256;NEU;0;+
+SIUE Campus Sculpture;38.7914;-90.001972;NEU;0;+
+SIUE Engineering Sculpture;38.791496;-90.001113;NEU;0;+
+SIUE Engineering Building;38.791718;-90.000818;RES;40;+
+Fowler Student Design Center;38.792494;-90.001157;NEU;0;+
+SIUE Homespun Sculpture;38.79431;-90.001976;UNK;15;+
+SIUE Pyramid Art;38.794238;-90.001153;UNK;5;+
+The Importance Of Play;38.791923;-90.000367;RES;70;+
+SIUE Engineering Building Tower;38.79202;-90.000787;RES;40;+
+SIUE I-Beam Statue;38.792444;-90.000691;RES;55;+
+SIUE Brick Spiral Sculpture;38.7918;-90.002407;UNK;25;+
+SIUE Bluff Hall Sand Volleyball Court;38.793647;-90.004037;UNK;15;+
+Liberty has Fallen!;38.792347;-90.002477;UNK;20;+
+Bluff Hall;38.792472;-90.003549;NEU;0;+
+Giant Walker Sculpture;38.790379;-90.002467;NEU;0;+
+Science East;38.793988;-89.999159;RES;85;+
+SIUE "The Rock";38.793189;-89.997956;UNK;0;+
+Dunham Hall;38.793591;-89.998944;NEU;0;+
+SIUE Science West Building;38.793745;-89.999926;UNK;10;+
+SIUE Evoking Light Statue;38.79246;-89.999651;UNK;10;+
+Dunham Hall Theatre;38.793336;-89.998426;UNK;25;+
+SIUE Lovejoy Library;38.793547;-89.997771;NEU;0;+
+SIUE Campus Cow;38.792666;-89.99989;UNK;10;+
+Sasquatch's Outpost;38.792776;-89.998213;UNK;20;+
+SIUE Student Art Installation;38.792097;-89.999033;UNK;5;+
+SIUE Art Display;38.792283;-89.998616;NEU;0;+
+SIUE Quadrangle;38.792956;-89.997937;NEU;0;+
+SIUE Morris University Center;38.792166;-89.998177;UNK;5;+
+MUC Campus Map;38.792013;-89.998528;RES;40;+
+SIUE - Student Finacial Aid Legislation Plaque;38.79189;-89.997806;UNK;3;+
+SIUE 50 Year Bench 1957 to 2007;38.792985;-89.998514;UNK;5;+
+Famine;38.791278;-89.99749;UNK;5;+
+SIUE Circle of Stone Art;38.794678;-89.999703;NEU;0;+
+SIUE Columns;38.793798;-89.997248;RES;85;+
+SIUE Column Fragments;38.793569;-89.997337;NEU;0;+
+SIUE "e" Statue;38.792915;-89.996264;NEU;0;+
+SIUE Cougar Statue;38.792652;-89.997568;NEU;0;+
+SIUE Builders of the University Plaza;38.793107;-89.996765;RES;40;+
+Morris University Center PLAZA;38.791958;-89.997184;UNK;2;+
+SIUE Time Capsule Marker;38.793071;-89.997422;NEU;0;+
+Lovejoy Archway;38.794;-89.996978;RES;54;+
+SIUE Iron Figures;38.794148;-89.995507;NEU;0;+
+Rendleman Hall;38.792249;-89.996673;NEU;0;+
+Peck Hall;38.793463;-89.996867;RES;85;+
+Wire Art;38.790879;-89.997831;UNK;5;+
+Fuller Dome;38.790976;-89.999909;NEU;0;+
+SIUE Student Success Center;38.791411;-89.998503;NEU;0;+
+SIUE Weather Vane;38.791709;-89.99998;NEU;0;+
+SIUE -ism Sculpture;38.79358;-89.994593;NEU;0;+
+Tosovsky Memorial Stone Bench;38.792718;-89.994545;UNK;25;+
+Inside/Outside;38.792627;-89.994797;NEU;0;+
+T-Bone Steak;38.794287;-89.994492;NEU;0;+
+SIUE Wire Geese Sculptures;38.795121;-89.995265;NEU;0;+
+SIUE Founders Hall;38.794584;-89.996136;NEU;0;+
+Steel Monolith;38.794593;-89.997008;RES;85;+
+SIUE I Remember Statue;38.794657;-89.995381;NEU;0;+
+Southern Illinois University Beta Gamma Sigma Key;38.79446;-89.996511;NEU;0;+
