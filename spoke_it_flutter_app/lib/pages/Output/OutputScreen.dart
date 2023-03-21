@@ -51,9 +51,12 @@ class _myOutputState extends State<myOutput> {
     int portalListlen = _portalData.length;
     setState(() {
       _portalData.removeAt(_index);
+      _controller.removeMarkerAt(_index);
+
+      _index = -1;
+      indexPressed = -1;
     });
 
-    _controller.removeMarkerAt(_index);
     var temp = List.generate(_controller.markersCount, (i) => i);
     _controller.updateMarkers(temp);
   }
@@ -234,8 +237,8 @@ class _myOutputState extends State<myOutput> {
     _hiddenPortal = Container(
       height: 20,
       width: 20,
-      decoration: BoxDecoration(
-          color: Colors.grey[700], shape: BoxShape.circle),
+      decoration:
+          BoxDecoration(color: Colors.grey[700], shape: BoxShape.circle),
     );
 
     _selectedPortal = Container(
@@ -288,26 +291,6 @@ class _myOutputState extends State<myOutput> {
                 // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 // crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  // Container(
-                  //   color: Color.fromARGB(255, 7, 175, 7),
-                  //   padding:
-                  //       EdgeInsets.symmetric(vertical: 20.0, horizontal: 120.0),
-                  //   //child: Text('Load Data'),
-                  // ),
-                  // Container(
-                  //   color: Color.fromARGB(255, 173, 16, 16),
-                  //   padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 92.0),
-                  //   child: TextButton(
-                  //       onPressed: () {
-                  //         Navigator.push(
-                  //           context,
-                  //           MaterialPageRoute(
-                  //               builder: (context) =>
-                  //                   MyHomePage(title: 'Prototype: Spoke-It')),
-                  //         );
-                  //       },
-                  //       child: Text('')),
-                  // ),
                   Container(
                     color: Colors.grey[300],
                     padding:
@@ -321,24 +304,25 @@ class _myOutputState extends State<myOutput> {
                         Container(
                           child: TextButton(
                             onPressed: () {
-                              setState(() {
-                                for (var p in _portalData) {
-                                  if (p.center) {
-                                    p.center = false;
-                                    print(
-                                        "${p.name} is no longer the center portal");
+                              if (indexPressed != -1) {
+                                setState(() {
+                                  for (var p in _portalData) {
+                                    if (p.center) {
+                                      p.center = false;
+                                      print(
+                                          "${p.name} is no longer the center portal");
+                                    }
                                   }
-                                }
+                                  // Update the new center.
+                                  _portalData[indexPressed].center = true;
+                                  hasChosenCenter = true;
+                                  chosenCenterIndex = indexPressed;
 
-                                // Update the new center.
-                                _portalData[indexPressed].center = true;
-                                hasChosenCenter = true;
-                                chosenCenterIndex = indexPressed;
-
-                                // Update the markers
-                                _controller.updateMarkers(List.generate(
-                                    _controller.markersCount, (i) => i));
-                              });
+                                  // Update the markers
+                                  _controller.updateMarkers(List.generate(
+                                      _controller.markersCount, (i) => i));
+                                });
+                              }
 
                               for (var p in _portalData) {
                                 if (p.center) {
@@ -518,6 +502,9 @@ class _myOutputState extends State<myOutput> {
               child: SfMapsTheme(
                 data: SfMapsThemeData(
                     shapeHoverColor: Color.fromRGBO(46, 46, 46, 1),
+                    // shapeHoverStrokeColor: Colors.pink,
+                    selectionColor: Colors.orange,
+                    // shapeHoverStrokeWidth: 5,
                     layerColor: Color.fromRGBO(46, 46, 46, 1),
                     layerStrokeWidth: 0),
                 child: SfMaps(layers: <MapLayer>[
@@ -536,6 +523,12 @@ class _myOutputState extends State<myOutput> {
                                 links[index].to.lat, links[index].to.long),
                             color: Colors.white,
                             width: 5,
+                            onTap: () {
+                              setState(() {
+                                links.removeAt(index);
+                              });
+                              // _controller.up
+                            },
                           );
                         }).toSet(),
                       )
@@ -830,8 +823,8 @@ Uint8List updateJSONTemplate(List<Portal> markers) {
     var mapdir = Directory('map').create();
   }
   File newFile = File('map/map.json');
-  print('testingtesting');
-  print('this is a test $assetFileStr');
+  // print('testingtesting');
+  // print('this is a test $assetFileStr');
   newFile.writeAsStringSync(assetFileStr);
 
   // * Now, we need to change the coords in the new file
