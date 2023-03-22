@@ -50,11 +50,10 @@ class _myOutputState extends State<myOutput> {
     String name = portal.name;
     int portalListlen = _portalData.length;
     setState(() {
-      _portalData.removeAt(_index);
-      _controller.removeMarkerAt(_index);
+      _portalData.removeAt(portalIndexPressed);
+      _controller.removeMarkerAt(portalIndexPressed);
 
-      _index = -1;
-      indexPressed = -1;
+      portalIndexPressed = -1;
     });
 
     var temp = List.generate(_controller.markersCount, (i) => i);
@@ -65,14 +64,14 @@ class _myOutputState extends State<myOutput> {
     //serach through list to find portal, then delete it from the list
 
     //found portal to hide
-    if (_portalData[_index].shown == false) {
+    if (_portalData[portalIndexPressed].shown == false) {
       //switch between hidden and shown
-      _portalData[_index].shown = true;
+      _portalData[portalIndexPressed].shown = true;
     } else {
-      _portalData[_index].shown = false;
+      _portalData[portalIndexPressed].shown = false;
     }
 
-    var temp = List.generate(1, (i) => _index);
+    var temp = List.generate(1, (i) => portalIndexPressed);
     _controller.updateMarkers(temp);
   }
 
@@ -142,9 +141,9 @@ class _myOutputState extends State<myOutput> {
 
   String selectPortalInfo() {
     String portalInfo = "";
-    if (_index >= 0) {
+    if (portalIndexPressed >= 0) {
       portalInfo =
-          "\n Coordinates: ${_portalData[_index].lat},${_portalData[_index].long}\n Team: ${_portalData[_index].team}\n Health: ${_portalData[_index].health}\nPoints: 0, loser :( )";
+          "\n Coordinates: ${_portalData[portalIndexPressed].lat},${_portalData[portalIndexPressed].long}\n Team: ${_portalData[portalIndexPressed].team}\n Health: ${_portalData[portalIndexPressed].health}\nPoints: 0, loser :( )";
     } else {
       portalInfo = "Please select a portal for more information";
     }
@@ -153,8 +152,8 @@ class _myOutputState extends State<myOutput> {
 
   String selectPortalName() {
     String portalInfo = "";
-    if (_index >= 0) {
-      portalInfo = '${_portalData[_index].name}';
+    if (portalIndexPressed >= 0) {
+      portalInfo = '${_portalData[portalIndexPressed].name}';
     } else {
       portalInfo = "";
     }
@@ -166,12 +165,12 @@ class _myOutputState extends State<myOutput> {
 
   late MapZoomPanBehavior _zoomPanBehavior;
   late List<Portal> _portalData;
-  late int _index = -1;
   late List<LineModel> _linkData;
   late MapShapeLayerController _controller;
   late List<Link> links;
   late MapShapeSource _mapSource;
-  late int indexPressed;
+  late int portalIndexPressed;
+  late int linkIndexPressed;
   late bool hasChosenCenter;
   late int chosenCenterIndex;
   late Widget _hiddenPortal;
@@ -214,7 +213,8 @@ class _myOutputState extends State<myOutput> {
 
     hasChosenCenter = false;
     chosenCenterIndex = -1;
-    indexPressed = -1;
+    portalIndexPressed = -1;
+    linkIndexPressed = -1;
 
     _centerPortal = Container(
       height: 20,
@@ -304,7 +304,7 @@ class _myOutputState extends State<myOutput> {
                         Container(
                           child: TextButton(
                             onPressed: () {
-                              if (indexPressed != -1) {
+                              if (portalIndexPressed != -1) {
                                 setState(() {
                                   for (var p in _portalData) {
                                     if (p.center) {
@@ -314,9 +314,9 @@ class _myOutputState extends State<myOutput> {
                                     }
                                   }
                                   // Update the new center.
-                                  _portalData[indexPressed].center = true;
+                                  _portalData[portalIndexPressed].center = true;
                                   hasChosenCenter = true;
-                                  chosenCenterIndex = indexPressed;
+                                  chosenCenterIndex = portalIndexPressed;
 
                                   // Update the markers
                                   _controller.updateMarkers(List.generate(
@@ -388,8 +388,16 @@ class _myOutputState extends State<myOutput> {
                           child: TextButton(
                             onPressed: () {
                               print('pressed da Delete button'); //remove
-                              Portal portalSelected = _portalData[_index];
-                              deletePortal(portalSelected);
+                              if (portalIndexPressed != -1) {
+                                Portal portalSelected =
+                                    _portalData[portalIndexPressed];
+                                deletePortal(portalSelected);
+                              } else if (linkIndexPressed != -1) {
+                                setState(() {
+                                  links.removeAt(linkIndexPressed);
+                                  linkIndexPressed = -1;
+                                });
+                              }
                             },
                             child: Text("Delete"), //delete
                             style: TextButton.styleFrom(
@@ -501,9 +509,8 @@ class _myOutputState extends State<myOutput> {
               padding: const EdgeInsets.all(1.0),
               child: SfMapsTheme(
                 data: SfMapsThemeData(
-                    shapeHoverColor: Color.fromRGBO(46, 46, 46, 1),
+                    // shapeHoverColor: Color.fromRGBO(46, 46, 46, 1),
                     // shapeHoverStrokeColor: Colors.pink,
-                    selectionColor: Colors.orange,
                     // shapeHoverStrokeWidth: 5,
                     layerColor: Color.fromRGBO(46, 46, 46, 1),
                     layerStrokeWidth: 0),
@@ -521,20 +528,32 @@ class _myOutputState extends State<myOutput> {
                                 links[index].from.lat, links[index].from.long),
                             to: MapLatLng(
                                 links[index].to.lat, links[index].to.long),
-                            color: Colors.white,
+                            color: (index == linkIndexPressed)
+                                ? Color.fromARGB(255, 117, 209, 255)
+                                : Colors.white,
                             width: 5,
                             onTap: () {
                               setState(() {
-                                links.removeAt(index);
+                                // User has selected a link.
+
+                                // Save link index
+                                linkIndexPressed = index;
+                                // Overwrite the portal index
+                                portalIndexPressed = -1;
+                                // This should also update the markers.
+                                _controller.updateMarkers(List.generate(
+                                    _controller.markersCount, (i) => i));
                               });
-                              // _controller.up
+                              print(
+                                  "User pressed the ${links[index].to.name} - ${links[index].from.name}");
                             },
                           );
                         }).toSet(),
                       )
                     ],
                     markerBuilder: (BuildContext context, int index) {
-                      if (_portalData[index].center && index == indexPressed) {
+                      if (_portalData[index].center &&
+                          index == portalIndexPressed) {
                         return MapMarker(
                             latitude: _portalData[index].lat,
                             longitude: _portalData[index].long,
@@ -547,8 +566,10 @@ class _myOutputState extends State<myOutput> {
                                     print(
                                         'Pressed the $index: ${_portalData[index].name} Portal.');
                                     setState(() {
-                                      indexPressed = index;
-                                      _index = index;
+                                      portalIndexPressed = index;
+
+                                      // Update the link index
+                                      linkIndexPressed = -1;
                                       // Update the markers
                                       _controller.updateMarkers(List.generate(
                                           _controller.markersCount, (i) => i));
@@ -587,8 +608,10 @@ class _myOutputState extends State<myOutput> {
                                     print(
                                         'Pressed the $index: ${_portalData[index].name} Portal.');
                                     setState(() {
-                                      indexPressed = index;
-                                      _index = index;
+                                      portalIndexPressed = index;
+
+                                      // Update the link index
+                                      linkIndexPressed = -1;
                                       // Update the markers
                                       _controller.updateMarkers(List.generate(
                                           _controller.markersCount, (i) => i));
@@ -615,7 +638,7 @@ class _myOutputState extends State<myOutput> {
                               )
                             ]));
                       } else if (!_portalData[index].shown &&
-                          index == indexPressed) {
+                          index == portalIndexPressed) {
                         return MapMarker(
                             latitude: _portalData[index].lat,
                             longitude: _portalData[index].long,
@@ -628,8 +651,10 @@ class _myOutputState extends State<myOutput> {
                                       print(
                                           'Pressed the $index: ${_portalData[index].name} Portal.');
                                       setState(() {
-                                        indexPressed = index;
-                                        _index = index;
+                                        portalIndexPressed = index;
+
+                                        // Update the link index
+                                        linkIndexPressed = -1;
                                         // Update the markers
                                         _controller.updateMarkers(List.generate(
                                             _controller.markersCount,
@@ -668,8 +693,10 @@ class _myOutputState extends State<myOutput> {
                                       print(
                                           'Pressed the $index: ${_portalData[index].name} Portal.');
                                       setState(() {
-                                        indexPressed = index;
-                                        _index = index;
+                                        portalIndexPressed = index;
+
+                                        // Update the link index
+                                        linkIndexPressed = -1;
 
                                         // Update the markers
                                         _controller.updateMarkers(List.generate(
@@ -696,7 +723,7 @@ class _myOutputState extends State<myOutput> {
                                 ),
                               )
                             ]));
-                      } else if (index == indexPressed) {
+                      } else if (index == portalIndexPressed) {
                         return MapMarker(
                             latitude: _portalData[index].lat,
                             longitude: _portalData[index].long,
@@ -709,8 +736,10 @@ class _myOutputState extends State<myOutput> {
                                     print(
                                         'Pressed the $index: ${_portalData[index].name} Portal.');
                                     setState(() {
-                                      indexPressed = index;
-                                      _index = index;
+                                      portalIndexPressed = index;
+
+                                      // Update the link index
+                                      linkIndexPressed = -1;
                                       // Update the markers
                                       _controller.updateMarkers(List.generate(
                                           _controller.markersCount, (i) => i));
@@ -749,8 +778,10 @@ class _myOutputState extends State<myOutput> {
                                     print(
                                         'Pressed the $index: ${_portalData[index].name} Portal.');
                                     setState(() {
-                                      indexPressed = index;
-                                      _index = index;
+                                      portalIndexPressed = index;
+
+                                      // Update the link index
+                                      linkIndexPressed = -1;
 
                                       // Update the markers
                                       _controller.updateMarkers(List.generate(
