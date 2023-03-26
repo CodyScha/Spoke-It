@@ -61,15 +61,14 @@ class _myOutputState extends State<myOutput> {
   }
 
   void hidePortal() {
-    //serach through list to find portal, then delete it from the list
-
-    //found portal to hide
-    if (_portalData[portalIndexPressed].shown == false) {
+    setState(() {
+      if (_portalData[portalIndexPressed].shown == false) {
       //switch between hidden and shown
       _portalData[portalIndexPressed].shown = true;
     } else {
       _portalData[portalIndexPressed].shown = false;
     }
+    });
 
     var temp = List.generate(1, (i) => portalIndexPressed);
     _controller.updateMarkers(temp);
@@ -354,21 +353,33 @@ class _myOutputState extends State<myOutput> {
                       children: <Widget>[
                         Container(
                           child: TextButton(
-                            onPressed: (
-                                //create a function that when a portal is clicked it will update a Portal variable,
-                                //the hide function will find that portal in the list and update its +/-
-                                ) {
+                            onPressed: (portalIndexPressed != -1 && !_portalData[portalIndexPressed].center) ? () {
                               hidePortal();
                               print('pressed da Hide button'); //remove
-                            },
-                            child: Text("Hide"),
-                            style: TextButton.styleFrom(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 0.0, horizontal: 52.0),
-                                foregroundColor: Colors.white,
-                                textStyle: const TextStyle(fontSize: 30),
-                                backgroundColor:
-                                    Color.fromARGB(255, 99, 96, 102)),
+                            } : null ,
+                            style: (portalIndexPressed == -1)
+                                  ? TextButton.styleFrom(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 0.0, horizontal: 52.0),
+                                      foregroundColor: Colors.white,
+                                      textStyle: const TextStyle(fontSize: 30),
+                                      backgroundColor:
+                                          Color.fromARGB(255, 99, 96, 102))
+                                  : TextButton.styleFrom(
+                                      padding: _portalData[portalIndexPressed].shown
+                                          ? const EdgeInsets.symmetric(
+                                              vertical: 0.0, horizontal: 52.0)
+                                          : const EdgeInsets.symmetric(
+                                              vertical: 0.0, horizontal: 34.0),
+                                      foregroundColor: Colors.white,
+                                      textStyle: const TextStyle(fontSize: 30),
+                                      backgroundColor: const Color.fromARGB(
+                                          255, 99, 96, 102)),
+                            child: (portalIndexPressed == -1)
+                                  ? Text("Hide")
+                                  : Text(_portalData[portalIndexPressed].shown
+                                      ? "Hide"
+                                      : "Include"),
                           ),
                         )
                       ],
@@ -386,19 +397,24 @@ class _myOutputState extends State<myOutput> {
                       children: <Widget>[
                         Container(
                           child: TextButton(
-                            onPressed: () {
-                              print('pressed da Delete button'); //remove
-                              if (portalIndexPressed != -1) {
-                                Portal portalSelected =
-                                    _portalData[portalIndexPressed];
-                                deletePortal(portalSelected);
-                              } else if (linkIndexPressed != -1) {
-                                setState(() {
-                                  links.removeAt(linkIndexPressed);
-                                  linkIndexPressed = -1;
-                                });
-                              }
-                            },
+                            // We only want the delete button to be active if a link is pressed, or if a non-center portal is pressed.
+                            onPressed: (linkIndexPressed != -1 ||
+                                    (portalIndexPressed != -1 &&
+                                        !_portalData[portalIndexPressed].center))
+                                ? () {
+                                    print('pressed da Delete button'); //remove
+                                    if (portalIndexPressed != -1) {
+                                      Portal portalSelected =
+                                          _portalData[portalIndexPressed];
+                                      deletePortal(portalSelected);
+                                    } else if (linkIndexPressed != -1) {
+                                      setState(() {
+                                        links.removeAt(linkIndexPressed);
+                                        linkIndexPressed = -1;
+                                      });
+                                    }
+                                  }
+                                : null,
                             child: Text("Delete"), //delete
                             style: TextButton.styleFrom(
                                 padding: EdgeInsets.symmetric(
