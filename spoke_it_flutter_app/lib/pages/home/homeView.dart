@@ -10,7 +10,7 @@ import 'package:flutter/widgets.dart';
 import '../Preview/previewPage.dart';
 import '../../source/portals.dart';
 import 'dart:typed_data';
-
+ 
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
 
