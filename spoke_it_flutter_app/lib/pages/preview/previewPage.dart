@@ -379,26 +379,28 @@ class _myPreview extends State<myPreview> {
                               print(indexPressed);
 
                               // Find the previous center and mark it false.
-                              setState(() {
-                                for (var p in _portalData) {
-                                  if (p.center) {
-                                    p.center = false;
-                                    print(
-                                        "${p.name} is no longer the center portal");
+                              if (indexPressed != -1) {
+                                setState(() {
+                                  for (var p in _portalData) {
+                                    if (p.center) {
+                                      p.center = false;
+                                      print(
+                                          "${p.name} is no longer the center portal");
+                                    }
                                   }
-                                }
 
-                                // Update the new center.
-                                _portalData[indexPressed].center = true;
-                                // If the portal was hidden, then it should be shown again.
-                                _portalData[indexPressed].shown = true;
-                                hasChosenCenter = true;
-                                chosenCenterIndex = indexPressed;
+                                  // Update the new center.
+                                  _portalData[indexPressed].center = true;
+                                  // If the portal was hidden, then it should be shown again.
+                                  _portalData[indexPressed].shown = true;
+                                  hasChosenCenter = true;
+                                  chosenCenterIndex = indexPressed;
 
-                                // Update the markers
-                                _controller.updateMarkers(List.generate(
-                                    _controller.markersCount, (i) => i));
-                              });
+                                  // Update the markers
+                                  _controller.updateMarkers(List.generate(
+                                      _controller.markersCount, (i) => i));
+                                });
+                              }
 
                               for (var p in _portalData) {
                                 if (p.center) {

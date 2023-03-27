@@ -50,26 +50,27 @@ class _myOutputState extends State<myOutput> {
     String name = portal.name;
     int portalListlen = _portalData.length;
     setState(() {
-      _portalData.removeAt(_index);
+      _portalData.removeAt(portalIndexPressed);
+      _controller.removeMarkerAt(portalIndexPressed);
+
+      portalIndexPressed = -1;
     });
 
-    _controller.removeMarkerAt(_index);
     var temp = List.generate(_controller.markersCount, (i) => i);
     _controller.updateMarkers(temp);
   }
 
   void hidePortal() {
-    //serach through list to find portal, then delete it from the list
-
-    //found portal to hide
-    if (_portalData[_index].shown == false) {
+    setState(() {
+      if (_portalData[portalIndexPressed].shown == false) {
       //switch between hidden and shown
-      _portalData[_index].shown = true;
+      _portalData[portalIndexPressed].shown = true;
     } else {
-      _portalData[_index].shown = false;
+      _portalData[portalIndexPressed].shown = false;
     }
+    });
 
-    var temp = List.generate(1, (i) => _index);
+    var temp = List.generate(1, (i) => portalIndexPressed);
     _controller.updateMarkers(temp);
   }
 
@@ -229,9 +230,9 @@ class _myOutputState extends State<myOutput> {
 
   String selectPortalInfo() {
     String portalInfo = "";
-    if (_index >= 0) {
+    if (portalIndexPressed >= 0) {
       portalInfo =
-          "\n Coordinates: ${_portalData[_index].lat},${_portalData[_index].long}\n Team: ${_portalData[_index].team}\n Health: ${_portalData[_index].health}\n";
+          "\n Coordinates: ${_portalData[portalIndexPressed].lat},${_portalData[portalIndexPressed].long}\n Team: ${_portalData[portalIndexPressed].team}\n Health: ${_portalData[portalIndexPressed].health}\nPoints: 0, loser :( )";
     } else {
       portalInfo = "Please select a portal for more information";
     }
@@ -240,8 +241,8 @@ class _myOutputState extends State<myOutput> {
 
   String selectPortalName() {
     String portalInfo = "";
-    if (_index >= 0) {
-      portalInfo = '${_portalData[_index].name}';
+    if (portalIndexPressed >= 0) {
+      portalInfo = '${_portalData[portalIndexPressed].name}';
     } else {
       portalInfo = "";
     }
@@ -253,12 +254,12 @@ class _myOutputState extends State<myOutput> {
 
   late MapZoomPanBehavior _zoomPanBehavior;
   late List<Portal> _portalData;
-  late int _index = -1;
   late List<LineModel> _linkData;
   late MapShapeLayerController _controller;
   late List<Link> links;
   late MapShapeSource _mapSource;
-  late int indexPressed;
+  late int portalIndexPressed;
+  late int linkIndexPressed;
   late bool hasChosenCenter;
   late int chosenCenterIndex;
   late Widget _hiddenPortal;
@@ -301,7 +302,8 @@ class _myOutputState extends State<myOutput> {
 
     hasChosenCenter = false;
     chosenCenterIndex = -1;
-    indexPressed = -1;
+    portalIndexPressed = -1;
+    linkIndexPressed = -1;
 
     _centerPortal = Container(
       height: 20,
@@ -378,26 +380,6 @@ class _myOutputState extends State<myOutput> {
                 // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 // crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  // Container(
-                  //   color: Color.fromARGB(255, 7, 175, 7),
-                  //   padding:
-                  //       EdgeInsets.symmetric(vertical: 20.0, horizontal: 120.0),
-                  //   //child: Text('Load Data'),
-                  // ),
-                  // Container(
-                  //   color: Color.fromARGB(255, 173, 16, 16),
-                  //   padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 92.0),
-                  //   child: TextButton(
-                  //       onPressed: () {
-                  //         Navigator.push(
-                  //           context,
-                  //           MaterialPageRoute(
-                  //               builder: (context) =>
-                  //                   MyHomePage(title: 'Prototype: Spoke-It')),
-                  //         );
-                  //       },
-                  //       child: Text('')),
-                  // ),
                   Container(
                     color: Colors.grey[300],
                     padding:
@@ -411,24 +393,25 @@ class _myOutputState extends State<myOutput> {
                         Container(
                           child: TextButton(
                             onPressed: () {
-                              setState(() {
-                                for (var p in _portalData) {
-                                  if (p.center) {
-                                    p.center = false;
-                                    print(
-                                        "${p.name} is no longer the center portal");
+                              if (portalIndexPressed != -1) {
+                                setState(() {
+                                  for (var p in _portalData) {
+                                    if (p.center) {
+                                      p.center = false;
+                                      print(
+                                          "${p.name} is no longer the center portal");
+                                    }
                                   }
-                                }
+                                  // Update the new center.
+                                  _portalData[portalIndexPressed].center = true;
+                                  hasChosenCenter = true;
+                                  chosenCenterIndex = portalIndexPressed;
 
-                                // Update the new center.
-                                _portalData[indexPressed].center = true;
-                                hasChosenCenter = true;
-                                chosenCenterIndex = indexPressed;
-
-                                // Update the markers
-                                _controller.updateMarkers(List.generate(
-                                    _controller.markersCount, (i) => i));
-                              });
+                                  // Update the markers
+                                  _controller.updateMarkers(List.generate(
+                                      _controller.markersCount, (i) => i));
+                                });
+                              }
 
                               for (var p in _portalData) {
                                 if (p.center) {
@@ -460,21 +443,33 @@ class _myOutputState extends State<myOutput> {
                       children: <Widget>[
                         Container(
                           child: TextButton(
-                            onPressed: (
-                                //create a function that when a portal is clicked it will update a Portal variable,
-                                //the hide function will find that portal in the list and update its +/-
-                                ) {
+                            onPressed: (portalIndexPressed != -1 && !_portalData[portalIndexPressed].center) ? () {
                               hidePortal();
                               print('pressed da Hide button'); //remove
-                            },
-                            child: Text("Hide"),
-                            style: TextButton.styleFrom(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 0.0, horizontal: 52.0),
-                                foregroundColor: Colors.white,
-                                textStyle: const TextStyle(fontSize: 30),
-                                backgroundColor:
-                                    Color.fromARGB(255, 99, 96, 102)),
+                            } : null ,
+                            style: (portalIndexPressed == -1)
+                                  ? TextButton.styleFrom(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 0.0, horizontal: 52.0),
+                                      foregroundColor: Colors.white,
+                                      textStyle: const TextStyle(fontSize: 30),
+                                      backgroundColor:
+                                          Color.fromARGB(255, 99, 96, 102))
+                                  : TextButton.styleFrom(
+                                      padding: _portalData[portalIndexPressed].shown
+                                          ? const EdgeInsets.symmetric(
+                                              vertical: 0.0, horizontal: 52.0)
+                                          : const EdgeInsets.symmetric(
+                                              vertical: 0.0, horizontal: 34.0),
+                                      foregroundColor: Colors.white,
+                                      textStyle: const TextStyle(fontSize: 30),
+                                      backgroundColor: const Color.fromARGB(
+                                          255, 99, 96, 102)),
+                            child: (portalIndexPressed == -1)
+                                  ? Text("Hide")
+                                  : Text(_portalData[portalIndexPressed].shown
+                                      ? "Hide"
+                                      : "Include"),
                           ),
                         )
                       ],
@@ -492,11 +487,24 @@ class _myOutputState extends State<myOutput> {
                       children: <Widget>[
                         Container(
                           child: TextButton(
-                            onPressed: () {
-                              print('pressed da Delete button'); //remove
-                              Portal portalSelected = _portalData[_index];
-                              deletePortal(portalSelected);
-                            },
+                            // We only want the delete button to be active if a link is pressed, or if a non-center portal is pressed.
+                            onPressed: (linkIndexPressed != -1 ||
+                                    (portalIndexPressed != -1 &&
+                                        !_portalData[portalIndexPressed].center))
+                                ? () {
+                                    print('pressed da Delete button'); //remove
+                                    if (portalIndexPressed != -1) {
+                                      Portal portalSelected =
+                                          _portalData[portalIndexPressed];
+                                      deletePortal(portalSelected);
+                                    } else if (linkIndexPressed != -1) {
+                                      setState(() {
+                                        links.removeAt(linkIndexPressed);
+                                        linkIndexPressed = -1;
+                                      });
+                                    }
+                                  }
+                                : null,
                             child: Text("Delete"), //delete
                             style: TextButton.styleFrom(
                                 padding: EdgeInsets.symmetric(
@@ -616,7 +624,9 @@ class _myOutputState extends State<myOutput> {
               padding: const EdgeInsets.all(1.0),
               child: SfMapsTheme(
                 data: SfMapsThemeData(
-                    shapeHoverColor: Color.fromRGBO(46, 46, 46, 1),
+                    // shapeHoverColor: Color.fromRGBO(46, 46, 46, 1),
+                    // shapeHoverStrokeColor: Colors.pink,
+                    // shapeHoverStrokeWidth: 5,
                     layerColor: Color.fromRGBO(46, 46, 46, 1),
                     layerStrokeWidth: 0),
                 child: SfMaps(layers: <MapLayer>[
@@ -633,14 +643,32 @@ class _myOutputState extends State<myOutput> {
                                 links[index].from.lat, links[index].from.long),
                             to: MapLatLng(
                                 links[index].to.lat, links[index].to.long),
-                            color: Colors.white,
+                            color: (index == linkIndexPressed)
+                                ? Color.fromARGB(255, 117, 209, 255)
+                                : Colors.white,
                             width: 5,
+                            onTap: () {
+                              setState(() {
+                                // User has selected a link.
+
+                                // Save link index
+                                linkIndexPressed = index;
+                                // Overwrite the portal index
+                                portalIndexPressed = -1;
+                                // This should also update the markers.
+                                _controller.updateMarkers(List.generate(
+                                    _controller.markersCount, (i) => i));
+                              });
+                              print(
+                                  "User pressed the ${links[index].to.name} - ${links[index].from.name}");
+                            },
                           );
                         }).toSet(),
                       )
                     ],
                     markerBuilder: (BuildContext context, int index) {
-                      if (_portalData[index].center && index == indexPressed) {
+                      if (_portalData[index].center &&
+                          index == portalIndexPressed) {
                         return MapMarker(
                             latitude: _portalData[index].lat,
                             longitude: _portalData[index].long,
@@ -653,8 +681,10 @@ class _myOutputState extends State<myOutput> {
                                     print(
                                         'Pressed the $index: ${_portalData[index].name} Portal.');
                                     setState(() {
-                                      indexPressed = index;
-                                      _index = index;
+                                      portalIndexPressed = index;
+
+                                      // Update the link index
+                                      linkIndexPressed = -1;
                                       // Update the markers
                                       _controller.updateMarkers(List.generate(
                                           _controller.markersCount, (i) => i));
@@ -693,8 +723,10 @@ class _myOutputState extends State<myOutput> {
                                     print(
                                         'Pressed the $index: ${_portalData[index].name} Portal.');
                                     setState(() {
-                                      indexPressed = index;
-                                      _index = index;
+                                      portalIndexPressed = index;
+
+                                      // Update the link index
+                                      linkIndexPressed = -1;
                                       // Update the markers
                                       _controller.updateMarkers(List.generate(
                                           _controller.markersCount, (i) => i));
@@ -721,7 +753,7 @@ class _myOutputState extends State<myOutput> {
                               )
                             ]));
                       } else if (!_portalData[index].shown &&
-                          index == indexPressed) {
+                          index == portalIndexPressed) {
                         return MapMarker(
                             latitude: _portalData[index].lat,
                             longitude: _portalData[index].long,
@@ -734,8 +766,10 @@ class _myOutputState extends State<myOutput> {
                                       print(
                                           'Pressed the $index: ${_portalData[index].name} Portal.');
                                       setState(() {
-                                        indexPressed = index;
-                                        _index = index;
+                                        portalIndexPressed = index;
+
+                                        // Update the link index
+                                        linkIndexPressed = -1;
                                         // Update the markers
                                         _controller.updateMarkers(List.generate(
                                             _controller.markersCount,
@@ -774,8 +808,10 @@ class _myOutputState extends State<myOutput> {
                                       print(
                                           'Pressed the $index: ${_portalData[index].name} Portal.');
                                       setState(() {
-                                        indexPressed = index;
-                                        _index = index;
+                                        portalIndexPressed = index;
+
+                                        // Update the link index
+                                        linkIndexPressed = -1;
 
                                         // Update the markers
                                         _controller.updateMarkers(List.generate(
@@ -802,7 +838,7 @@ class _myOutputState extends State<myOutput> {
                                 ),
                               )
                             ]));
-                      } else if (index == indexPressed) {
+                      } else if (index == portalIndexPressed) {
                         return MapMarker(
                             latitude: _portalData[index].lat,
                             longitude: _portalData[index].long,
@@ -815,8 +851,10 @@ class _myOutputState extends State<myOutput> {
                                     print(
                                         'Pressed the $index: ${_portalData[index].name} Portal.');
                                     setState(() {
-                                      indexPressed = index;
-                                      _index = index;
+                                      portalIndexPressed = index;
+
+                                      // Update the link index
+                                      linkIndexPressed = -1;
                                       // Update the markers
                                       _controller.updateMarkers(List.generate(
                                           _controller.markersCount, (i) => i));
@@ -855,8 +893,10 @@ class _myOutputState extends State<myOutput> {
                                     print(
                                         'Pressed the $index: ${_portalData[index].name} Portal.');
                                     setState(() {
-                                      indexPressed = index;
-                                      _index = index;
+                                      portalIndexPressed = index;
+
+                                      // Update the link index
+                                      linkIndexPressed = -1;
 
                                       // Update the markers
                                       _controller.updateMarkers(List.generate(
@@ -929,8 +969,8 @@ Uint8List updateJSONTemplate(List<Portal> markers) {
     var mapdir = Directory('map').create();
   }
   File newFile = File('map/map.json');
-  print('testingtesting');
-  print('this is a test $assetFileStr');
+  // print('testingtesting');
+  // print('this is a test $assetFileStr');
   newFile.writeAsStringSync(assetFileStr);
 
   // * Now, we need to change the coords in the new file
