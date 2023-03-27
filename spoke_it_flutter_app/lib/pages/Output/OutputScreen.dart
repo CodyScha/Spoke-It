@@ -97,7 +97,7 @@ class _myOutputState extends State<myOutput> {
               mode: FileMode.append);
         } else {
           await file.writeAsString(
-              "${_portalData[i].name};${_portalData[i].lat};${_portalData[i].long};${_portalData[i].team};${_portalData[i].health}; - \n",
+              "${_portalData[i].name};${_portalData[i].lat};${_portalData[i].long};${_portalData[i].team};${_portalData[i].health};- \n",
               mode: FileMode.append);
         }
       }
@@ -106,21 +106,110 @@ class _myOutputState extends State<myOutput> {
     }
   }
 
-  void saveNewFile(String filename) async {
-    String? path;
-    /* = await FilesystemPicker.openDialog(
+  TextEditingController _textFieldController = TextEditingController();
+
+  void nameNewFile() async {
+    String value = '';
+    String fname;
+    var result = await showDialog(
       context: context,
-      title: 'Saved Profiles',
-      fsType: FilesystemType.file,
-      rootDirectory: Directory(
-          '../..'), //set to be downloads page(where the txt file will save to automatically)
-      directory: Directory('profiles'),
-      showGoUp: (false),
-      allowedExtensions: ['.txt'],
-      fileTileSelectMode: FileTileSelectMode.wholeTile,
-    );*/
-    path = Directory.current.path;
-    File file = File('$path/$filename.txt');
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Save under this name:'),
+          content: TextField(
+            controller: _textFieldController,
+            decoration: InputDecoration(hintText: "Name your file:"),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('CANCEL'),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+            TextButton(
+              child: Text('OK'),
+              onPressed: () {
+                // setState(() {
+                fname = _textFieldController.text;
+                if (!fname.endsWith('.txt')) {
+                  fname = fname + ".txt";
+                  Navigator.pop(context);
+                }
+
+                if (saveNewFile(fname) != null) {
+                  print("file was saved");
+                  showDialog(
+                    context: context,
+                    builder: (context2) => AlertDialog(
+                      title: Center(child: const Text('File saved!')),
+                      backgroundColor: Colors.green,
+                      actions: <Widget>[
+                        TextButton(
+                          child: const Align(
+                            alignment: Alignment.center,
+                            child: Text('OK'),
+                          ),
+                          onPressed: () {
+                            Navigator.pop(context2);
+                          },
+                        ),
+                      ],
+                    ),
+                  );
+                } else {
+                  showDialog(
+                    context: context,
+                    builder: (context3) => AlertDialog(
+                      title: Center(
+                          child:
+                              const Text('File not saved, please try again')),
+                      backgroundColor: Colors.red,
+                      actions: <Widget>[
+                        TextButton(
+                          child: const Align(
+                            alignment: Alignment.center,
+                            child: Text('OK'),
+                          ),
+                          onPressed: () {
+                            Navigator.pop(context3);
+                          },
+                        ),
+                      ],
+                    ),
+                  );
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
+    // result = _textFieldController.text;
+    // print(result);
+    // return saveNewFile(result);
+  }
+
+  Future<File> saveNewFile(
+    String filename,
+  ) async {
+    bool saved = false;
+    String path;
+    // String? path = await FilesystemPicker.openDialog(
+    //   context: context,
+    //   title: 'Saved Profiles',
+    //   fsType: FilesystemType.file,
+    //   rootDirectory: Directory(
+    //       '../..'), //set to be downloads page(where the txt file will save to automatically)
+    //   directory: Directory('profiles'),
+    //   showGoUp: (false),
+    //   allowedExtensions: ['.txt'],
+    //   fileTileSelectMode: FileTileSelectMode.wholeTile,
+    // );
+    // path = Directory.current.path;
+    path = Directory("profiles").path;
+    print(path);
+    File file = File('$path/$filename');
     //FIX clear file first
     file.writeAsStringSync('');
     int portalListlen = _portalData.length;
@@ -135,6 +224,7 @@ class _myOutputState extends State<myOutput> {
             mode: FileMode.append);
       }
     }
+    return file;
   }
 
   String selectPortalInfo() {
@@ -234,8 +324,8 @@ class _myOutputState extends State<myOutput> {
     _hiddenPortal = Container(
       height: 20,
       width: 20,
-      decoration: BoxDecoration(
-          color: Colors.grey[700], shape: BoxShape.circle),
+      decoration:
+          BoxDecoration(color: Colors.grey[700], shape: BoxShape.circle),
     );
 
     _selectedPortal = Container(
@@ -435,7 +525,16 @@ class _myOutputState extends State<myOutput> {
                             onPressed: () {
                               print('pressed da Save button'); //remove
 
-                              saveFile();
+                              nameNewFile();
+                              // print(nameNewFile());
+                              // Future<String> filename = nameNewFile();
+                              // print("right before if statement");
+                              // print(filename);
+                              // print("right after filenmae before if statement");
+                              // // if (filename is Future<String>) {
+                              // //   print("in if statement" + filename);
+                              // saveNewFile(filename);
+                              // }
                             },
                             child: Text("Save"), //generate
                             style: TextButton.styleFrom(
