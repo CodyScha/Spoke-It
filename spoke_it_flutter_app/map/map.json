@@ -1,0 +1,38 @@
+{
+    "type": "FeatureCollection",
+    "features": [
+        {
+            "type": "Feature",
+            "properties": {
+                "Hidden Message": "Made with <3 by IMFA"
+            },
+            "geometry": {
+                "coordinates": [
+                    [
+                        [
+							-89.997901,
+							38.799676
+                        ],
+                        [
+							-89.990464,
+							38.799676
+                        ],
+                        [
+							-89.990464,
+							38.805061
+                        ],
+                        [
+							-89.997901,
+							38.805061
+                        ],
+                        [
+							-89.997901,
+							38.799676
+                        ]
+                    ]
+                ],
+                "type": "Polygon"
+            }
+        }
+    ]
+}
