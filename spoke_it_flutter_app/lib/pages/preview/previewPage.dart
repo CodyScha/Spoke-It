@@ -952,26 +952,18 @@ Uint8List updateJSONTemplate(List<Portal> portals) {
   double buffer = 0;
   String aggregiousTabs = '\t\t\t\t\t\t\t';
 
-  List<int> coordLatLines = [14, 18, 22, 26, 30];
-  List<int> coordLongLines = [13, 17, 21, 25, 29];
-
   // * First, need to get the JSON from the assets folder
   var assetFileStr = File('assets/siue2.json').readAsStringSync();
-  // var assetFileStr = '';
-  // rootBundle.loadString('assets/siue2.json');
 
   // * Save a copy of the file in a new dir
   if (!Directory('map').existsSync()) {
     var mapdir = Directory('map').create();
   }
   File newFile = File('map/map.json');
-  // print('testingtesting');
-  // print('this is a test $assetFileStr');
   newFile.writeAsStringSync(assetFileStr);
 
   // * Now, we need to change the coords in the new file
   List<String> newFileLines = newFile.readAsLinesSync();
-  // print(newFileLines.length);
 
   // * First, find the extremes for latitude and longitude.
   double maxLat = -91.0;
@@ -990,15 +982,8 @@ Uint8List updateJSONTemplate(List<Portal> portals) {
     minLong = min(m.long, minLong);
   }
 
-  // * Print the results
-  print('maxLat: $maxLat');
-  print('minLat: $minLat');
-  print('maxLong: $maxLong');
-  print('minLong: $minLong');
-
   // * Calculate the buffer to add to the view area. 20% of the width
   buffer = (maxLat - minLat) / 5;
-  // print(buffer);
 
   // * Now, change the newFile lines to the max and mins
   String minLatStr = aggregiousTabs + (minLat - buffer).toString();
@@ -1022,7 +1007,7 @@ Uint8List updateJSONTemplate(List<Portal> portals) {
   newFileLines[29] = minLatStr;
   // * Wasn't that exciting, I love programming 😀
 
-  // newFileLines[16] = '\t\t\t\t\t\t\t-89.850000000,';
+  // * Write the lines to the new file.
   String combineLines = '';
   for (var l in newFileLines) {
     combineLines += '$l\n';
