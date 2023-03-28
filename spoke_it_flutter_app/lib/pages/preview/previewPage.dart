@@ -949,7 +949,7 @@ class _myPreview extends State<myPreview> {
 }
 
 Uint8List updateJSONTemplate(List<Portal> portals) {
-  double buffer = 0.0001;
+  double buffer = 0;
   String aggregiousTabs = '\t\t\t\t\t\t\t';
 
   List<int> coordLatLines = [14, 18, 22, 26, 30];
@@ -995,6 +995,10 @@ Uint8List updateJSONTemplate(List<Portal> portals) {
   print('minLat: $minLat');
   print('maxLong: $maxLong');
   print('minLong: $minLong');
+
+  // * Calculate the buffer to add to the view area. 20% of the width
+  buffer = (maxLat - minLat) / 5;
+  // print(buffer);
 
   // * Now, change the newFile lines to the max and mins
   String minLatStr = aggregiousTabs + (minLat - buffer).toString();

@@ -609,25 +609,23 @@ class _myOutputState extends State<myOutput> {
                     borderRadius: BorderRadius.circular(5),
                     child: Stack(
                       children: <Widget>[
-                        Container(
-                          child: TextButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        Preview(portals: _portalData)),
-                              );
-                              print('pressed da Go Back button');
-                            },
-                            child: Text("Go Back"), //generate
-                            style: TextButton.styleFrom(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 0.0, horizontal: 32.0),
-                                foregroundColor: Colors.white,
-                                textStyle: const TextStyle(fontSize: 30),
-                                backgroundColor: Colors.indigo),
-                          ),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      Preview(portals: _portalData)),
+                            );
+                            print('pressed da Go Back button');
+                          },
+                          child: Text("Go Back"), //generate
+                          style: TextButton.styleFrom(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 0.0, horizontal: 32.0),
+                              foregroundColor: Colors.white,
+                              textStyle: const TextStyle(fontSize: 30),
+                              backgroundColor: Colors.indigo),
                         )
                       ],
                     ),
@@ -962,17 +960,8 @@ class _myOutputState extends State<myOutput> {
   }
 }
 
-class MarkerModel {
-  MarkerModel(this.name, this.latitude, this.longitude, this.color);
-
-  final String name;
-  final double latitude;
-  final double longitude;
-  Color color;
-}
-
-Uint8List updateJSONTemplate(List<Portal> markers) {
-  double buffer = 0.0001;
+Uint8List updateJSONTemplate(List<Portal> portals) {
+  double buffer = 0;
   String aggregiousTabs = '\t\t\t\t\t\t\t';
 
   List<int> coordLatLines = [14, 18, 22, 26, 30];
@@ -1003,7 +992,7 @@ Uint8List updateJSONTemplate(List<Portal> markers) {
   double minLong = 181.0;
 
   // * Iterate through the markers to find the extremes
-  for (var m in markers) {
+  for (var m in portals) {
     // * Latitude
     maxLat = max(m.lat, maxLat);
     minLat = min(m.lat, minLat);
@@ -1018,6 +1007,10 @@ Uint8List updateJSONTemplate(List<Portal> markers) {
   print('minLat: $minLat');
   print('maxLong: $maxLong');
   print('minLong: $minLong');
+
+  // * Calculate the buffer to add to the view area. 20% of the width
+  buffer = (maxLat - minLat) / 5;
+  // print(buffer);
 
   // * Now, change the newFile lines to the max and mins
   String minLatStr = aggregiousTabs + (minLat - buffer).toString();
