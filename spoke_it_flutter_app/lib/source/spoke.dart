@@ -3,6 +3,9 @@ import 'dart:math';
 
 class Spoke {
   List<Link> algorithm(List<Portal> portals, bool showCenterLinks) {
+    //state reset in case of subsequent algorithm call
+    resetHull(portals);
+    
     //the list of links created by the algorithm
     List<Link> links = [];
 
@@ -25,6 +28,14 @@ class Spoke {
     links.addAll(internalLinks(shownPortalList, jarvisResults[1]));
 
     return links;
+  }
+
+  //state reset needed for subsequent algorithm calls
+  //jarvis will break if some hull values are true before jarvis is called
+  void resetHull(List<Portal> portals) {
+    for (Portal portal in portals) {
+      portal.hull = false;
+    }
   }
 
   //returns list of portals that are not hidden since we don't want to include these in the algorithm
