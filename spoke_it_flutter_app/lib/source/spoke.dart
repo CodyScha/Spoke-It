@@ -27,8 +27,10 @@ class Spoke {
   int totalPoints(List<Portal> portals, List<Link> links) {
     int points;
     List<Field> fields = [];
-    fields.addAll(createFieldList(links));
-    points = calculatePoints(portals.length, fields.length, links.length);
+    List<Portal> shownPortalList = shownPortals(portals);
+    fields.addAll(createFieldList(links, shownPortalList));
+    points =
+        calculatePoints(shownPortalList.length, fields.length, links.length);
     return points;
   }
 
@@ -170,8 +172,7 @@ class Spoke {
       //find the portals in the wedge, including the center and two "hull points"
       List<Portal> wedgePortals =
           portalsInWedge(portals, hullPortals[i], hullPortals[i + 1]);
-      links.addAll(
-          maxWedge(wedgePortals, hullPortals[i], hullPortals[i + 1]));
+      links.addAll(maxWedge(wedgePortals, hullPortals[i], hullPortals[i + 1]));
     }
 
     //Previous loop doesn't find links in the wedge between last hull portal and first hull portal
@@ -243,8 +244,11 @@ class Spoke {
         yDifOne = wedgeOne.long - portal.long;
         xDifTwo = wedgeTwo.lat - portal.lat;
         yDifTwo = wedgeTwo.long - portal.long;
-        if (sqrt(pow(xDifOne, 2) + pow(yDifOne, 2)) + sqrt(pow(xDifTwo, 2) + pow(yDifTwo, 2)) < distance) {
-          distance = sqrt(pow(xDifOne, 2) + pow(yDifOne, 2)) + sqrt(pow(xDifTwo, 2) + pow(yDifTwo, 2));
+        if (sqrt(pow(xDifOne, 2) + pow(yDifOne, 2)) +
+                sqrt(pow(xDifTwo, 2) + pow(yDifTwo, 2)) <
+            distance) {
+          distance = sqrt(pow(xDifOne, 2) + pow(yDifOne, 2)) +
+              sqrt(pow(xDifTwo, 2) + pow(yDifTwo, 2));
           furthest = portal;
         }
       }
@@ -304,7 +308,7 @@ class Spoke {
     //if the convex hull has four portals, the portal is outside the wedge
     if (hull.length != 3) return false;
 
-    //if any of the three portals in the hull are not the center or two wedge portals, 
+    //if any of the three portals in the hull are not the center or two wedge portals,
     //the portal is outside of the wedge
     for (Portal portal in hull) {
       if (!portal.center && portal != wedgeOne && portal != wedgeTwo) {
@@ -344,26 +348,44 @@ class Spoke {
 
     return totalPoints;
   } */ //for if we decide to do an array of points vs one total points
-  List<Field> createFieldList(List<Link> links) {
+  List<Field> createFieldList(List<Link> links, List<Portal> portals) {
     List<Field> fields = [];
+    Field field = Field(
+        portalOne: portals[0], portalTwo: portals[0], portalThree: portals[0]);
 
-    for (int i = 0; i < links.length; i++) {
-      //This loads fields with the links
+    for (int i = 0; i < portals.length; i++) {
+      field.portalOne = portals[i];
       for (int j = 0; j < links.length; j++) {
-        for (int k = 0; k < links.length; k++) {
-          if (links[i].from == links[k].to && //first portal check
-              links[j].from == links[i].to && //second portal check
-              links[k].from == links[j].to) //third portal check
-          {
-            Field field = new Field(
-              portalOne: links[i].from,
-              portalTwo: links[j].from,
-              portalThree: links[k].from,
-            );
-            fields.add(field);
-          }
+        if (field.portalOne == links[j].to) {
+          field.portalTwo = links[j].from;
+        } else if (field.portalOne == links[j].from) {
+          field.portalTwo = links[j].to;
         }
       }
+
+      for (int j = 0; j < links.length; j++) {
+        if (field.portalTwo == links[j].to &&
+            links[j].from != field.portalOne) {
+          field.portalThree = links[j].from;
+        } else if (field.portalTwo == links[j].from &&
+            links[j].to != field.portalOne) {
+          field.portalThree = links[j].to;
+        }
+      }
+      for (int j = 0; j < links.length; j++) {
+        if (field.portalOne == links[j].to &&
+            field.portalThree == links[j].from) {
+          fields.add(field);
+        } else if (field.portalOne == links[j].from &&
+            field.portalThree == links[j].to) {
+          fields.add(field);
+        }
+      }
+      //iterate through portals list with portals[i]
+      //check the links in list links that link to portals[i]
+      //take the portal from the link that portal[i] links to and check its links
+      //then take the final portal link to check if it links back to portal[i]
+      //ex
     }
     //used for deleting duplicates
     for (int i = 0; i < fields.length; i++) {
