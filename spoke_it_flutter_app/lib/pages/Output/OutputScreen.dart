@@ -966,6 +966,7 @@ class _myOutputState extends State<myOutput> {
                 ),
               ),
             ),
+            // * Button to toggle the center links
             Padding(
               padding: const EdgeInsets.only(top: 8.5),
               child: Tooltip(
@@ -1011,7 +1012,6 @@ Uint8List updateJSONTemplate(List<Portal> portals) {
 
   // * Save a copy of the file in a new dir
   if (!Directory('map').existsSync()) {
-    var mapdir = Directory('map').create();
   }
   File newFile = File('map/map.json');
   newFile.writeAsStringSync(assetFileStr);
