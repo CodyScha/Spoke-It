@@ -58,16 +58,24 @@ class _myOutputState extends State<myOutput> {
 
     var temp = List.generate(_controller.markersCount, (i) => i);
     _controller.updateMarkers(temp);
+
+    // Here, we should pass the new portals list and recalculate the links
+    Spoke alg = Spoke();
+    links = alg.algorithm(_portalData);
   }
 
   void hidePortal() {
     setState(() {
       if (_portalData[portalIndexPressed].shown == false) {
-      //switch between hidden and shown
-      _portalData[portalIndexPressed].shown = true;
-    } else {
-      _portalData[portalIndexPressed].shown = false;
-    }
+        //switch between hidden and shown
+        _portalData[portalIndexPressed].shown = true;
+      } else {
+        _portalData[portalIndexPressed].shown = false;
+      }
+
+      // Here, we should pass the new portals list and recalculate the links
+      Spoke alg = Spoke();
+      links = alg.algorithm(_portalData);
     });
 
     var temp = List.generate(1, (i) => portalIndexPressed);
@@ -290,13 +298,6 @@ class _myOutputState extends State<myOutput> {
     Spoke alg = new Spoke();
     links = alg.algorithm(portals);
 
-    Link testLink;
-
-    for (int i = 0; i < links.length; ++i) {
-      testLink = links[i];
-      print('link: $testLink');
-    }
-
     _controller = MapShapeLayerController();
     _mapSource = MapShapeSource.memory(updateJSONTemplate(_portalData));
 
@@ -404,6 +405,7 @@ class _myOutputState extends State<myOutput> {
                                   }
                                   // Update the new center.
                                   _portalData[portalIndexPressed].center = true;
+                                  _portalData[portalIndexPressed].shown = true;
                                   hasChosenCenter = true;
                                   chosenCenterIndex = portalIndexPressed;
 
@@ -418,6 +420,10 @@ class _myOutputState extends State<myOutput> {
                                   print("${p.name} is the new center portal");
                                 }
                               }
+
+                              // Here, we should pass the new portals list and recalculate the links
+                              Spoke alg = Spoke();
+                              links = alg.algorithm(_portalData);
                             },
                             child: Text("Center"), //Center
                             style: TextButton.styleFrom(
@@ -443,33 +449,38 @@ class _myOutputState extends State<myOutput> {
                       children: <Widget>[
                         Container(
                           child: TextButton(
-                            onPressed: (portalIndexPressed != -1 && !_portalData[portalIndexPressed].center) ? () {
-                              hidePortal();
-                              print('pressed da Hide button'); //remove
-                            } : null ,
+                            onPressed: (portalIndexPressed != -1 &&
+                                    !_portalData[portalIndexPressed].center)
+                                ? () {
+                                    hidePortal();
+                                    print('pressed da Hide button'); //remove
+                                  }
+                                : null,
                             style: (portalIndexPressed == -1)
-                                  ? TextButton.styleFrom(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 0.0, horizontal: 52.0),
-                                      foregroundColor: Colors.white,
-                                      textStyle: const TextStyle(fontSize: 30),
-                                      backgroundColor:
-                                          Color.fromARGB(255, 99, 96, 102))
-                                  : TextButton.styleFrom(
-                                      padding: _portalData[portalIndexPressed].shown
-                                          ? const EdgeInsets.symmetric(
-                                              vertical: 0.0, horizontal: 52.0)
-                                          : const EdgeInsets.symmetric(
-                                              vertical: 0.0, horizontal: 34.0),
-                                      foregroundColor: Colors.white,
-                                      textStyle: const TextStyle(fontSize: 30),
-                                      backgroundColor: const Color.fromARGB(
-                                          255, 99, 96, 102)),
+                                ? TextButton.styleFrom(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 0.0, horizontal: 52.0),
+                                    foregroundColor: Colors.white,
+                                    textStyle: const TextStyle(fontSize: 30),
+                                    backgroundColor:
+                                        Color.fromARGB(255, 99, 96, 102))
+                                : TextButton.styleFrom(
+                                    padding:
+                                        _portalData[portalIndexPressed].shown
+                                            ? const EdgeInsets.symmetric(
+                                                vertical: 0.0, horizontal: 52.0)
+                                            : const EdgeInsets.symmetric(
+                                                vertical: 0.0,
+                                                horizontal: 34.0),
+                                    foregroundColor: Colors.white,
+                                    textStyle: const TextStyle(fontSize: 30),
+                                    backgroundColor:
+                                        const Color.fromARGB(255, 99, 96, 102)),
                             child: (portalIndexPressed == -1)
-                                  ? Text("Hide")
-                                  : Text(_portalData[portalIndexPressed].shown
-                                      ? "Hide"
-                                      : "Include"),
+                                ? Text("Hide")
+                                : Text(_portalData[portalIndexPressed].shown
+                                    ? "Hide"
+                                    : "Include"),
                           ),
                         )
                       ],
@@ -490,7 +501,8 @@ class _myOutputState extends State<myOutput> {
                             // We only want the delete button to be active if a link is pressed, or if a non-center portal is pressed.
                             onPressed: (linkIndexPressed != -1 ||
                                     (portalIndexPressed != -1 &&
-                                        !_portalData[portalIndexPressed].center))
+                                        !_portalData[portalIndexPressed]
+                                            .center))
                                 ? () {
                                     print('pressed da Delete button'); //remove
                                     if (portalIndexPressed != -1) {
@@ -590,25 +602,23 @@ class _myOutputState extends State<myOutput> {
                     borderRadius: BorderRadius.circular(5),
                     child: Stack(
                       children: <Widget>[
-                        Container(
-                          child: TextButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        Preview(portals: _portalData)),
-                              );
-                              print('pressed da Go Back button');
-                            },
-                            child: Text("Go Back"), //generate
-                            style: TextButton.styleFrom(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 0.0, horizontal: 32.0),
-                                foregroundColor: Colors.white,
-                                textStyle: const TextStyle(fontSize: 30),
-                                backgroundColor: Colors.indigo),
-                          ),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      Preview(portals: _portalData)),
+                            );
+                            print('pressed da Go Back button');
+                          },
+                          child: Text("Go Back"), //generate
+                          style: TextButton.styleFrom(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 0.0, horizontal: 32.0),
+                              foregroundColor: Colors.white,
+                              textStyle: const TextStyle(fontSize: 30),
+                              backgroundColor: Colors.indigo),
                         )
                       ],
                     ),
@@ -943,39 +953,22 @@ class _myOutputState extends State<myOutput> {
   }
 }
 
-class MarkerModel {
-  MarkerModel(this.name, this.latitude, this.longitude, this.color);
-
-  final String name;
-  final double latitude;
-  final double longitude;
-  Color color;
-}
-
-Uint8List updateJSONTemplate(List<Portal> markers) {
-  double buffer = 0.0001;
+Uint8List updateJSONTemplate(List<Portal> portals) {
+  double buffer = 0;
   String aggregiousTabs = '\t\t\t\t\t\t\t';
-
-  List<int> coordLatLines = [14, 18, 22, 26, 30];
-  List<int> coordLongLines = [13, 17, 21, 25, 29];
 
   // * First, need to get the JSON from the assets folder
   var assetFileStr = File('assets/siue2.json').readAsStringSync();
-  // var assetFileStr = '';
-  // rootBundle.loadString('assets/siue2.json');
 
   // * Save a copy of the file in a new dir
   if (!Directory('map').existsSync()) {
     var mapdir = Directory('map').create();
   }
   File newFile = File('map/map.json');
-  // print('testingtesting');
-  // print('this is a test $assetFileStr');
   newFile.writeAsStringSync(assetFileStr);
 
   // * Now, we need to change the coords in the new file
   List<String> newFileLines = newFile.readAsLinesSync();
-  // print(newFileLines.length);
 
   // * First, find the extremes for latitude and longitude.
   double maxLat = -91.0;
@@ -984,7 +977,7 @@ Uint8List updateJSONTemplate(List<Portal> markers) {
   double minLong = 181.0;
 
   // * Iterate through the markers to find the extremes
-  for (var m in markers) {
+  for (var m in portals) {
     // * Latitude
     maxLat = max(m.lat, maxLat);
     minLat = min(m.lat, minLat);
@@ -994,11 +987,8 @@ Uint8List updateJSONTemplate(List<Portal> markers) {
     minLong = min(m.long, minLong);
   }
 
-  // * Print the results
-  print('maxLat: $maxLat');
-  print('minLat: $minLat');
-  print('maxLong: $maxLong');
-  print('minLong: $minLong');
+  // * Calculate the buffer to add to the view area. 20% of the width
+  buffer = (maxLat - minLat) / 5;
 
   // * Now, change the newFile lines to the max and mins
   String minLatStr = aggregiousTabs + (minLat - buffer).toString();
@@ -1022,7 +1012,7 @@ Uint8List updateJSONTemplate(List<Portal> markers) {
   newFileLines[29] = minLatStr;
   // * Wasn't that exciting, I love programming 😀
 
-  // newFileLines[16] = '\t\t\t\t\t\t\t-89.850000000,';
+  // * Write the lines to the new file.
   String combineLines = '';
   for (var l in newFileLines) {
     combineLines += '$l\n';
