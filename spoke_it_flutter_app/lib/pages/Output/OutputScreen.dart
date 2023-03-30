@@ -276,6 +276,8 @@ class _myOutputState extends State<myOutput> {
   late Widget _centerPortal;
   late Widget _selectedCenterPortal;
 
+  bool toggleCenterLinks = false;
+
   void initState() {
     _zoomPanBehavior = MapZoomPanBehavior(
         enableDoubleTapZooming: true,
@@ -296,7 +298,7 @@ class _myOutputState extends State<myOutput> {
     // ];
 
     Spoke alg = new Spoke();
-    links = alg.algorithm(portals);
+    links = alg.algorithm(portals, toggleCenterLinks);
 
     _controller = MapShapeLayerController();
     _mapSource = MapShapeSource.memory(updateJSONTemplate(_portalData));

@@ -2,7 +2,7 @@ import 'package:spoke_it_flutter_app/source/portals.dart';
 import 'dart:math';
 
 class Spoke {
-  List<Link> algorithm(List<Portal> portals) {
+  List<Link> algorithm(List<Portal> portals, bool showCenterLinks) {
     //the list of links created by the algorithm
     List<Link> links = [];
 
@@ -12,11 +12,13 @@ class Spoke {
     //calculate links in hull
     links.addAll(jarvis(shownPortalList)[0]);
 
-    //connect hull to center
-    links.addAll(hullToCenter(shownPortalList));
+    if (showCenterLinks) {
+      //connect hull to center
+      links.addAll(hullToCenter(shownPortalList));
 
-    //connect internal portals to center
-    links.addAll(internalToCenter(shownPortalList));
+      //connect internal portals to center
+      links.addAll(internalToCenter(shownPortalList));
+    }
 
     //calculate links of portals inside hull
     links.addAll(internalLinks(shownPortalList));
@@ -162,8 +164,7 @@ class Spoke {
       //find the portals in the wedge, including the center and two "hull points"
       List<Portal> wedgePortals =
           portalsInWedge(portals, hullPortals[i], hullPortals[i + 1]);
-      links.addAll(
-          maxWedge(wedgePortals, hullPortals[i], hullPortals[i + 1]));
+      links.addAll(maxWedge(wedgePortals, hullPortals[i], hullPortals[i + 1]));
     }
 
     //Previous loop doesn't find links in the wedge between last hull portal and first hull portal
@@ -235,8 +236,11 @@ class Spoke {
         yDifOne = wedgeOne.long - portal.long;
         xDifTwo = wedgeTwo.lat - portal.lat;
         yDifTwo = wedgeTwo.long - portal.long;
-        if (sqrt(pow(xDifOne, 2) + pow(yDifOne, 2)) + sqrt(pow(xDifTwo, 2) + pow(yDifTwo, 2)) < distance) {
-          distance = sqrt(pow(xDifOne, 2) + pow(yDifOne, 2)) + sqrt(pow(xDifTwo, 2) + pow(yDifTwo, 2));
+        if (sqrt(pow(xDifOne, 2) + pow(yDifOne, 2)) +
+                sqrt(pow(xDifTwo, 2) + pow(yDifTwo, 2)) <
+            distance) {
+          distance = sqrt(pow(xDifOne, 2) + pow(yDifOne, 2)) +
+              sqrt(pow(xDifTwo, 2) + pow(yDifTwo, 2));
           furthest = portal;
         }
       }
@@ -296,7 +300,7 @@ class Spoke {
     //if the convex hull has four portals, the portal is outside the wedge
     if (hull.length != 3) return false;
 
-    //if any of the three portals in the hull are not the center or two wedge portals, 
+    //if any of the three portals in the hull are not the center or two wedge portals,
     //the portal is outside of the wedge
     for (Portal portal in hull) {
       if (!portal.center && portal != wedgeOne && portal != wedgeTwo) {
