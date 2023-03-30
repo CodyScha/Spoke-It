@@ -10,7 +10,8 @@ class Spoke {
     List<Portal> shownPortalList = shownPortals(portals);
 
     //calculate links in hull
-    links.addAll(jarvis(shownPortalList)[0]);
+    List jarvisResults = jarvis(shownPortalList);
+    links.addAll(jarvisResults[0]);
 
     if (showCenterLinks) {
       //connect hull to center
@@ -21,7 +22,7 @@ class Spoke {
     }
 
     //calculate links of portals inside hull
-    links.addAll(internalLinks(shownPortalList));
+    links.addAll(internalLinks(shownPortalList, jarvisResults[1]));
 
     return links;
   }
@@ -56,6 +57,8 @@ class Spoke {
     // times where h is number of points in result or output.
     int p = l, q;
     do {
+      if (portals[p].hull == true) break;
+
       hullList.add(portals[p]);
       portals[p].hull = true;
       // Search for a point 'q' such that orientation(p, q,
@@ -148,9 +151,8 @@ class Spoke {
     return links;
   }
 
-  List<Link> internalLinks(List<Portal> portals) {
+  List<Link> internalLinks(List<Portal> portals, List<Portal> hullPortals) {
     List<Link> links = [];
-    List<Portal> hullPortals = jarvis(portals)[1];
     List<Portal> wedgePortals = [];
     Portal center;
 
@@ -290,6 +292,8 @@ class Spoke {
     //create copy of portals list so our real portals don't get edited by jarvis march
     for (Portal portal in portals) {
       Portal tempPortal = portal;
+      //need to set this back to false or jarvis will break
+      tempPortal.hull = false;
       temp.add(tempPortal);
     }
 
