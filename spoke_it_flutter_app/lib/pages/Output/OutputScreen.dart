@@ -61,7 +61,7 @@ class _myOutputState extends State<myOutput> {
 
     // Here, we should pass the new portals list and recalculate the links
     Spoke alg = Spoke();
-    links = alg.algorithm(_portalData, true);
+    links = alg.algorithm(_portalData, toggleCenterLinks);
   }
 
   void hidePortal() {
@@ -75,7 +75,7 @@ class _myOutputState extends State<myOutput> {
 
       // Here, we should pass the new portals list and recalculate the links
       Spoke alg = Spoke();
-      links = alg.algorithm(_portalData, true);
+      links = alg.algorithm(_portalData, toggleCenterLinks);
     });
 
     var temp = List.generate(1, (i) => portalIndexPressed);
@@ -425,7 +425,7 @@ class _myOutputState extends State<myOutput> {
 
                               // Here, we should pass the new portals list and recalculate the links
                               Spoke alg = Spoke();
-                              links = alg.algorithm(_portalData, true);
+                              links = alg.algorithm(_portalData, toggleCenterLinks);
                             },
                             child: Text("Center"), //Center
                             style: TextButton.styleFrom(
