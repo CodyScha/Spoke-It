@@ -10,7 +10,8 @@ class Spoke {
     List<Portal> shownPortalList = shownPortals(portals);
 
     //calculate links in hull
-    links.addAll(jarvis(shownPortalList)[0]);
+    List jarvisResults = jarvis(shownPortalList);
+    links.addAll(jarvisResults[0]);
 
     //connect hull to center
     links.addAll(hullToCenter(shownPortalList));
@@ -19,7 +20,7 @@ class Spoke {
     links.addAll(internalToCenter(shownPortalList));
 
     //calculate links of portals inside hull
-    links.addAll(internalLinks(shownPortalList));
+    links.addAll(internalLinks(shownPortalList, jarvisResults[1]));
 
     return links;
   }
@@ -54,6 +55,8 @@ class Spoke {
     // times where h is number of points in result or output.
     int p = l, q;
     do {
+      if (portals[p].hull == true) break;
+
       hullList.add(portals[p]);
       portals[p].hull = true;
       // Search for a point 'q' such that orientation(p, q,
@@ -146,9 +149,8 @@ class Spoke {
     return links;
   }
 
-  List<Link> internalLinks(List<Portal> portals) {
+  List<Link> internalLinks(List<Portal> portals, List<Portal> hullPortals) {
     List<Link> links = [];
-    List<Portal> hullPortals = jarvis(portals)[1];
     List<Portal> wedgePortals = [];
     Portal center;
 
@@ -162,8 +164,7 @@ class Spoke {
       //find the portals in the wedge, including the center and two "hull points"
       List<Portal> wedgePortals =
           portalsInWedge(portals, hullPortals[i], hullPortals[i + 1]);
-      links.addAll(
-          maxWedge(wedgePortals, hullPortals[i], hullPortals[i + 1]));
+      links.addAll(maxWedge(wedgePortals, hullPortals[i], hullPortals[i + 1]));
     }
 
     //Previous loop doesn't find links in the wedge between last hull portal and first hull portal
@@ -235,8 +236,11 @@ class Spoke {
         yDifOne = wedgeOne.long - portal.long;
         xDifTwo = wedgeTwo.lat - portal.lat;
         yDifTwo = wedgeTwo.long - portal.long;
-        if (sqrt(pow(xDifOne, 2) + pow(yDifOne, 2)) + sqrt(pow(xDifTwo, 2) + pow(yDifTwo, 2)) < distance) {
-          distance = sqrt(pow(xDifOne, 2) + pow(yDifOne, 2)) + sqrt(pow(xDifTwo, 2) + pow(yDifTwo, 2));
+        if (sqrt(pow(xDifOne, 2) + pow(yDifOne, 2)) +
+                sqrt(pow(xDifTwo, 2) + pow(yDifTwo, 2)) <
+            distance) {
+          distance = sqrt(pow(xDifOne, 2) + pow(yDifOne, 2)) +
+              sqrt(pow(xDifTwo, 2) + pow(yDifTwo, 2));
           furthest = portal;
         }
       }
@@ -286,6 +290,8 @@ class Spoke {
     //create copy of portals list so our real portals don't get edited by jarvis march
     for (Portal portal in portals) {
       Portal tempPortal = portal;
+      //need to set this back to false or jarvis will break
+      tempPortal.hull = false;
       temp.add(tempPortal);
     }
 
@@ -296,7 +302,7 @@ class Spoke {
     //if the convex hull has four portals, the portal is outside the wedge
     if (hull.length != 3) return false;
 
-    //if any of the three portals in the hull are not the center or two wedge portals, 
+    //if any of the three portals in the hull are not the center or two wedge portals,
     //the portal is outside of the wedge
     for (Portal portal in hull) {
       if (!portal.center && portal != wedgeOne && portal != wedgeTwo) {
