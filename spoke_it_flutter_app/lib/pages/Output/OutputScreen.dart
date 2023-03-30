@@ -7,6 +7,7 @@ import 'package:syncfusion_flutter_maps/maps.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:filesystem_picker/filesystem_picker.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:intl/intl.dart';
 
 import '../DisplayPortals/DisplayPortal.dart';
 import '../Preview/previewPage.dart';
@@ -277,6 +278,7 @@ class _myOutputState extends State<myOutput> {
   late Widget _selectedCenterPortal;
 
   bool toggleCenterLinks = true;
+  NumberFormat formatter = NumberFormat.decimalPattern();
 
   void initState() {
     _zoomPanBehavior = MapZoomPanBehavior(
@@ -995,6 +997,42 @@ class _myOutputState extends State<myOutput> {
                       color: Colors.grey),
                 ),
               ),
+            ),
+            Container(
+              alignment: Alignment.bottomCenter,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 9.0, bottom: 9.0),
+                child: Container(
+                  decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(5)),
+                      color: Colors.white),
+                  alignment: Alignment.center,
+                  // color: Colors.white,
+                  // width: 150,
+                  height: 42,
+                  // ignore: prefer_const_constructors
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    // child: Text(
+                    //   "Total Points: ${_portalData.length * 100}",
+                    //   textScaleFactor: 1.35,
+                    //   style: const TextStyle(fontWeight: FontWeight.bold),
+                    child: RichText(
+                      text: TextSpan(
+                          style: const TextStyle(color: Colors.black, fontSize: 17),
+                          children: <TextSpan>[
+                            const TextSpan(text: "Total Points: "),
+                            TextSpan(
+                                text:
+                                    formatter.format(_portalData.length * 10000),
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.green))
+                          ]),
+                    ),
+                  ),
+                ),
+              ),
             )
           ]),
         ],
@@ -1011,8 +1049,7 @@ Uint8List updateJSONTemplate(List<Portal> portals) {
   var assetFileStr = File('assets/siue2.json').readAsStringSync();
 
   // * Save a copy of the file in a new dir
-  if (!Directory('map').existsSync()) {
-  }
+  if (!Directory('map').existsSync()) {}
   File newFile = File('map/map.json');
   newFile.writeAsStringSync(assetFileStr);
 
