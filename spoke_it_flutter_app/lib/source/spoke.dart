@@ -5,7 +5,7 @@ class Spoke {
   List<Link> algorithm(List<Portal> portals, bool showCenterLinks) {
     //state reset in case of subsequent algorithm call
     resetHull(portals);
-    
+
     //the list of links created by the algorithm
     List<Link> links = [];
 
@@ -22,6 +22,10 @@ class Spoke {
 
       //connect internal portals to center
       links.addAll(internalToCenter(shownPortalList));
+    } else {
+      //if center is part of hull, jarvis added links to it
+      //even if showCenterLinks was false. This deletes them
+      deleteCenterHullLinks(portals, links);
     }
 
     //calculate links of portals inside hull
@@ -35,6 +39,36 @@ class Spoke {
   void resetHull(List<Portal> portals) {
     for (Portal portal in portals) {
       portal.hull = false;
+    }
+  }
+
+  //function to delete hull links to center if the center is part of whole
+  //and if showCenterLinks is false
+  void deleteCenterHullLinks(List<Portal> portals, List<Link> links) {
+    //indexes of links to remove
+    int i1 = -1;
+    int i2 = -1;
+    bool firstFound = false;
+    bool centerInHull = false;
+    for (Portal portal in portals) {
+      if (portal.center == true && portal.hull == true) {
+        for (Link link in links) {
+          if (link.to == portal || link.from == portal) {
+            if (!firstFound) {
+              i1 = links.indexOf(link);
+              firstFound = true;
+              centerInHull = true;
+            } else {
+              i2 = links.indexOf(link);
+            }
+          }
+        }
+      }
+    }
+    //wow this was not fun to debug :)
+    if (centerInHull) {
+      links.remove(links[i1]);
+      links.remove(links[i2 - 1]);
     }
   }
 
