@@ -40,6 +40,11 @@ dependencies:
   syncfusion_flutter_maps: ^20.4.43
   syncfusion_flutter_core: ^20.4.44
 
+  window_size:
+    git:
+      url: https://github.com/google/flutter-desktop-embedding
+      path: plugins/window_size
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

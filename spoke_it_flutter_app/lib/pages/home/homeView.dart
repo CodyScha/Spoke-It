@@ -167,24 +167,29 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ],
           ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Container(
-                padding: EdgeInsets.only(left: 200.0),
-                child: Text(
-                  'Spoke-It',
-                  textAlign: TextAlign.center,
-                  overflow: TextOverflow.ellipsis,
-                  textScaleFactor: 8.0,
-                  style: TextStyle(
-                      color: Colors.indigo[400],
-                      fontStyle: FontStyle.italic,
-                      fontWeight: FontWeight.bold),
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                  padding: const EdgeInsets.only(left: 50.0, right: 50),
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      'Spoke-It',
+                      textAlign: TextAlign.center,
+                      overflow: TextOverflow.ellipsis,
+                      textScaleFactor: 8.0,
+                      style: TextStyle(
+                          color: Colors.indigo[400],
+                          fontStyle: FontStyle.italic,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),

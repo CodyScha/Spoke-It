@@ -2,7 +2,10 @@ import 'package:spoke_it_flutter_app/source/portals.dart';
 import 'dart:math';
 
 class Spoke {
-  List<Link> algorithm(List<Portal> portals) {
+  List<Link> algorithm(List<Portal> portals, bool showCenterLinks) {
+    //state reset in case of subsequent algorithm call
+    resetHull(portals);
+
     //the list of links created by the algorithm
     List<Link> links = [];
 
@@ -10,16 +13,23 @@ class Spoke {
     List<Portal> shownPortalList = shownPortals(portals);
 
     //calculate links in hull
-    links.addAll(jarvis(shownPortalList)[0]);
+    List jarvisResults = jarvis(shownPortalList);
+    links.addAll(jarvisResults[0]);
 
-    //connect hull to center
-    links.addAll(hullToCenter(shownPortalList));
+    if (showCenterLinks) {
+      //connect hull to center
+      links.addAll(hullToCenter(shownPortalList));
 
-    //connect internal portals to center
-    links.addAll(internalToCenter(shownPortalList));
+      //connect internal portals to center
+      links.addAll(internalToCenter(shownPortalList));
+    } else {
+      //if center is part of hull, jarvis added links to it
+      //even if showCenterLinks was false. This deletes them
+      deleteCenterHullLinks(portals, links);
+    }
 
     //calculate links of portals inside hull
-    links.addAll(internalLinks(shownPortalList));
+    links.addAll(internalLinks(shownPortalList, jarvisResults[1]));
 
     return links;
   }
@@ -32,6 +42,44 @@ class Spoke {
     points =
         calculatePoints(shownPortalList.length, fields.length, links.length);
     return points;
+  }
+
+  //state reset needed for subsequent algorithm calls
+  //jarvis will break if some hull values are true before jarvis is called
+  void resetHull(List<Portal> portals) {
+    for (Portal portal in portals) {
+      portal.hull = false;
+    }
+  }
+
+  //function to delete hull links to center if the center is part of whole
+  //and if showCenterLinks is false
+  void deleteCenterHullLinks(List<Portal> portals, List<Link> links) {
+    //indexes of links to remove
+    int i1 = -1;
+    int i2 = -1;
+    bool firstFound = false;
+    bool centerInHull = false;
+    for (Portal portal in portals) {
+      if (portal.center == true && portal.hull == true) {
+        for (Link link in links) {
+          if (link.to == portal || link.from == portal) {
+            if (!firstFound) {
+              i1 = links.indexOf(link);
+              firstFound = true;
+              centerInHull = true;
+            } else {
+              i2 = links.indexOf(link);
+            }
+          }
+        }
+      }
+    }
+    //wow this was not fun to debug :)
+    if (centerInHull) {
+      links.remove(links[i1]);
+      links.remove(links[i2 - 1]);
+    }
   }
 
   //returns list of portals that are not hidden since we don't want to include these in the algorithm
@@ -64,6 +112,8 @@ class Spoke {
     // times where h is number of points in result or output.
     int p = l, q;
     do {
+      if (portals[p].hull == true) break;
+
       hullList.add(portals[p]);
       portals[p].hull = true;
       // Search for a point 'q' such that orientation(p, q,
@@ -156,9 +206,8 @@ class Spoke {
     return links;
   }
 
-  List<Link> internalLinks(List<Portal> portals) {
+  List<Link> internalLinks(List<Portal> portals, List<Portal> hullPortals) {
     List<Link> links = [];
-    List<Portal> hullPortals = jarvis(portals)[1];
     List<Portal> wedgePortals = [];
     Portal center;
 
@@ -298,6 +347,8 @@ class Spoke {
     //create copy of portals list so our real portals don't get edited by jarvis march
     for (Portal portal in portals) {
       Portal tempPortal = portal;
+      //need to set this back to false or jarvis will break
+      tempPortal.hull = false;
       temp.add(tempPortal);
     }
 

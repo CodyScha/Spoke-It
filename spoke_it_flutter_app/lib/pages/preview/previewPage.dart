@@ -4,6 +4,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:spoke_it_flutter_app/pages/Output/OutputScreen.dart';
+import 'package:spoke_it_flutter_app/pages/home/homeView.dart';
 import 'package:syncfusion_flutter_maps/maps.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import '../../source/portals.dart';
@@ -54,6 +55,149 @@ class _myPreview extends State<myPreview> {
     return portalList;
   }
 
+  String selectPortalInfo() {
+    String portalInfo = "";
+    if (indexPressed >= 0) {
+      portalInfo =
+          "\n Coordinates: ${_portalData[indexPressed].lat},${_portalData[indexPressed].long}\n Team: ${_portalData[indexPressed].team}\n Health: ${_portalData[indexPressed].health}\n";
+    } else {
+      portalInfo = "Please select a portal for more information";
+    }
+    return portalInfo;
+  }
+
+  String selectPortalName() {
+    String portalInfo = "";
+    if (indexPressed >= 0) {
+      portalInfo = '${_portalData[indexPressed].name}';
+    } else {
+      portalInfo = "";
+    }
+
+    return portalInfo;
+  }
+
+  TextEditingController _textFieldController = TextEditingController();
+
+  void nameNewFile() async {
+    String value = '';
+    String fname;
+    var result = await showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Save under this name:'),
+          content: TextField(
+            controller: _textFieldController,
+            decoration: InputDecoration(hintText: "Name your file:"),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('CANCEL'),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+            TextButton(
+              child: Text('OK'),
+              onPressed: () {
+                // setState(() {
+                fname = _textFieldController.text;
+                if (!fname.endsWith('.txt')) {
+                  fname = fname + ".txt";
+                  Navigator.pop(context);
+                }
+
+                if (saveNewFile(fname) != null) {
+                  print("file was saved");
+                  showDialog(
+                    context: context,
+                    builder: (context2) => AlertDialog(
+                      title: Center(child: const Text('File saved!')),
+                      backgroundColor: Colors.green,
+                      actions: <Widget>[
+                        TextButton(
+                          child: const Align(
+                            alignment: Alignment.center,
+                            child: Text('OK'),
+                          ),
+                          onPressed: () {
+                            Navigator.pop(context2);
+                          },
+                        ),
+                      ],
+                    ),
+                  );
+                } else {
+                  showDialog(
+                    context: context,
+                    builder: (context3) => AlertDialog(
+                      title: Center(
+                          child:
+                              const Text('File not saved, please try again')),
+                      backgroundColor: Colors.red,
+                      actions: <Widget>[
+                        TextButton(
+                          child: const Align(
+                            alignment: Alignment.center,
+                            child: Text('OK'),
+                          ),
+                          onPressed: () {
+                            Navigator.pop(context3);
+                          },
+                        ),
+                      ],
+                    ),
+                  );
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
+    // result = _textFieldController.text;
+    // print(result);
+    // return saveNewFile(result);
+  }
+
+  Future<File> saveNewFile(
+    String filename,
+  ) async {
+    bool saved = false;
+    String path;
+    // String? path = await FilesystemPicker.openDialog(
+    //   context: context,
+    //   title: 'Saved Profiles',
+    //   fsType: FilesystemType.file,
+    //   rootDirectory: Directory(
+    //       '../..'), //set to be downloads page(where the txt file will save to automatically)
+    //   directory: Directory('profiles'),
+    //   showGoUp: (false),
+    //   allowedExtensions: ['.txt'],
+    //   fileTileSelectMode: FileTileSelectMode.wholeTile,
+    // );
+    // path = Directory.current.path;
+    path = Directory("profiles").path;
+    print(path);
+    File file = File('$path/$filename');
+    //FIX clear file first
+    file.writeAsStringSync('');
+    int portalListlen = _portalData.length;
+    for (int i = 0; i < portalListlen; i++) {
+      if (_portalData[i].shown == true) {
+        await file.writeAsString(
+            "${_portalData[i].name};${_portalData[i].lat};${_portalData[i].long};${_portalData[i].team};${_portalData[i].health};+ \n",
+            mode: FileMode.append);
+      } else {
+        await file.writeAsString(
+            "${_portalData[i].name};${_portalData[i].lat};${_portalData[i].long};${_portalData[i].team};${_portalData[i].health};- \n",
+            mode: FileMode.append);
+      }
+    }
+    return file;
+  }
+
   late MapZoomPanBehavior _zoomPanBehavior;
   //late List<MarkerModel> _portalData;
   late List<Portal> _portalData;
@@ -67,6 +211,7 @@ class _myPreview extends State<myPreview> {
   late Widget _centerPortal;
   late Widget _centerSelectedPortal;
   late Widget _hiddenSelectedPortal;
+  late int _index = -1;
 
   void initState() {
     _zoomPanBehavior = MapZoomPanBehavior(
@@ -169,13 +314,52 @@ class _myPreview extends State<myPreview> {
                   Container(
                     color: Colors.grey[300],
                     padding:
-                        EdgeInsets.symmetric(vertical: 20.0, horizontal: 140.0),
+                        EdgeInsets.symmetric(vertical: 7.0, horizontal: 140.0),
                     //child: Text('Load Data'),
                   ),
                   const Text(
                     'Select a center portal',
                     textScaleFactor: 1.4,
                     textAlign: TextAlign.center,
+                  ),
+                  Container(
+                    color: Colors.grey[300],
+                    padding:
+                        EdgeInsets.symmetric(vertical: 7.0, horizontal: 140.0),
+                    //child: Text('Load Data'),
+                  ),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(5),
+                    child: Stack(
+                      children: <Widget>[
+                        Container(
+                          child: TextButton(
+                            onPressed: hasChosenCenter
+                                ? () {
+                                    print(
+                                        'User has pressed the Generate Button');
+                                    List<Portal> portals = getPortalList();
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              Output(portals: portals)),
+                                    );
+                                  }
+                                : null,
+                            child: Text("Generate"), //generate
+                            style: TextButton.styleFrom(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 0.0, horizontal: 22.0),
+                                foregroundColor: Colors.white,
+                                textStyle: const TextStyle(fontSize: 30),
+                                backgroundColor: hasChosenCenter
+                                    ? Color.fromARGB(255, 184, 80, 20)
+                                    : Colors.grey[500]),
+                          ),
+                        )
+                      ],
+                    ),
                   ),
                   Container(
                     color: Colors.grey[300],
@@ -195,26 +379,28 @@ class _myPreview extends State<myPreview> {
                               print(indexPressed);
 
                               // Find the previous center and mark it false.
-                              setState(() {
-                                for (var p in _portalData) {
-                                  if (p.center) {
-                                    p.center = false;
-                                    print(
-                                        "${p.name} is no longer the center portal");
+                              if (indexPressed != -1) {
+                                setState(() {
+                                  for (var p in _portalData) {
+                                    if (p.center) {
+                                      p.center = false;
+                                      print(
+                                          "${p.name} is no longer the center portal");
+                                    }
                                   }
-                                }
 
-                                // Update the new center.
-                                _portalData[indexPressed].center = true;
-                                // If the portal was hidden, then it should be shown again.
-                                _portalData[indexPressed].shown = true;
-                                hasChosenCenter = true;
-                                chosenCenterIndex = indexPressed;
+                                  // Update the new center.
+                                  _portalData[indexPressed].center = true;
+                                  // If the portal was hidden, then it should be shown again.
+                                  _portalData[indexPressed].shown = true;
+                                  hasChosenCenter = true;
+                                  chosenCenterIndex = indexPressed;
 
-                                // Update the markers
-                                _controller.updateMarkers(List.generate(
-                                    _controller.markersCount, (i) => i));
-                              });
+                                  // Update the markers
+                                  _controller.updateMarkers(List.generate(
+                                      _controller.markersCount, (i) => i));
+                                });
+                              }
 
                               for (var p in _portalData) {
                                 if (p.center) {
@@ -361,7 +547,7 @@ class _myPreview extends State<myPreview> {
                   Container(
                     color: Colors.grey[300],
                     padding:
-                        EdgeInsets.symmetric(vertical: 25.0, horizontal: 140.0),
+                        EdgeInsets.symmetric(vertical: 10.0, horizontal: 140.0),
                     //child: Text('Load Data'),
                   ),
                   ClipRRect(
@@ -370,28 +556,84 @@ class _myPreview extends State<myPreview> {
                       children: <Widget>[
                         Container(
                           child: TextButton(
-                            onPressed: hasChosenCenter
-                                ? () {
-                                    print(
-                                        'User has pressed the Generate Button');
-                                    List<Portal> portals = getPortalList();
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              Output(portals: portals)),
-                                    );
-                                  }
-                                : null,
-                            child: Text("Generate"), //generate
+                            onPressed: () {
+                              print('pressed da Save button'); //remove
+
+                              nameNewFile();
+                              // print(nameNewFile());
+                              // Future<String> filename = nameNewFile();
+                              // print("right before if statement");
+                              // print(filename);
+                              // print("right after filenmae before if statement");
+                              // // if (filename is Future<String>) {
+                              // //   print("in if statement" + filename);
+                              // saveNewFile(filename);
+                              // }
+                            },
+                            child: Text("Save"), //generate
                             style: TextButton.styleFrom(
                                 padding: EdgeInsets.symmetric(
-                                    vertical: 0.0, horizontal: 15.0),
+                                    vertical: 0.0, horizontal: 52.0),
                                 foregroundColor: Colors.white,
-                                textStyle: const TextStyle(fontSize: 35),
-                                backgroundColor: hasChosenCenter
-                                    ? Colors.indigo
-                                    : Colors.grey[500]),
+                                textStyle: const TextStyle(fontSize: 30),
+                                backgroundColor:
+                                    Color.fromARGB(255, 18, 153, 6)),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  Container(
+                    color: Colors.grey[300],
+                    padding:
+                        EdgeInsets.symmetric(vertical: 15.0, horizontal: 140.0),
+                    //child: Text('Load Data'),
+                  ),
+                  Container(
+                    color: Color.fromARGB(255, 187, 186, 186),
+                    constraints:
+                        BoxConstraints.expand(width: 180.0, height: 40.0),
+                    child: Text(
+                      selectPortalName(),
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ), //FIX get first line to be name bolded
+                  ),
+                  Container(
+                    color: Color.fromARGB(255, 187, 186, 186),
+                    constraints:
+                        BoxConstraints.expand(width: 180.0, height: 150.0),
+                    child: Text(
+                        selectPortalInfo()), //FIX get first line to be name bolded
+                  ),
+                  Container(
+                    color: Colors.grey[300],
+                    padding:
+                        EdgeInsets.symmetric(vertical: 10.0, horizontal: 140.0),
+                    //child: Text('Load Data'),
+                  ),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(5),
+                    child: Stack(
+                      children: <Widget>[
+                        Container(
+                          child: TextButton(
+                            onPressed: () {
+                              //nameNewFile();
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => HomeView()),
+                              );
+                              print('pressed da Go Back button');
+                            },
+                            child: Text("Go Home"), //generate
+                            style: TextButton.styleFrom(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 0.0, horizontal: 19.0),
+                                foregroundColor: Colors.white,
+                                textStyle: const TextStyle(fontSize: 30),
+                                backgroundColor: Colors.indigo),
                           ),
                         )
                       ],
@@ -707,29 +949,21 @@ class _myPreview extends State<myPreview> {
 }
 
 Uint8List updateJSONTemplate(List<Portal> portals) {
-  double buffer = 0.0001;
+  double buffer = 0;
   String aggregiousTabs = '\t\t\t\t\t\t\t';
-
-  List<int> coordLatLines = [14, 18, 22, 26, 30];
-  List<int> coordLongLines = [13, 17, 21, 25, 29];
 
   // * First, need to get the JSON from the assets folder
   var assetFileStr = File('assets/siue2.json').readAsStringSync();
-  // var assetFileStr = '';
-  // rootBundle.loadString('assets/siue2.json');
 
   // * Save a copy of the file in a new dir
   if (!Directory('map').existsSync()) {
     var mapdir = Directory('map').create();
   }
   File newFile = File('map/map.json');
-  // print('testingtesting');
-  // print('this is a test $assetFileStr');
   newFile.writeAsStringSync(assetFileStr);
 
   // * Now, we need to change the coords in the new file
   List<String> newFileLines = newFile.readAsLinesSync();
-  // print(newFileLines.length);
 
   // * First, find the extremes for latitude and longitude.
   double maxLat = -91.0;
@@ -748,11 +982,8 @@ Uint8List updateJSONTemplate(List<Portal> portals) {
     minLong = min(m.long, minLong);
   }
 
-  // * Print the results
-  print('maxLat: $maxLat');
-  print('minLat: $minLat');
-  print('maxLong: $maxLong');
-  print('minLong: $minLong');
+  // * Calculate the buffer to add to the view area. 20% of the width
+  buffer = (maxLat - minLat) / 5;
 
   // * Now, change the newFile lines to the max and mins
   String minLatStr = aggregiousTabs + (minLat - buffer).toString();
@@ -776,7 +1007,7 @@ Uint8List updateJSONTemplate(List<Portal> portals) {
   newFileLines[29] = minLatStr;
   // * Wasn't that exciting, I love programming 😀
 
-  // newFileLines[16] = '\t\t\t\t\t\t\t-89.850000000,';
+  // * Write the lines to the new file.
   String combineLines = '';
   for (var l in newFileLines) {
     combineLines += '$l\n';
