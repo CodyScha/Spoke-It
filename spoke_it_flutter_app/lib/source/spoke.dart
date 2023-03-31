@@ -361,41 +361,38 @@ class Spoke {
         } else if (field.portalOne == links[j].from) {
           field.portalTwo = links[j].to;
         }
-      }
-
-      for (int j = 0; j < links.length; j++) {
-        if (field.portalTwo == links[j].to &&
-            links[j].from != field.portalOne) {
-          field.portalThree = links[j].from;
-        } else if (field.portalTwo == links[j].from &&
-            links[j].to != field.portalOne) {
-          field.portalThree = links[j].to;
+        for (int k = 0; k < links.length; k++) {
+          if (field.portalTwo == links[k].to &&
+              links[k].from != field.portalOne) {
+            field.portalThree = links[k].from;
+          } else if (field.portalTwo == links[k].from &&
+              links[k].to != field.portalOne) {
+            field.portalThree = links[k].to;
+          }
+          for (int j = 0; j < links.length; j++) {
+            if (field.portalOne == links[j].to &&
+                field.portalThree == links[j].from) {
+              fields.add(field);
+            } else if (field.portalOne == links[j].from &&
+                field.portalThree == links[j].to) {
+              fields.add(field);
+            }
+          }
         }
       }
-      for (int j = 0; j < links.length; j++) {
-        if (field.portalOne == links[j].to &&
-            field.portalThree == links[j].from) {
-          fields.add(field);
-        } else if (field.portalOne == links[j].from &&
-            field.portalThree == links[j].to) {
-          fields.add(field);
-        }
-      }
-      //iterate through portals list with portals[i]
-      //check the links in list links that link to portals[i]
-      //take the portal from the link that portal[i] links to and check its links
-      //then take the final portal link to check if it links back to portal[i]
-      //ex
     }
     //used for deleting duplicates
     for (int i = 0; i < fields.length; i++) {
-      for (int j = 0; j < fields.length; j++) {
+      for (int j = i+1; j < fields.length; j++) {
         if (fields[i].portalOne == fields[j].portalTwo ||
-            fields[i].portalOne == fields[j].portalThree) {
+            fields[i].portalOne == fields[j].portalThree||
+            fields[i].portalOne == fields[j].portalOne) {
           if (fields[i].portalTwo == fields[j].portalOne ||
-              fields[i].portalTwo == fields[j].portalThree) {
+              fields[i].portalTwo == fields[j].portalThree||
+              fields[i].portalTwo == fields[j].portalTwo) {
             if (fields[i].portalThree == fields[j].portalTwo ||
-                fields[i].portalThree == fields[j].portalOne) {
+                fields[i].portalThree == fields[j].portalOne ||
+                fields[i].portalThree == fields[j].portalThree) {
               fields.removeAt(j);
             }
           }
