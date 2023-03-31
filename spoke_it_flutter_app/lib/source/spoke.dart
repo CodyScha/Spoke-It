@@ -53,7 +53,7 @@ class Spoke {
     }
   }
 
-  //function to delete hull links to center if the center is part of whole
+  //function to delete hull links to center if the center is part of hull
   //and if showCenterLinks is false
   void deleteCenterHullLinks(List<Portal> portals, List<Link> links) {
     //indexes of links to remove
