@@ -41,7 +41,12 @@ class Spoke {
 
     //calculates points
     calculatePoints(shownPortalList.length, links.length);
-
+    //for testing point calculations
+    /* print("point needs:");
+    print(points);
+    print(numFields);
+    print(links.length);
+    print(shownPortalList.length); */
     return links;
   }
 
@@ -376,8 +381,7 @@ class Spoke {
 
   void calculatePoints(int portalCount, int linkCount) {
     //lol wtf
-    int 
-        portalPoints = 675, //for getting portal
+    int portalPoints = 675, //for getting portal
         resPoints = 125, //deploying a resonator
         eightResPoints = 250, //deploying the last Resinator
         modPoints = 125, //deploying a mod
