@@ -1024,7 +1024,7 @@ class _myOutputState extends State<myOutput> {
                             const TextSpan(text: "Total Points: "),
                             TextSpan(
                                 text:
-                                    formatter.format(_portalData.length * 10000),
+                                    formatter.format(_portalData.length * 23197823469),
                                 style: const TextStyle(
                                     fontWeight: FontWeight.bold,
                                     color: Colors.green))
