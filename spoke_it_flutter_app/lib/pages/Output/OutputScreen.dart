@@ -59,7 +59,7 @@ class _myOutputState extends State<myOutput> {
     _controller.updateMarkers(temp);
 
     // Here, we should pass the new portals list and recalculate the links
-    Spoke alg = Spoke();
+    // Spoke alg = Spoke();
     links = alg.algorithm(_portalData, toggleCenterLinks);
   }
 
@@ -270,6 +270,7 @@ class _myOutputState extends State<myOutput> {
   late Widget _selectedHiddenPortal;
   late Widget _centerPortal;
   late Widget _selectedCenterPortal;
+  Spoke alg = Spoke();
 
   bool toggleCenterLinks = true;
   NumberFormat formatter = NumberFormat.decimalPattern();
@@ -293,7 +294,6 @@ class _myOutputState extends State<myOutput> {
     //   MarkerModel('Peck Hall', 38.793463, -89.996867, Colors.cyan)
     // ];
 
-    Spoke alg = Spoke();
     links = alg.algorithm(portals, toggleCenterLinks);
 
     _controller = MapShapeLayerController();
@@ -416,7 +416,7 @@ class _myOutputState extends State<myOutput> {
                             }
 
                             // Here, we should pass the new portals list and recalculate the links
-                            Spoke alg = Spoke();
+                            // Spoke alg = Spoke();
                             links =
                                 alg.algorithm(_portalData, toggleCenterLinks);
                           }, //Center
@@ -949,7 +949,7 @@ class _myOutputState extends State<myOutput> {
                       toggleCenterLinks = !toggleCenterLinks;
 
                       // * Update the links
-                      Spoke alg = Spoke();
+                      // Spoke alg = Spoke();
                       links = alg.algorithm(_portalData, toggleCenterLinks);
                     });
                   },
