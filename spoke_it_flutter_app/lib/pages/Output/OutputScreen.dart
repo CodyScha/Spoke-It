@@ -58,9 +58,14 @@ class _myOutputState extends State<myOutput> {
     var temp = List.generate(_controller.markersCount, (i) => i);
     _controller.updateMarkers(temp);
 
-    // Here, we should pass the new portals list and recalculate the links
-    // Spoke alg = Spoke();
+    // * Here, we should pass the new portals list and recalculate the links
     links = alg.algorithm(_portalData, toggleCenterLinks);
+
+    // * Update the points
+    // points = alg.points;
+    Spoke algTemp = Spoke();
+    List<Link> fakeLinks = algTemp.algorithm(_portalData, true);
+    points = algTemp.points;
   }
 
   void hidePortal() {
@@ -72,9 +77,15 @@ class _myOutputState extends State<myOutput> {
         _portalData[portalIndexPressed].shown = false;
       }
 
-      // Here, we should pass the new portals list and recalculate the links
+      // * Here, we should pass the new portals list and recalculate the links
       Spoke alg = Spoke();
       links = alg.algorithm(_portalData, toggleCenterLinks);
+
+      // * Update the points
+      // points = alg.points;
+      Spoke algTemp = Spoke();
+      List<Link> fakeLinks = algTemp.algorithm(_portalData, true);
+      points = algTemp.points;
     });
 
     var temp = List.generate(1, (i) => portalIndexPressed);
@@ -169,8 +180,7 @@ class _myOutputState extends State<myOutput> {
                     context: context,
                     builder: (context3) => AlertDialog(
                       title: const Center(
-                          child:
-                              Text('File not saved, please try again')),
+                          child: Text('File not saved, please try again')),
                       backgroundColor: Colors.red,
                       actions: <Widget>[
                         TextButton(
@@ -270,6 +280,7 @@ class _myOutputState extends State<myOutput> {
   late Widget _selectedHiddenPortal;
   late Widget _centerPortal;
   late Widget _selectedCenterPortal;
+  late int points;
   Spoke alg = Spoke();
 
   bool toggleCenterLinks = true;
@@ -295,6 +306,7 @@ class _myOutputState extends State<myOutput> {
     // ];
 
     links = alg.algorithm(portals, toggleCenterLinks);
+    points = alg.points;
 
     _controller = MapShapeLayerController();
     _mapSource = MapShapeSource.memory(updateJSONTemplate(_portalData));
@@ -307,7 +319,8 @@ class _myOutputState extends State<myOutput> {
     _centerPortal = Container(
       height: 20,
       width: 20,
-      decoration: const BoxDecoration(color: Colors.green, shape: BoxShape.circle),
+      decoration:
+          const BoxDecoration(color: Colors.green, shape: BoxShape.circle),
     );
 
     _selectedCenterPortal = Container(
@@ -381,8 +394,8 @@ class _myOutputState extends State<myOutput> {
                 children: <Widget>[
                   Container(
                     color: Colors.grey[300],
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 15.0, horizontal: 140.0),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 15.0, horizontal: 140.0),
                     //child: Text('Load Data'),
                   ),
                   ClipRRect(
@@ -411,14 +424,19 @@ class _myOutputState extends State<myOutput> {
                             }
 
                             for (var p in _portalData) {
-                              if (p.center) {
-                              }
+                              if (p.center) {}
                             }
 
-                            // Here, we should pass the new portals list and recalculate the links
-                            // Spoke alg = Spoke();
+                            // * Here, we should pass the new portals list and recalculate the links
                             links =
                                 alg.algorithm(_portalData, toggleCenterLinks);
+
+                            // * Update the points
+                            // points = alg.points;
+                            Spoke algTemp = Spoke();
+                            List<Link> fakeLinks =
+                                algTemp.algorithm(_portalData, true);
+                            points = algTemp.points;
                           }, //Center
                           style: TextButton.styleFrom(
                               padding: const EdgeInsets.symmetric(
@@ -433,8 +451,8 @@ class _myOutputState extends State<myOutput> {
                   ),
                   Container(
                     color: Colors.grey[300],
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 10.0, horizontal: 140.0),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10.0, horizontal: 140.0),
                     //child: Text('Load Data'),
                   ),
                   ClipRRect(
@@ -458,13 +476,11 @@ class _myOutputState extends State<myOutput> {
                                   backgroundColor:
                                       const Color.fromARGB(255, 99, 96, 102))
                               : TextButton.styleFrom(
-                                  padding:
-                                      _portalData[portalIndexPressed].shown
-                                          ? const EdgeInsets.symmetric(
-                                              vertical: 0.0, horizontal: 52.0)
-                                          : const EdgeInsets.symmetric(
-                                              vertical: 0.0,
-                                              horizontal: 34.0),
+                                  padding: _portalData[portalIndexPressed].shown
+                                      ? const EdgeInsets.symmetric(
+                                          vertical: 0.0, horizontal: 52.0)
+                                      : const EdgeInsets.symmetric(
+                                          vertical: 0.0, horizontal: 34.0),
                                   foregroundColor: Colors.white,
                                   textStyle: const TextStyle(fontSize: 30),
                                   backgroundColor:
@@ -480,8 +496,8 @@ class _myOutputState extends State<myOutput> {
                   ),
                   Container(
                     color: Colors.grey[300],
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 10.0, horizontal: 140.0),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10.0, horizontal: 140.0),
                     //child: Text('Load Data'),
                   ),
                   ClipRRect(
@@ -489,11 +505,10 @@ class _myOutputState extends State<myOutput> {
                     child: Stack(
                       children: <Widget>[
                         TextButton(
-                          // We only want the delete button to be active if a link is pressed, or if a non-center portal is pressed.
+                          // * We only want the delete button to be active if a link is pressed, or if a non-center portal is pressed.
                           onPressed: (linkIndexPressed != -1 ||
                                   (portalIndexPressed != -1 &&
-                                      !_portalData[portalIndexPressed]
-                                          .center))
+                                      !_portalData[portalIndexPressed].center))
                               ? () {
                                   //remove
                                   if (portalIndexPressed != -1) {
@@ -504,6 +519,15 @@ class _myOutputState extends State<myOutput> {
                                     setState(() {
                                       links.removeAt(linkIndexPressed);
                                       linkIndexPressed = -1;
+
+                                      alg.calculatePoints(
+                                          alg.shownPortals(_portalData).length,
+                                          links.length);
+                                      // points = alg.points;
+                                      Spoke algTemp = Spoke();
+                                      List<Link> fakeLinks =
+                                          algTemp.algorithm(_portalData, true);
+                                      points = algTemp.points;
                                     });
                                   }
                                 }
@@ -522,8 +546,8 @@ class _myOutputState extends State<myOutput> {
                   ),
                   Container(
                     color: Colors.grey[300],
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 10.0, horizontal: 140.0),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10.0, horizontal: 140.0),
                     //child: Text('Load Data'),
                   ),
                   ClipRRect(
@@ -535,15 +559,6 @@ class _myOutputState extends State<myOutput> {
                             //remove
 
                             nameNewFile();
-                            // print(nameNewFile());
-                            // Future<String> filename = nameNewFile();
-                            // print("right before if statement");
-                            // print(filename);
-                            // print("right after filenmae before if statement");
-                            // // if (filename is Future<String>) {
-                            // //   print("in if statement" + filename);
-                            // saveNewFile(filename);
-                            // }
                           }, //generate
                           style: TextButton.styleFrom(
                               padding: const EdgeInsets.symmetric(
@@ -559,8 +574,8 @@ class _myOutputState extends State<myOutput> {
                   ),
                   Container(
                     color: Colors.grey[300],
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 15.0, horizontal: 140.0),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 15.0, horizontal: 140.0),
                     //child: Text('Load Data'),
                   ),
                   Container(
@@ -575,15 +590,15 @@ class _myOutputState extends State<myOutput> {
                   ),
                   Container(
                     color: const Color.fromARGB(255, 187, 186, 186),
-                    constraints:
-                        const BoxConstraints.expand(width: 180.0, height: 200.0),
+                    constraints: const BoxConstraints.expand(
+                        width: 180.0, height: 200.0),
                     child: Text(
                         selectPortalInfo()), //FIX get first line to be name bolded
                   ),
                   Container(
                     color: Colors.grey[300],
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 15.0, horizontal: 140.0),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 15.0, horizontal: 140.0),
                     //child: Text('Load Data'),
                   ),
                   ClipRRect(
@@ -949,8 +964,14 @@ class _myOutputState extends State<myOutput> {
                       toggleCenterLinks = !toggleCenterLinks;
 
                       // * Update the links
-                      // Spoke alg = Spoke();
                       links = alg.algorithm(_portalData, toggleCenterLinks);
+
+                      // * Update the points
+                      // * Create a temp Spoke class so toggling center links does not affect score
+                      Spoke algTemp = Spoke();
+                      List<Link> fakeLinks =
+                          algTemp.algorithm(_portalData, true);
+                      points = algTemp.points;
                     });
                   },
                   style: ElevatedButton.styleFrom(
@@ -987,12 +1008,12 @@ class _myOutputState extends State<myOutput> {
                     //   style: const TextStyle(fontWeight: FontWeight.bold),
                     child: RichText(
                       text: TextSpan(
-                          style: const TextStyle(color: Colors.black, fontSize: 17),
+                          style: const TextStyle(
+                              color: Colors.black, fontSize: 17),
                           children: <TextSpan>[
                             const TextSpan(text: "Total Points: "),
                             TextSpan(
-                                text:
-                                    formatter.format(_portalData.length * 23197823469),
+                                text: formatter.format(points),
                                 style: const TextStyle(
                                     fontWeight: FontWeight.bold,
                                     color: Colors.green))

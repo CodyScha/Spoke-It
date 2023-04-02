@@ -6,9 +6,8 @@ class Spoke {
   late int points;
 
   List<Link> algorithm(List<Portal> portals, bool showCenterLinks) {
-    //new algorithm, reset fields and points
+    //new algorithm, reset fields
     numFields = 0;
-    points = 0;
 
     //state reset in case of subsequent algorithm call
     resetHull(portals);
@@ -383,9 +382,12 @@ class Spoke {
     return true;
   }
 
-  //calculates max points (without mods) 
+  //calculates max points (without mods)
   //and updates points variable
   void calculatePoints(int portalCount, int linkCount) {
+    // * Reset the points
+    points = 0;
+
     int portalPoints = 675, //for getting portal
         resPoints = 125, //deploying a resonator
         eightResPoints = 250, //deploying the last Resinator
