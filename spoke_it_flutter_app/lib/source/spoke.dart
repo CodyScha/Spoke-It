@@ -2,7 +2,14 @@ import 'package:spoke_it_flutter_app/source/portals.dart';
 import 'dart:math';
 
 class Spoke {
+  late int numFields;
+  late int points;
+
   List<Link> algorithm(List<Portal> portals, bool showCenterLinks) {
+    //new algorithm, reset fields and points
+    numFields = 0;
+    points = 0;
+
     //state reset in case of subsequent algorithm call
     resetHull(portals);
 
@@ -15,6 +22,7 @@ class Spoke {
     //calculate links in hull
     List jarvisResults = jarvis(shownPortalList);
     links.addAll(jarvisResults[0]);
+    numFields += jarvisResults[1].length as int;
 
     if (showCenterLinks) {
       //connect hull to center
@@ -31,6 +39,14 @@ class Spoke {
     //calculate links of portals inside hull
     links.addAll(internalLinks(shownPortalList, jarvisResults[1]));
 
+    //calculates points
+    calculatePoints(shownPortalList.length, links.length);
+    //for testing point calculations
+    /* print("point needs:");
+    print(points);
+    print(numFields);
+    print(links.length);
+    print(shownPortalList.length); */
     return links;
   }
 
@@ -42,7 +58,7 @@ class Spoke {
     }
   }
 
-  //function to delete hull links to center if the center is part of whole
+  //function to delete hull links to center if the center is part of hull
   //and if showCenterLinks is false
   void deleteCenterHullLinks(List<Portal> portals, List<Link> links) {
     //indexes of links to remove
@@ -152,6 +168,8 @@ class Spoke {
     return [links, hullList];
   }
 
+  //links hull portals to the center portal
+  //makes wedges
   List<Link> hullToCenter(List<Portal> portals) {
     List<Link> links = [];
 
@@ -174,6 +192,7 @@ class Spoke {
     return links;
   }
 
+  //links internal portals to the center portal
   List<Link> internalToCenter(List<Portal> portals) {
     List<Link> links = [];
 
@@ -196,6 +215,8 @@ class Spoke {
     return links;
   }
 
+  //master function for creating links within wedges
+  //loops for all wedges and calls recursive function maxWedge
   List<Link> internalLinks(List<Portal> portals, List<Portal> hullPortals) {
     List<Link> links = [];
     List<Portal> wedgePortals = [];
@@ -225,7 +246,6 @@ class Spoke {
   }
 
   //recursively make all links within each wedge
-  //TODO: this might make duplicates that we'd want to deal with
   List<Link> maxWedge(
       List<Portal> wedgePortals, Portal wedgeOne, Portal wedgeTwo) {
     List<Link> links = [];
@@ -241,6 +261,9 @@ class Spoke {
           from: furthest, to: wedgeTwo, isCenterLink: false, isHullLink: false);
       links.add(linkToWedgeOne);
       links.add(linkToWedgeTwo);
+
+      //when these two links are created, 3 new subfields are created
+      numFields += 3;
 
       //Recurse on the left wedge
       //links.addAll(maxWedge(left wedge portals, wedgeOne, P))
@@ -359,4 +382,25 @@ class Spoke {
 
     return true;
   }
-}
+
+  //calculates max points (without mods) 
+  //and updates points variable
+  void calculatePoints(int portalCount, int linkCount) {
+    int portalPoints = 675, //for getting portal
+        resPoints = 125, //deploying a resonator
+        eightResPoints = 250, //deploying the last Resinator
+        modPoints = 125, //deploying a mod
+        linkPoints = 313, //creating a link
+        fieldPoints = 1250; //creating a field
+
+    //calculate Portal Points
+    points += (portalCount * portalPoints) +
+        (portalCount * resPoints * 8) +
+        (portalCount * eightResPoints) +
+        (portalCount * 2 * modPoints);
+    //calculate Link Points
+    points += (linkPoints * linkCount);
+    //calculate Field Points
+    points += (fieldPoints * numFields);
+  }
+} //wow that sure was a lot of math
