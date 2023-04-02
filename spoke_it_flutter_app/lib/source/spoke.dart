@@ -168,6 +168,8 @@ class Spoke {
     return [links, hullList];
   }
 
+  //links hull portals to the center portal
+  //makes wedges
   List<Link> hullToCenter(List<Portal> portals) {
     List<Link> links = [];
 
@@ -190,6 +192,7 @@ class Spoke {
     return links;
   }
 
+  //links internal portals to the center portal
   List<Link> internalToCenter(List<Portal> portals) {
     List<Link> links = [];
 
@@ -212,6 +215,8 @@ class Spoke {
     return links;
   }
 
+  //master function for creating links within wedges
+  //loops for all wedges and calls recursive function maxWedge
   List<Link> internalLinks(List<Portal> portals, List<Portal> hullPortals) {
     List<Link> links = [];
     List<Portal> wedgePortals = [];
@@ -241,7 +246,6 @@ class Spoke {
   }
 
   //recursively make all links within each wedge
-  //TODO: this might make duplicates that we'd want to deal with
   List<Link> maxWedge(
       List<Portal> wedgePortals, Portal wedgeOne, Portal wedgeTwo) {
     List<Link> links = [];
@@ -379,8 +383,9 @@ class Spoke {
     return true;
   }
 
+  //calculates max points (without mods) 
+  //and updates points variable
   void calculatePoints(int portalCount, int linkCount) {
-    //lol wtf
     int portalPoints = 675, //for getting portal
         resPoints = 125, //deploying a resonator
         eightResPoints = 250, //deploying the last Resinator
@@ -398,4 +403,4 @@ class Spoke {
     //calculate Field Points
     points += (fieldPoints * numFields);
   }
-}
+} //wow that sure was a lot of math
