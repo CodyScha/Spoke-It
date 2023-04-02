@@ -6,9 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_maps/maps.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:filesystem_picker/filesystem_picker.dart';
-import 'package:file_picker/file_picker.dart';
+import 'package:intl/intl.dart';
 
-import '../DisplayPortals/DisplayPortal.dart';
 import '../Preview/previewPage.dart';
 import '../../source/spoke.dart';
 import '../../source/portals.dart';
@@ -34,6 +33,7 @@ class Output extends StatelessWidget {
   }
 }
 
+// ignore: camel_case_types
 class myOutput extends StatefulWidget {
   const myOutput({super.key, required this.portals});
 
@@ -42,13 +42,12 @@ class myOutput extends StatefulWidget {
   State<myOutput> createState() => _myOutputState(portals: portals);
 }
 
+// ignore: camel_case_types
 class _myOutputState extends State<myOutput> {
   _myOutputState({required this.portals});
 
   void deletePortal(Portal portal) {
     //serach through list to find portal, then delete it from the list
-    String name = portal.name;
-    int portalListlen = _portalData.length;
     setState(() {
       _portalData.removeAt(portalIndexPressed);
       _controller.removeMarkerAt(portalIndexPressed);
@@ -115,43 +114,42 @@ class _myOutputState extends State<myOutput> {
     }
   }
 
-  TextEditingController _textFieldController = TextEditingController();
+  final TextEditingController _textFieldController = TextEditingController();
 
   void nameNewFile() async {
-    String value = '';
     String fname;
     var result = await showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Save under this name:'),
+          title: const Text('Save under this name:'),
           content: TextField(
             controller: _textFieldController,
-            decoration: InputDecoration(hintText: "Name your file:"),
+            decoration: const InputDecoration(hintText: "Name your file:"),
           ),
           actions: <Widget>[
             TextButton(
-              child: Text('CANCEL'),
+              child: const Text('CANCEL'),
               onPressed: () {
                 Navigator.pop(context);
               },
             ),
             TextButton(
-              child: Text('OK'),
+              child: const Text('OK'),
               onPressed: () {
                 // setState(() {
                 fname = _textFieldController.text;
                 if (!fname.endsWith('.txt')) {
-                  fname = fname + ".txt";
+                  fname = "$fname.txt";
                   Navigator.pop(context);
                 }
 
+                // ignore: unnecessary_null_comparison
                 if (saveNewFile(fname) != null) {
-                  print("file was saved");
                   showDialog(
                     context: context,
                     builder: (context2) => AlertDialog(
-                      title: Center(child: const Text('File saved!')),
+                      title: const Center(child: Text('File saved!')),
                       backgroundColor: Colors.green,
                       actions: <Widget>[
                         TextButton(
@@ -170,9 +168,9 @@ class _myOutputState extends State<myOutput> {
                   showDialog(
                     context: context,
                     builder: (context3) => AlertDialog(
-                      title: Center(
+                      title: const Center(
                           child:
-                              const Text('File not saved, please try again')),
+                              Text('File not saved, please try again')),
                       backgroundColor: Colors.red,
                       actions: <Widget>[
                         TextButton(
@@ -202,7 +200,6 @@ class _myOutputState extends State<myOutput> {
   Future<File> saveNewFile(
     String filename,
   ) async {
-    bool saved = false;
     String path;
     // String? path = await FilesystemPicker.openDialog(
     //   context: context,
@@ -217,7 +214,6 @@ class _myOutputState extends State<myOutput> {
     // );
     // path = Directory.current.path;
     path = Directory("profiles").path;
-    print(path);
     File file = File('$path/$filename');
     //FIX clear file first
     file.writeAsStringSync('');
@@ -250,7 +246,7 @@ class _myOutputState extends State<myOutput> {
   String selectPortalName() {
     String portalInfo = "";
     if (portalIndexPressed >= 0) {
-      portalInfo = '${_portalData[portalIndexPressed].name}';
+      portalInfo = _portalData[portalIndexPressed].name;
     } else {
       portalInfo = "";
     }
@@ -262,7 +258,6 @@ class _myOutputState extends State<myOutput> {
 
   late MapZoomPanBehavior _zoomPanBehavior;
   late List<Portal> _portalData;
-  late List<LineModel> _linkData;
   late MapShapeLayerController _controller;
   late List<Link> links;
   late MapShapeSource _mapSource;
@@ -277,6 +272,7 @@ class _myOutputState extends State<myOutput> {
   late Widget _selectedCenterPortal;
 
   bool toggleCenterLinks = true;
+  NumberFormat formatter = NumberFormat.decimalPattern();
 
   void initState() {
     _zoomPanBehavior = MapZoomPanBehavior(
@@ -297,7 +293,7 @@ class _myOutputState extends State<myOutput> {
     //   MarkerModel('Peck Hall', 38.793463, -89.996867, Colors.cyan)
     // ];
 
-    Spoke alg = new Spoke();
+    Spoke alg = Spoke();
     links = alg.algorithm(portals, toggleCenterLinks);
 
     _controller = MapShapeLayerController();
@@ -311,7 +307,7 @@ class _myOutputState extends State<myOutput> {
     _centerPortal = Container(
       height: 20,
       width: 20,
-      decoration: BoxDecoration(color: Colors.green, shape: BoxShape.circle),
+      decoration: const BoxDecoration(color: Colors.green, shape: BoxShape.circle),
     );
 
     _selectedCenterPortal = Container(
@@ -321,7 +317,7 @@ class _myOutputState extends State<myOutput> {
           color: Colors.green,
           shape: BoxShape.circle,
           border: Border.all(
-              color: Color.fromARGB(255, 117, 209, 255),
+              color: const Color.fromARGB(255, 117, 209, 255),
               width: 4,
               style: BorderStyle.solid,
               strokeAlign: BorderSide.strokeAlignOutside)),
@@ -340,7 +336,7 @@ class _myOutputState extends State<myOutput> {
           color: Colors.red,
           shape: BoxShape.circle,
           border: Border.all(
-              color: Color.fromARGB(255, 117, 209, 255),
+              color: const Color.fromARGB(255, 117, 209, 255),
               width: 4,
               style: BorderStyle.solid,
               strokeAlign: BorderSide.strokeAlignOutside)),
@@ -353,7 +349,7 @@ class _myOutputState extends State<myOutput> {
           color: Colors.grey[700],
           shape: BoxShape.circle,
           border: Border.all(
-              color: Color.fromARGB(255, 117, 209, 255),
+              color: const Color.fromARGB(255, 117, 209, 255),
               width: 4,
               style: BorderStyle.solid,
               strokeAlign: BorderSide.strokeAlignOutside)),
@@ -365,7 +361,7 @@ class _myOutputState extends State<myOutput> {
     return Scaffold(
       appBar: AppBar(
         //top bar
-        title: Text('Strategy Output'),
+        title: const Text('Strategy Output'),
         centerTitle: true, //centers text
       ),
       body: Row(
@@ -386,56 +382,51 @@ class _myOutputState extends State<myOutput> {
                   Container(
                     color: Colors.grey[300],
                     padding:
-                        EdgeInsets.symmetric(vertical: 15.0, horizontal: 140.0),
+                        const EdgeInsets.symmetric(vertical: 15.0, horizontal: 140.0),
                     //child: Text('Load Data'),
                   ),
                   ClipRRect(
                     borderRadius: BorderRadius.circular(5),
                     child: Stack(
                       children: <Widget>[
-                        Container(
-                          child: TextButton(
-                            onPressed: () {
-                              if (portalIndexPressed != -1) {
-                                setState(() {
-                                  for (var p in _portalData) {
-                                    if (p.center) {
-                                      p.center = false;
-                                      print(
-                                          "${p.name} is no longer the center portal");
-                                    }
+                        TextButton(
+                          onPressed: () {
+                            if (portalIndexPressed != -1) {
+                              setState(() {
+                                for (var p in _portalData) {
+                                  if (p.center) {
+                                    p.center = false;
                                   }
-                                  // Update the new center.
-                                  _portalData[portalIndexPressed].center = true;
-                                  _portalData[portalIndexPressed].shown = true;
-                                  hasChosenCenter = true;
-                                  chosenCenterIndex = portalIndexPressed;
-
-                                  // Update the markers
-                                  _controller.updateMarkers(List.generate(
-                                      _controller.markersCount, (i) => i));
-                                });
-                              }
-
-                              for (var p in _portalData) {
-                                if (p.center) {
-                                  print("${p.name} is the new center portal");
                                 }
+                                // Update the new center.
+                                _portalData[portalIndexPressed].center = true;
+                                _portalData[portalIndexPressed].shown = true;
+                                hasChosenCenter = true;
+                                chosenCenterIndex = portalIndexPressed;
+
+                                // Update the markers
+                                _controller.updateMarkers(List.generate(
+                                    _controller.markersCount, (i) => i));
+                              });
+                            }
+
+                            for (var p in _portalData) {
+                              if (p.center) {
                               }
+                            }
 
-                              // Here, we should pass the new portals list and recalculate the links
-                              Spoke alg = Spoke();
-                              links =
-                                  alg.algorithm(_portalData, toggleCenterLinks);
-                            },
-                            child: Text("Center"), //Center
-                            style: TextButton.styleFrom(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 0.0, horizontal: 39.0),
-                                foregroundColor: Colors.white,
-                                textStyle: const TextStyle(fontSize: 30),
-                                backgroundColor: Colors.indigo),
-                          ),
+                            // Here, we should pass the new portals list and recalculate the links
+                            Spoke alg = Spoke();
+                            links =
+                                alg.algorithm(_portalData, toggleCenterLinks);
+                          }, //Center
+                          style: TextButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 0.0, horizontal: 39.0),
+                              foregroundColor: Colors.white,
+                              textStyle: const TextStyle(fontSize: 30),
+                              backgroundColor: Colors.indigo),
+                          child: const Text("Center"),
                         )
                       ],
                     ),
@@ -443,48 +434,88 @@ class _myOutputState extends State<myOutput> {
                   Container(
                     color: Colors.grey[300],
                     padding:
-                        EdgeInsets.symmetric(vertical: 10.0, horizontal: 140.0),
+                        const EdgeInsets.symmetric(vertical: 10.0, horizontal: 140.0),
                     //child: Text('Load Data'),
                   ),
                   ClipRRect(
                     borderRadius: BorderRadius.circular(5),
                     child: Stack(
                       children: <Widget>[
-                        Container(
-                          child: TextButton(
-                            onPressed: (portalIndexPressed != -1 &&
-                                    !_portalData[portalIndexPressed].center)
-                                ? () {
-                                    hidePortal();
-                                    print('pressed da Hide button'); //remove
+                        TextButton(
+                          onPressed: (portalIndexPressed != -1 &&
+                                  !_portalData[portalIndexPressed].center)
+                              ? () {
+                                  hidePortal();
+                                  //remove
+                                }
+                              : null,
+                          style: (portalIndexPressed == -1)
+                              ? TextButton.styleFrom(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 0.0, horizontal: 52.0),
+                                  foregroundColor: Colors.white,
+                                  textStyle: const TextStyle(fontSize: 30),
+                                  backgroundColor:
+                                      const Color.fromARGB(255, 99, 96, 102))
+                              : TextButton.styleFrom(
+                                  padding:
+                                      _portalData[portalIndexPressed].shown
+                                          ? const EdgeInsets.symmetric(
+                                              vertical: 0.0, horizontal: 52.0)
+                                          : const EdgeInsets.symmetric(
+                                              vertical: 0.0,
+                                              horizontal: 34.0),
+                                  foregroundColor: Colors.white,
+                                  textStyle: const TextStyle(fontSize: 30),
+                                  backgroundColor:
+                                      const Color.fromARGB(255, 99, 96, 102)),
+                          child: (portalIndexPressed == -1)
+                              ? const Text("Hide")
+                              : Text(_portalData[portalIndexPressed].shown
+                                  ? "Hide"
+                                  : "Include"),
+                        )
+                      ],
+                    ),
+                  ),
+                  Container(
+                    color: Colors.grey[300],
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 10.0, horizontal: 140.0),
+                    //child: Text('Load Data'),
+                  ),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(5),
+                    child: Stack(
+                      children: <Widget>[
+                        TextButton(
+                          // We only want the delete button to be active if a link is pressed, or if a non-center portal is pressed.
+                          onPressed: (linkIndexPressed != -1 ||
+                                  (portalIndexPressed != -1 &&
+                                      !_portalData[portalIndexPressed]
+                                          .center))
+                              ? () {
+                                  //remove
+                                  if (portalIndexPressed != -1) {
+                                    Portal portalSelected =
+                                        _portalData[portalIndexPressed];
+                                    deletePortal(portalSelected);
+                                  } else if (linkIndexPressed != -1) {
+                                    setState(() {
+                                      links.removeAt(linkIndexPressed);
+                                      linkIndexPressed = -1;
+                                    });
                                   }
-                                : null,
-                            style: (portalIndexPressed == -1)
-                                ? TextButton.styleFrom(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 0.0, horizontal: 52.0),
-                                    foregroundColor: Colors.white,
-                                    textStyle: const TextStyle(fontSize: 30),
-                                    backgroundColor:
-                                        Color.fromARGB(255, 99, 96, 102))
-                                : TextButton.styleFrom(
-                                    padding:
-                                        _portalData[portalIndexPressed].shown
-                                            ? const EdgeInsets.symmetric(
-                                                vertical: 0.0, horizontal: 52.0)
-                                            : const EdgeInsets.symmetric(
-                                                vertical: 0.0,
-                                                horizontal: 34.0),
-                                    foregroundColor: Colors.white,
-                                    textStyle: const TextStyle(fontSize: 30),
-                                    backgroundColor:
-                                        const Color.fromARGB(255, 99, 96, 102)),
-                            child: (portalIndexPressed == -1)
-                                ? Text("Hide")
-                                : Text(_portalData[portalIndexPressed].shown
-                                    ? "Hide"
-                                    : "Include"),
-                          ),
+                                }
+                              : null, //delete
+                          style: TextButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 0.0, horizontal: 40.0),
+                              foregroundColor: Colors.white,
+                              textStyle: const TextStyle(fontSize: 30),
+                              backgroundColor:
+                                  const Color.fromARGB(255, 163, 6, 6)),
+                          child: const Text("Delete"),
                         )
                       ],
                     ),
@@ -492,82 +523,36 @@ class _myOutputState extends State<myOutput> {
                   Container(
                     color: Colors.grey[300],
                     padding:
-                        EdgeInsets.symmetric(vertical: 10.0, horizontal: 140.0),
+                        const EdgeInsets.symmetric(vertical: 10.0, horizontal: 140.0),
                     //child: Text('Load Data'),
                   ),
                   ClipRRect(
                     borderRadius: BorderRadius.circular(5),
                     child: Stack(
                       children: <Widget>[
-                        Container(
-                          child: TextButton(
-                            // We only want the delete button to be active if a link is pressed, or if a non-center portal is pressed.
-                            onPressed: (linkIndexPressed != -1 ||
-                                    (portalIndexPressed != -1 &&
-                                        !_portalData[portalIndexPressed]
-                                            .center))
-                                ? () {
-                                    print('pressed da Delete button'); //remove
-                                    if (portalIndexPressed != -1) {
-                                      Portal portalSelected =
-                                          _portalData[portalIndexPressed];
-                                      deletePortal(portalSelected);
-                                    } else if (linkIndexPressed != -1) {
-                                      setState(() {
-                                        links.removeAt(linkIndexPressed);
-                                        linkIndexPressed = -1;
-                                      });
-                                    }
-                                  }
-                                : null,
-                            child: Text("Delete"), //delete
-                            style: TextButton.styleFrom(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 0.0, horizontal: 40.0),
-                                foregroundColor: Colors.white,
-                                textStyle: const TextStyle(fontSize: 30),
-                                backgroundColor:
-                                    Color.fromARGB(255, 163, 6, 6)),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                  Container(
-                    color: Colors.grey[300],
-                    padding:
-                        EdgeInsets.symmetric(vertical: 10.0, horizontal: 140.0),
-                    //child: Text('Load Data'),
-                  ),
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(5),
-                    child: Stack(
-                      children: <Widget>[
-                        Container(
-                          child: TextButton(
-                            onPressed: () {
-                              print('pressed da Save button'); //remove
+                        TextButton(
+                          onPressed: () {
+                            //remove
 
-                              nameNewFile();
-                              // print(nameNewFile());
-                              // Future<String> filename = nameNewFile();
-                              // print("right before if statement");
-                              // print(filename);
-                              // print("right after filenmae before if statement");
-                              // // if (filename is Future<String>) {
-                              // //   print("in if statement" + filename);
-                              // saveNewFile(filename);
-                              // }
-                            },
-                            child: Text("Save"), //generate
-                            style: TextButton.styleFrom(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 0.0, horizontal: 52.0),
-                                foregroundColor: Colors.white,
-                                textStyle: const TextStyle(fontSize: 30),
-                                backgroundColor:
-                                    Color.fromARGB(255, 18, 153, 6)),
-                          ),
+                            nameNewFile();
+                            // print(nameNewFile());
+                            // Future<String> filename = nameNewFile();
+                            // print("right before if statement");
+                            // print(filename);
+                            // print("right after filenmae before if statement");
+                            // // if (filename is Future<String>) {
+                            // //   print("in if statement" + filename);
+                            // saveNewFile(filename);
+                            // }
+                          }, //generate
+                          style: TextButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 0.0, horizontal: 52.0),
+                              foregroundColor: Colors.white,
+                              textStyle: const TextStyle(fontSize: 30),
+                              backgroundColor:
+                                  const Color.fromARGB(255, 18, 153, 6)),
+                          child: const Text("Save"),
                         )
                       ],
                     ),
@@ -575,13 +560,13 @@ class _myOutputState extends State<myOutput> {
                   Container(
                     color: Colors.grey[300],
                     padding:
-                        EdgeInsets.symmetric(vertical: 15.0, horizontal: 140.0),
+                        const EdgeInsets.symmetric(vertical: 15.0, horizontal: 140.0),
                     //child: Text('Load Data'),
                   ),
                   Container(
-                    color: Color.fromARGB(255, 187, 186, 186),
+                    color: const Color.fromARGB(255, 187, 186, 186),
                     constraints:
-                        BoxConstraints.expand(width: 180.0, height: 40.0),
+                        const BoxConstraints.expand(width: 180.0, height: 40.0),
                     child: Text(
                       selectPortalName(),
                       textAlign: TextAlign.center,
@@ -589,16 +574,16 @@ class _myOutputState extends State<myOutput> {
                     ), //FIX get first line to be name bolded
                   ),
                   Container(
-                    color: Color.fromARGB(255, 187, 186, 186),
+                    color: const Color.fromARGB(255, 187, 186, 186),
                     constraints:
-                        BoxConstraints.expand(width: 180.0, height: 200.0),
+                        const BoxConstraints.expand(width: 180.0, height: 200.0),
                     child: Text(
                         selectPortalInfo()), //FIX get first line to be name bolded
                   ),
                   Container(
                     color: Colors.grey[300],
                     padding:
-                        EdgeInsets.symmetric(vertical: 15.0, horizontal: 140.0),
+                        const EdgeInsets.symmetric(vertical: 15.0, horizontal: 140.0),
                     //child: Text('Load Data'),
                   ),
                   ClipRRect(
@@ -613,15 +598,14 @@ class _myOutputState extends State<myOutput> {
                                   builder: (context) =>
                                       Preview(portals: _portalData)),
                             );
-                            print('pressed da Go Back button');
-                          },
-                          child: Text("Go Back"), //generate
+                          }, //generate
                           style: TextButton.styleFrom(
-                              padding: EdgeInsets.symmetric(
+                              padding: const EdgeInsets.symmetric(
                                   vertical: 0.0, horizontal: 32.0),
                               foregroundColor: Colors.white,
                               textStyle: const TextStyle(fontSize: 30),
                               backgroundColor: Colors.indigo),
+                          child: const Text("Go Back"),
                         )
                       ],
                     ),
@@ -633,7 +617,7 @@ class _myOutputState extends State<myOutput> {
           Stack(children: <Widget>[
             Container(
               width: MediaQuery.of(context).size.width - 220,
-              color: Color.fromRGBO(46, 46, 46, 1),
+              color: const Color.fromRGBO(46, 46, 46, 1),
               child: Padding(
                 padding: const EdgeInsets.all(1.0),
                 child: SfMapsTheme(
@@ -641,7 +625,7 @@ class _myOutputState extends State<myOutput> {
                       // shapeHoverColor: Color.fromRGBO(46, 46, 46, 1),
                       // shapeHoverStrokeColor: Colors.pink,
                       // shapeHoverStrokeWidth: 5,
-                      layerColor: Color.fromRGBO(46, 46, 46, 1),
+                      layerColor: const Color.fromRGBO(46, 46, 46, 1),
                       layerStrokeWidth: 0),
                   child: SfMaps(layers: <MapLayer>[
                     MapShapeLayer(
@@ -658,7 +642,7 @@ class _myOutputState extends State<myOutput> {
                               to: MapLatLng(
                                   links[index].to.lat, links[index].to.long),
                               color: (index == linkIndexPressed)
-                                  ? Color.fromARGB(255, 117, 209, 255)
+                                  ? const Color.fromARGB(255, 117, 209, 255)
                                   : Colors.white,
                               width: 5,
                               onTap: () {
@@ -673,8 +657,6 @@ class _myOutputState extends State<myOutput> {
                                   _controller.updateMarkers(List.generate(
                                       _controller.markersCount, (i) => i));
                                 });
-                                print(
-                                    "User pressed the ${links[index].to.name} - ${links[index].from.name}");
                               },
                             );
                           }).toSet(),
@@ -692,8 +674,6 @@ class _myOutputState extends State<myOutput> {
                                   cursor: SystemMouseCursors.click,
                                   child: GestureDetector(
                                     onTap: () {
-                                      print(
-                                          'Pressed the $index: ${_portalData[index].name} Portal.');
                                       setState(() {
                                         portalIndexPressed = index;
 
@@ -719,7 +699,7 @@ class _myOutputState extends State<myOutput> {
                                           overflow: TextOverflow.ellipsis,
                                           textAlign: TextAlign.center,
                                           maxLines: 2,
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                               color: Colors.white,
                                               fontSize: 11),
                                         )),
@@ -736,8 +716,6 @@ class _myOutputState extends State<myOutput> {
                                   cursor: SystemMouseCursors.click,
                                   child: GestureDetector(
                                     onTap: () {
-                                      print(
-                                          'Pressed the $index: ${_portalData[index].name} Portal.');
                                       setState(() {
                                         portalIndexPressed = index;
 
@@ -763,7 +741,7 @@ class _myOutputState extends State<myOutput> {
                                           overflow: TextOverflow.ellipsis,
                                           textAlign: TextAlign.center,
                                           maxLines: 2,
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                               color: Colors.white,
                                               fontSize: 11),
                                         )),
@@ -781,8 +759,6 @@ class _myOutputState extends State<myOutput> {
                                   cursor: SystemMouseCursors.click,
                                   child: GestureDetector(
                                       onTap: () {
-                                        print(
-                                            'Pressed the $index: ${_portalData[index].name} Portal.');
                                         setState(() {
                                           portalIndexPressed = index;
 
@@ -808,7 +784,7 @@ class _myOutputState extends State<myOutput> {
                                           overflow: TextOverflow.ellipsis,
                                           textAlign: TextAlign.center,
                                           maxLines: 2,
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                               color: Colors.white,
                                               fontSize: 11),
                                         )),
@@ -825,8 +801,6 @@ class _myOutputState extends State<myOutput> {
                                   cursor: SystemMouseCursors.click,
                                   child: GestureDetector(
                                       onTap: () {
-                                        print(
-                                            'Pressed the $index: ${_portalData[index].name} Portal.');
                                         setState(() {
                                           portalIndexPressed = index;
 
@@ -853,7 +827,7 @@ class _myOutputState extends State<myOutput> {
                                           overflow: TextOverflow.ellipsis,
                                           textAlign: TextAlign.center,
                                           maxLines: 2,
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                               color: Colors.white,
                                               fontSize: 11),
                                         )),
@@ -870,8 +844,6 @@ class _myOutputState extends State<myOutput> {
                                   cursor: SystemMouseCursors.click,
                                   child: GestureDetector(
                                     onTap: () {
-                                      print(
-                                          'Pressed the $index: ${_portalData[index].name} Portal.');
                                       setState(() {
                                         portalIndexPressed = index;
 
@@ -915,8 +887,6 @@ class _myOutputState extends State<myOutput> {
                                   cursor: SystemMouseCursors.click,
                                   child: GestureDetector(
                                     onTap: () {
-                                      print(
-                                          'Pressed the $index: ${_portalData[index].name} Portal.');
                                       setState(() {
                                         portalIndexPressed = index;
 
@@ -995,6 +965,42 @@ class _myOutputState extends State<myOutput> {
                       color: Colors.grey),
                 ),
               ),
+            ),
+            Container(
+              alignment: Alignment.bottomCenter,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 9.0, bottom: 9.0),
+                child: Container(
+                  decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(5)),
+                      color: Colors.white),
+                  alignment: Alignment.center,
+                  // color: Colors.white,
+                  // width: 150,
+                  height: 42,
+                  // ignore: prefer_const_constructors
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    // child: Text(
+                    //   "Total Points: ${_portalData.length * 100}",
+                    //   textScaleFactor: 1.35,
+                    //   style: const TextStyle(fontWeight: FontWeight.bold),
+                    child: RichText(
+                      text: TextSpan(
+                          style: const TextStyle(color: Colors.black, fontSize: 17),
+                          children: <TextSpan>[
+                            const TextSpan(text: "Total Points: "),
+                            TextSpan(
+                                text:
+                                    formatter.format(_portalData.length * 23197823469),
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.green))
+                          ]),
+                    ),
+                  ),
+                ),
+              ),
             )
           ]),
         ],
@@ -1011,8 +1017,7 @@ Uint8List updateJSONTemplate(List<Portal> portals) {
   var assetFileStr = File('assets/siue2.json').readAsStringSync();
 
   // * Save a copy of the file in a new dir
-  if (!Directory('map').existsSync()) {
-  }
+  if (!Directory('map').existsSync()) {}
   File newFile = File('map/map.json');
   newFile.writeAsStringSync(assetFileStr);
 
