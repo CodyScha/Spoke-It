@@ -409,10 +409,13 @@ class Spoke {
   //updates how many fields exist using adjacency matrix and DFS
   //this runtime is pretty awful O(n^4)
   //so only call this method after deleting a link, not when running alg
-  void calcFields(List<Portal> portals, List<Link> links) {
-    numFields = 0;
+  void recalcPoints(List<Portal> portals, List<Link> links) {
+    List<Portal> shownPortalList = shownPortals(portals);
 
     List<List<int>> adjacency = [[]];
+    //calculate new fields with this solution:
+    // https://www.geeksforgeeks.org/number-of-triangles-in-a-undirected-graph/#
+
   }
 }
 
