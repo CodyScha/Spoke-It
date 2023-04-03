@@ -390,7 +390,7 @@ class Spoke {
 
     int portalPoints = 675, //for getting portal
         resPoints = 125, //deploying a resonator
-        eightResPoints = 250, //deploying the last Resinator
+        eightResPoints = 250, //deploying the last resonator
         modPoints = 125, //deploying a mod
         linkPoints = 313, //creating a link
         fieldPoints = 1250; //creating a field
@@ -405,4 +405,15 @@ class Spoke {
     //calculate Field Points
     points += (fieldPoints * numFields);
   }
-} //wow that sure was a lot of math
+
+  //updates how many fields exist using adjacency matrix and DFS
+  //this runtime is pretty awful O(n^4)
+  //so only call this method after deleting a link, not when running alg
+  void calcFields(List<Portal> portals, List<Link> links) {
+    numFields = 0;
+
+    List<List<int>> adjacency = [[]];
+  }
+}
+
+//wow that sure was a lot of math!
