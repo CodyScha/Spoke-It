@@ -40,14 +40,3 @@ class Link {
       required this.isCenterLink,
       required this.isHullLink});
 }
-
-class Field {
-  Portal portalOne;
-  Portal portalTwo;
-  Portal portalThree;
-
-  Field(
-    {required this.portalOne,
-    required this.portalTwo,
-    required this.portalThree});
-}

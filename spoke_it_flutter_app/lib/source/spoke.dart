@@ -41,11 +41,12 @@ class Spoke {
     //calculates points
     calculatePoints(shownPortalList.length, links.length);
     //for testing point calculations
-    /* print("point needs:");
-    print(points);
-    print(numFields);
-    print(links.length);
-    print(shownPortalList.length); */
+    /* print(
+        "Total points:$points # of fields:$numFields # of links:${links.length} # of portals: ${shownPortalList.length}");
+    //for testing recalculating points after delete or hide
+    recalcPoints(shownPortalList, links);
+    print(
+        "AFTER RECALC Total points:$points # of fields:$numFields # of links:${links.length} # of portals: ${shownPortalList.length}"); */
     return links;
   }
 
@@ -390,7 +391,7 @@ class Spoke {
 
     int portalPoints = 675, //for getting portal
         resPoints = 125, //deploying a resonator
-        eightResPoints = 250, //deploying the last Resinator
+        eightResPoints = 250, //deploying the last resonator
         modPoints = 125, //deploying a mod
         linkPoints = 313, //creating a link
         fieldPoints = 1250; //creating a field
@@ -405,4 +406,61 @@ class Spoke {
     //calculate Field Points
     points += (fieldPoints * numFields);
   }
-} //wow that sure was a lot of math
+
+  //updates how many fields exist using adjacency matrix and DFS
+  //this runtime is pretty awful O(n^4)
+  //so only call this method after deleting a link, not when running alg
+  void recalcPoints(List<Portal> portals, List<Link> links) {
+    List<Portal> shownPortalList = shownPortals(portals);
+    var adjacency = List.generate(
+        shownPortalList.length,
+        (i) => List.generate(shownPortalList.length,
+            (j) => 0), //creates the adjacency list to store where the links are
+        growable: false);
+    var tempAdjacencyOne = List.generate(
+        shownPortalList.length, //dummy 2d list for adjacency
+        (i) => List.generate(shownPortalList.length, (j) => 0),
+        growable: false);
+    var tempAdjacencyTwo = List.generate(
+        shownPortalList.length, //dummy 2d list for adjacency
+        (i) => List.generate(shownPortalList.length, (j) => 0),
+        growable: false);
+    int trace = 0;
+    //calculate new fields with this solution:
+    // https://www.geeksforgeeks.org/number-of-triangles-in-a-undirected-graph/#
+
+    // Step One: set adjacency
+    for (int i = 0; i < shownPortalList.length; i++) {
+      for (int j = 0; j < shownPortalList.length; j++) {
+        for (int k = 0; k < links.length; k++) {
+          if ((shownPortalList[i] == links[k].from &&
+                  shownPortalList[j] == links[k].to) ||
+              (shownPortalList[i] == links[k].to &&
+                  shownPortalList[j] == links[k].from)) {
+            adjacency[i][j] = 1;
+            adjacency[i][i] = 0;
+          }
+        }
+      }
+    }
+    // Step Four: get the trace of tempAdjacencyTwoa and divide it by six to get the field count
+    
+    for (int i = 0; i < shownPortalList.length; i++) {
+      for (int j = 0; j < shownPortalList.length; j++) {
+        if (adjacency[i][j] == 1) {
+          for (int k = 0; k < shownPortalList.length; k++) {
+            if (adjacency[j][k] == 1 && adjacency[k][i] == 1) {
+              trace += 1;
+            }
+          }
+        }
+      }
+    }
+    trace = trace ~/ 6;
+    numFields = trace;
+    // Step Five: recalculate points
+    calculatePoints(shownPortalList.length, links.length);
+  }
+}
+
+//wow that sure was a lot of math!
