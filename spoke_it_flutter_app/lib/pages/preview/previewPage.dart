@@ -77,6 +77,35 @@ class _myPreview extends State<myPreview> {
     return portalInfo;
   }
 
+  void areYouSure() async {
+    var result = await showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(
+              'You are about to exit to the homepage, any new changes will not be saved.\n Would you like to continue?\n'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('CANCEL'),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+            TextButton(
+              child: Text('HOMEPAGE'),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => HomeView()),
+                );
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   TextEditingController _textFieldController = TextEditingController();
 
   void nameNewFile() async {
@@ -620,12 +649,14 @@ class _myPreview extends State<myPreview> {
                           child: TextButton(
                             onPressed: () {
                               //nameNewFile();
-                              Navigator.push(
+                              /*Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => HomeView()),
                               );
+                              */
                               print('pressed da Go Back button');
+                              areYouSure();
                             },
                             child: Text("Go Home"), //generate
                             style: TextButton.styleFrom(
