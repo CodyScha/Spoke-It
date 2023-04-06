@@ -408,7 +408,7 @@ class Spoke {
   }
 
   //updates how many fields exist using adjacency matrix and DFS
-  //this runtime is pretty awful O(n^4)
+  //this runtime is pretty awful O(n^3)
   //so only call this method after deleting a link, not when running alg
   void recalcPoints(List<Portal> portals, List<Link> links) {
     List<Portal> shownPortalList = shownPortals(portals);
