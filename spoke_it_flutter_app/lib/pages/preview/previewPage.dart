@@ -119,7 +119,7 @@ class _myPreview extends State<myPreview> {
             TextButton(
               style: const ButtonStyle(
                 backgroundColor: MaterialStatePropertyAll<Color>(
-                    Color.fromARGB(255, 101, 85, 186)),
+                    Colors.indigo),
               ),
               child: Text(
                 'CONTINUE',
