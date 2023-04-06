@@ -711,6 +711,7 @@ class _myOutputState extends State<myOutput> {
                                   _controller.updateMarkers(List.generate(
                                       _controller.markersCount, (i) => i));
                                 });
+                                print(linkIndexPressed);
                               },
                             );
                           }).toSet(),
@@ -1002,6 +1003,49 @@ class _myOutputState extends State<myOutput> {
                       // * Toggle the center links variable
                       toggleCenterLinks = !toggleCenterLinks;
 
+                      // * If the currently selected link is a center link, then we should reset the state
+                      // * Find the center portal
+                      int centerPortalIndex = 0;
+                      for (Portal p in _portalData) {
+                        if (p.center) {
+                          centerPortalIndex = _portalData.indexOf(p);
+                          break;
+                        }
+                      }
+
+                      if (linkIndexPressed != -1) {
+                        if (linksDisplayed[linkIndexPressed].to ==
+                                _portalData[centerPortalIndex] ||
+                            linksDisplayed[linkIndexPressed].from ==
+                                _portalData[centerPortalIndex]) {
+                          linkIndexPressed = -1;
+                        }
+                      }
+
+                      // * We need to convert the currently selected link index to the link index of the new link list to display
+                      if (linkIndexPressed != -1) {
+                        int newLinkIndex = -1;
+                        List<Link> toBeDisplayed = (toggleCenterLinks)
+                            ? linksWithSpokes
+                            : linksNoSpokes;
+                        for (int i = 0; i < toBeDisplayed.length; i++) {
+                          if ((toBeDisplayed[i].to ==
+                                      linksDisplayed[linkIndexPressed].to &&
+                                  toBeDisplayed[i].from ==
+                                      linksDisplayed[linkIndexPressed].from) ||
+                              (toBeDisplayed[i].to ==
+                                      linksDisplayed[linkIndexPressed].from &&
+                                  toBeDisplayed[i].from ==
+                                      linksDisplayed[linkIndexPressed].to)) {
+                            newLinkIndex = i;
+                            print("hit the break");
+                            break;
+                          }
+                        }
+                        print(newLinkIndex);
+                        linkIndexPressed = newLinkIndex;
+                      }
+
                       // * Update the links
                       linksDisplayed =
                           (toggleCenterLinks) ? linksWithSpokes : linksNoSpokes;
@@ -1035,10 +1079,6 @@ class _myOutputState extends State<myOutput> {
                   // ignore: prefer_const_constructors
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
-                    // child: Text(
-                    //   "Total Points: ${_portalData.length * 100}",
-                    //   textScaleFactor: 1.35,
-                    //   style: const TextStyle(fontWeight: FontWeight.bold),
                     child: RichText(
                       text: TextSpan(
                           style: const TextStyle(
