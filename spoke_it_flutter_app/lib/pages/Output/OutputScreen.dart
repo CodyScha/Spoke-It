@@ -58,14 +58,15 @@ class _myOutputState extends State<myOutput> {
     var temp = List.generate(_controller.markersCount, (i) => i);
     _controller.updateMarkers(temp);
 
-    // * Here, we should pass the new portals list and recalculate the links
-    links = alg.algorithm(_portalData, toggleCenterLinks);
+    // * Reset the Link lists
+    linksNoSpokes = alg.algorithm(_portalData, false);
+    linksWithSpokes = alg.algorithm(_portalData, true);
+
+    // * Update the displayed links
+    linksDisplayed = (toggleCenterLinks) ? linksWithSpokes : linksNoSpokes;
 
     // * Update the points
-    // points = alg.points;
-    Spoke algTemp = Spoke();
-    List<Link> fakeLinks = algTemp.algorithm(_portalData, true);
-    points = algTemp.points;
+    points = alg.points;
   }
 
   void hidePortal() {
@@ -77,15 +78,15 @@ class _myOutputState extends State<myOutput> {
         _portalData[portalIndexPressed].shown = false;
       }
 
-      // * Here, we should pass the new portals list and recalculate the links
-      Spoke alg = Spoke();
-      links = alg.algorithm(_portalData, toggleCenterLinks);
+      // * Reset the Link lists
+      linksNoSpokes = alg.algorithm(_portalData, false);
+      linksWithSpokes = alg.algorithm(_portalData, true);
+
+      // * Update the displayed links
+      linksDisplayed = (toggleCenterLinks) ? linksWithSpokes : linksNoSpokes;
 
       // * Update the points
-      // points = alg.points;
-      Spoke algTemp = Spoke();
-      List<Link> fakeLinks = algTemp.algorithm(_portalData, true);
-      points = algTemp.points;
+      points = alg.points;
     });
 
     var temp = List.generate(1, (i) => portalIndexPressed);
@@ -211,18 +212,6 @@ class _myOutputState extends State<myOutput> {
     String filename,
   ) async {
     String path;
-    // String? path = await FilesystemPicker.openDialog(
-    //   context: context,
-    //   title: 'Saved Profiles',
-    //   fsType: FilesystemType.file,
-    //   rootDirectory: Directory(
-    //       '../..'), //set to be downloads page(where the txt file will save to automatically)
-    //   directory: Directory('profiles'),
-    //   showGoUp: (false),
-    //   allowedExtensions: ['.txt'],
-    //   fileTileSelectMode: FileTileSelectMode.wholeTile,
-    // );
-    // path = Directory.current.path;
     path = Directory("profiles").path;
     File file = File('$path/$filename');
     //FIX clear file first
@@ -269,7 +258,9 @@ class _myOutputState extends State<myOutput> {
   late MapZoomPanBehavior _zoomPanBehavior;
   late List<Portal> _portalData;
   late MapShapeLayerController _controller;
-  late List<Link> links;
+  late List<Link> linksDisplayed;
+  late List<Link> linksWithSpokes;
+  late List<Link> linksNoSpokes;
   late MapShapeSource _mapSource;
   late int portalIndexPressed;
   late int linkIndexPressed;
@@ -294,18 +285,11 @@ class _myOutputState extends State<myOutput> {
 
     _portalData = portals;
 
-    // _portalData = <MarkerModel>[
-    //   MarkerModel('SIUE Art Display', 38.792283, -89.998616, Colors.cyan),
-    //   MarkerModel('Dunham Hall Theatre', 38.793336, -89.998426, Colors.cyan),
-    //   MarkerModel('Science East', 38.793988, -89.999159, Colors.cyan),
-    //   MarkerModel(
-    //       'SIUE Student Art Installation', 38.792097, -89.999033, Colors.cyan),
-    //   MarkerModel('SIUE Lovejoy Library', 38.793547, -89.997771, Colors.cyan),
-    //   MarkerModel('SIUE "The Rock"', 38.793189, -89.997956, Colors.cyan),
-    //   MarkerModel('Peck Hall', 38.793463, -89.996867, Colors.cyan)
-    // ];
+    linksNoSpokes = alg.algorithm(_portalData, false);
+    linksWithSpokes =
+        linksDisplayed = alg.algorithm(_portalData, toggleCenterLinks);
+    linksDisplayed = linksWithSpokes;
 
-    links = alg.algorithm(portals, toggleCenterLinks);
     points = alg.points;
 
     _controller = MapShapeLayerController();
@@ -335,6 +319,7 @@ class _myOutputState extends State<myOutput> {
               style: BorderStyle.solid,
               strokeAlign: BorderSide.strokeAlignOutside)),
     );
+
     _hiddenPortal = Container(
       height: 20,
       width: 20,
@@ -403,41 +388,43 @@ class _myOutputState extends State<myOutput> {
                     child: Stack(
                       children: <Widget>[
                         TextButton(
-                          onPressed: () {
-                            if (portalIndexPressed != -1) {
-                              setState(() {
-                                for (var p in _portalData) {
-                                  if (p.center) {
-                                    p.center = false;
+                          onPressed: (portalIndexPressed == -1)
+                              ? null
+                              : () {
+                                  if (portalIndexPressed != -1) {
+                                    setState(() {
+                                      for (var p in _portalData) {
+                                        if (p.center) {
+                                          p.center = false;
+                                        }
+                                      }
+                                      // * Update the new center.
+                                      _portalData[portalIndexPressed].center =
+                                          true;
+                                      _portalData[portalIndexPressed].shown =
+                                          true;
+                                      hasChosenCenter = true;
+                                      chosenCenterIndex = portalIndexPressed;
+
+                                      // * Update the markers
+                                      _controller.updateMarkers(List.generate(
+                                          _controller.markersCount, (i) => i));
+                                    });
+                                    // * Reset the Link lists
+                                    linksNoSpokes =
+                                        alg.algorithm(_portalData, false);
+                                    linksWithSpokes =
+                                        alg.algorithm(_portalData, true);
+
+                                    // * Update the displayed links
+                                    linksDisplayed = (toggleCenterLinks)
+                                        ? linksWithSpokes
+                                        : linksNoSpokes;
+
+                                    // * Update the points
+                                    points = alg.points;
                                   }
-                                }
-                                // Update the new center.
-                                _portalData[portalIndexPressed].center = true;
-                                _portalData[portalIndexPressed].shown = true;
-                                hasChosenCenter = true;
-                                chosenCenterIndex = portalIndexPressed;
-
-                                // Update the markers
-                                _controller.updateMarkers(List.generate(
-                                    _controller.markersCount, (i) => i));
-                              });
-                            }
-
-                            for (var p in _portalData) {
-                              if (p.center) {}
-                            }
-
-                            // * Here, we should pass the new portals list and recalculate the links
-                            links =
-                                alg.algorithm(_portalData, toggleCenterLinks);
-
-                            // * Update the points
-                            // points = alg.points;
-                            Spoke algTemp = Spoke();
-                            List<Link> fakeLinks =
-                                algTemp.algorithm(_portalData, true);
-                            points = algTemp.points;
-                          }, //Center
+                                }, //Center
                           style: TextButton.styleFrom(
                               padding: const EdgeInsets.symmetric(
                                   vertical: 0.0, horizontal: 39.0),
@@ -510,24 +497,76 @@ class _myOutputState extends State<myOutput> {
                                   (portalIndexPressed != -1 &&
                                       !_portalData[portalIndexPressed].center))
                               ? () {
-                                  //remove
+                                  // * Delete a portal
                                   if (portalIndexPressed != -1) {
                                     Portal portalSelected =
                                         _portalData[portalIndexPressed];
                                     deletePortal(portalSelected);
-                                  } else if (linkIndexPressed != -1) {
+                                  }
+                                  // * Delete a link
+                                  else if (linkIndexPressed != -1) {
                                     setState(() {
-                                      links.removeAt(linkIndexPressed);
-                                      linkIndexPressed = -1;
+                                      // * Remove the link from both Link lists
+                                      // * First, take a copy of the link that was pressed by the user.
+                                      Link tempLink =
+                                          linksDisplayed[linkIndexPressed];
 
-                                      alg.calculatePoints(
-                                          alg.shownPortals(_portalData).length,
-                                          links.length);
-                                      // points = alg.points;
-                                      Spoke algTemp = Spoke();
-                                      List<Link> fakeLinks =
-                                          algTemp.algorithm(_portalData, true);
-                                      points = algTemp.points;
+                                      // * Now, iterate through both Link lists to find the one to remove
+                                      int withSpokesIndex = -1;
+                                      int noSpokesIndex = -1;
+                                      for (int i = 0;
+                                          i < linksWithSpokes.length;
+                                          i++) {
+                                        if ((tempLink.to ==
+                                                    linksWithSpokes[i].to &&
+                                                tempLink.from ==
+                                                    linksWithSpokes[i].from) ||
+                                            (tempLink.from ==
+                                                    linksWithSpokes[i].to &&
+                                                tempLink.to ==
+                                                    linksWithSpokes[i].from)) {
+                                          withSpokesIndex = i;
+                                          break;
+                                        }
+                                      }
+
+                                      for (int i = 0;
+                                          i < linksNoSpokes.length;
+                                          i++) {
+                                        if ((tempLink.to ==
+                                                    linksNoSpokes[i].to &&
+                                                tempLink.from ==
+                                                    linksNoSpokes[i].from) ||
+                                            (tempLink.from ==
+                                                    linksNoSpokes[i].to &&
+                                                tempLink.to ==
+                                                    linksNoSpokes[i].from)) {
+                                          noSpokesIndex = i;
+                                          break;
+                                        }
+                                      }
+
+                                      linksWithSpokes.removeAt(withSpokesIndex);
+
+                                      // * If you try to delete a spoke link, this will always be out of bounds. Just don't remove a link from this one if that is the case
+                                      if (noSpokesIndex != -1) {
+                                        linksNoSpokes.removeAt(noSpokesIndex);
+                                      }
+
+                                      // * Calc the new score based on the Links list with spokes
+                                      alg.recalcPoints(
+                                          _portalData, linksWithSpokes);
+
+                                      // * Update the points
+                                      points = alg.points;
+
+                                      // * Update the display according to toggleCenterLinks
+                                      linksDisplayed = (toggleCenterLinks)
+                                          ? linksWithSpokes
+                                          : linksNoSpokes;
+
+                                      // * Reset the link pressed state.
+                                      linkIndexPressed = -1;
                                     });
                                   }
                                 }
@@ -649,13 +688,13 @@ class _myOutputState extends State<myOutput> {
                       initialMarkersCount: _portalData.length,
                       sublayers: [
                         MapLineLayer(
-                          lines:
-                              List<MapLine>.generate(links.length, (int index) {
+                          lines: List<MapLine>.generate(linksDisplayed.length,
+                              (int index) {
                             return MapLine(
-                              from: MapLatLng(links[index].from.lat,
-                                  links[index].from.long),
-                              to: MapLatLng(
-                                  links[index].to.lat, links[index].to.long),
+                              from: MapLatLng(linksDisplayed[index].from.lat,
+                                  linksDisplayed[index].from.long),
+                              to: MapLatLng(linksDisplayed[index].to.lat,
+                                  linksDisplayed[index].to.long),
                               color: (index == linkIndexPressed)
                                   ? const Color.fromARGB(255, 117, 209, 255)
                                   : Colors.white,
@@ -964,14 +1003,8 @@ class _myOutputState extends State<myOutput> {
                       toggleCenterLinks = !toggleCenterLinks;
 
                       // * Update the links
-                      links = alg.algorithm(_portalData, toggleCenterLinks);
-
-                      // * Update the points
-                      // * Create a temp Spoke class so toggling center links does not affect score
-                      Spoke algTemp = Spoke();
-                      List<Link> fakeLinks =
-                          algTemp.algorithm(_portalData, true);
-                      points = algTemp.points;
+                      linksDisplayed =
+                          (toggleCenterLinks) ? linksWithSpokes : linksNoSpokes;
                     });
                   },
                   style: ElevatedButton.styleFrom(
