@@ -78,21 +78,55 @@ class _myPreview extends State<myPreview> {
   }
 
   void areYouSure() async {
+    String fname;
     var result = await showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
           title: Text(
-              'You are about to exit to the homepage, any new changes will not be saved.\n Would you like to continue?\n'),
+            'Are you sure?\nUnsaved changes will be lost.\n',
+          ),
+          //'You are about to exit to the homepage, any new changes will not be saved.\n Would you like to continue?\n'),
           actions: <Widget>[
             TextButton(
-              child: Text('CANCEL'),
+              style: const ButtonStyle(
+                backgroundColor: MaterialStatePropertyAll<Color>(
+                    Color.fromARGB(255, 163, 6, 6)),
+              ),
+              child: Text(
+                'CANCEL',
+                style:
+                    const TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
+              ),
               onPressed: () {
                 Navigator.pop(context);
               },
             ),
+            /*TextButton(
+              style: const ButtonStyle(
+                backgroundColor: MaterialStatePropertyAll<Color>(
+                    Color.fromARGB(255, 18, 153, 6)),
+              ),
+              child: Text(
+                'SAVE',
+                style:
+                    const TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
+              ),
+              onPressed: () {
+                nameNewFile();
+              },
+            ),*/
             TextButton(
-              child: Text('HOMEPAGE'),
+              style: const ButtonStyle(
+                backgroundColor: MaterialStatePropertyAll<Color>(
+                    Color.fromARGB(255, 101, 85, 186)),
+              ),
+              child: Text(
+                'CONTINUE',
+                //selectionColor:  Color.fromARGB(255, 0, 0, 0),),
+                style:
+                    const TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
+              ),
               onPressed: () {
                 Navigator.push(
                   context,
@@ -108,10 +142,10 @@ class _myPreview extends State<myPreview> {
 
   TextEditingController _textFieldController = TextEditingController();
 
-  void nameNewFile() async {
+  void nameNewFile() {
     String value = '';
     String fname;
-    var result = await showDialog(
+    var result = showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
