@@ -1038,11 +1038,11 @@ class _myOutputState extends State<myOutput> {
                                   toBeDisplayed[i].from ==
                                       linksDisplayed[linkIndexPressed].to)) {
                             newLinkIndex = i;
-                            print("hit the break");
+                            // print("hit the break");
                             break;
                           }
                         }
-                        print(newLinkIndex);
+                        // print(newLinkIndex);
                         linkIndexPressed = newLinkIndex;
                       }
 
