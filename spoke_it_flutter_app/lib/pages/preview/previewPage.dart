@@ -934,7 +934,7 @@ Uint8List updateJSONTemplate(List<Portal> portals) {
   String aggregiousTabs = '\t\t\t\t\t\t\t';
 
   // * First, need to get the JSON from the assets folder
-  var assetFileStr = File('assets/siue2.json').readAsStringSync();
+  var assetFileStr = File('assets/siue.json').readAsStringSync();
 
   // * Save a copy of the file in a new dir
   if (!Directory('map').existsSync()) {

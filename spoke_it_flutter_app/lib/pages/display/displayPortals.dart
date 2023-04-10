@@ -51,9 +51,6 @@ class _MyDisplayState extends State<MyDisplay> {
     _zoomPanBehavior = MapZoomPanBehavior(
         enableDoubleTapZooming: true, enableMouseWheelZooming: true);
 
-    // _mapSource = MapShapeSource.asset('assets/siue2.json', shapeDataField: 'name_en');
-    // _mapSource = MapShapeSource.memory(getJSON(_markerData));
-
     _portalData = <MarkerModel>[
       MarkerModel('SIUE Art Display', 38.792283, -89.998616, Colors.cyan),
       MarkerModel('Dunham Hall Theatre', 38.793336, -89.998426, Colors.cyan),
@@ -65,18 +62,7 @@ class _MyDisplayState extends State<MyDisplay> {
       MarkerModel('Peck Hall', 38.793463, -89.996867, Colors.cyan)
     ];
 
-    // _markerData = <MarkerModel>[
-    //   MarkerModel('Good Samaritan House Mural', 38.700395, -90.152362, Colors.cyan),
-    //   MarkerModel('Abstract Metal Art', 38.701165,-90.152455, Colors.cyan),
-    //   // MarkerModel('SIUE "The Rock"', 38.793189, -89.997956, Colors.cyan),
-    //   MarkerModel('Community Care Center', 38.700642, -90.153146, Colors.cyan)
-    // ];
-
     _mapSource = MapShapeSource.memory(updateJSONTemplate(_portalData));
-
-    // updateJSONTemplate(_portalData).then((response) {
-    // _mapSource = MapShapeSource.memory(response);
-    // });
 
     _vectordata = <LineModel>[
       LineModel(
@@ -208,10 +194,10 @@ Uint8List updateJSONTemplate(List<MarkerModel> markers) {
 
   // * First, need to get the JSON from the assets folder
   var assetFileStr = File(
-          '/Users/codyschaefer/Documents/SIUE/2023 Spring/CS499/Spoke-It/spoke_it_flutter_app/assets/siue2.json')
+          '/Users/codyschaefer/Documents/SIUE/2023 Spring/CS499/Spoke-It/spoke_it_flutter_app/assets/siue.json')
       .readAsStringSync();
   // var assetFileStr = '';
-  // rootBundle.loadString('assets/siue2.json');
+  // rootBundle.loadString('assets/siue.json');
 
   // * Save a copy of the file in a new dir
   if (!Directory('map').existsSync()) {
