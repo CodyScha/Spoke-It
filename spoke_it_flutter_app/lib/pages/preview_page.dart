@@ -1,4 +1,4 @@
-// ignore_for_file: file_names, no_logic_in_create_state, must_call_super, annotate_overrides, avoid_unnecessary_containers
+// ignore_for_file: no_logic_in_create_state, must_call_super, avoid_unnecessary_containers
 
 import 'dart:io';
 import 'dart:math';
@@ -238,6 +238,7 @@ class _MyPreview extends State<MyPreview> {
   late Widget _centerSelectedPortal;
   late Widget _hiddenSelectedPortal;
 
+  @override
   void initState() {
     _zoomPanBehavior = MapZoomPanBehavior(
         enableDoubleTapZooming: true,
