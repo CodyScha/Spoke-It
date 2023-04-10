@@ -20,7 +20,7 @@ class HomeView extends StatelessWidget {
 
         primarySwatch: Colors.indigo, //title color
       ),
-      home: const MyHomePage(title: 'Prototype: Spoke-It'), //displayed title
+      home: const MyHomePage(title: 'Spoke-It'), //displayed title
     );
   }
 }

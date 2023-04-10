@@ -82,7 +82,7 @@ class _LoadSelection extends State<LoadSelection> {
     return Scaffold(
       appBar: AppBar(
         //top bar
-        title: const Text('Prototype - Load'),
+        title: const Text('Load'),
         centerTitle: true, //centers text
       ),
       body: Row(
@@ -108,7 +108,7 @@ class _LoadSelection extends State<LoadSelection> {
                         context,
                         MaterialPageRoute(
                             builder: (context) =>
-                                const MyHomePage(title: 'Prototype: Load')),
+                                const MyHomePage(title: 'Load')),
                       );
                     },
                     child: const Text('Home')),
