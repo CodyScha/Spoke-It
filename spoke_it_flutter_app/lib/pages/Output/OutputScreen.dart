@@ -11,8 +11,9 @@ import 'package:filesystem_picker/filesystem_picker.dart';
 import 'package:intl/intl.dart';
 
 import '../Preview/previewPage.dart';
-import '../../source/spoke.dart';
-import '../../source/portals.dart';
+import '../../calc/spoke.dart';
+import '../../model/portals.dart';
+import '../../model/links.dart';
 
 class Output extends StatelessWidget {
   const Output({super.key, required this.portals});
