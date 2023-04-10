@@ -1,3 +1,5 @@
+// ignore_for_file: file_names, no_logic_in_create_state, must_call_super, annotate_overrides, avoid_unnecessary_containers
+
 import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
@@ -9,9 +11,6 @@ import 'package:syncfusion_flutter_maps/maps.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import '../../source/portals.dart';
 
-import '../../source/portals.dart';
-import '../DisplayPortals/DisplayPortal.dart';
-
 class Preview extends StatelessWidget {
   const Preview({super.key, required this.portals});
 
@@ -19,7 +18,7 @@ class Preview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String dir = Directory.current.toString();
+    Directory.current.toString();
     return MaterialApp(
         //web name
         theme: ThemeData(
@@ -27,25 +26,25 @@ class Preview extends StatelessWidget {
 
           primarySwatch: Colors.indigo, //title color
         ),
-        home: myPreview(
+        home: MyPreview(
           //file: File('$dir/Saved/SIUE_Gardens.txt')), //displayed title
           portals: portals,
         ));
   }
 }
 
-class myPreview extends StatefulWidget {
-  const myPreview({super.key, required this.portals});
+class MyPreview extends StatefulWidget {
+  const MyPreview({super.key, required this.portals});
 
   final List<Portal> portals;
   //final File file;
 
   @override
-  State<myPreview> createState() => _myPreview(portals: portals);
+  State<MyPreview> createState() => _MyPreview(portals: portals);
 }
 
-class _myPreview extends State<myPreview> {
-  _myPreview({required this.portals});
+class _MyPreview extends State<MyPreview> {
+  _MyPreview({required this.portals});
 
   final List<Portal> portals;
 
@@ -69,7 +68,7 @@ class _myPreview extends State<myPreview> {
   String selectPortalName() {
     String portalInfo = "";
     if (indexPressed >= 0) {
-      portalInfo = '${_portalData[indexPressed].name}';
+      portalInfo = _portalData[indexPressed].name;
     } else {
       portalInfo = "";
     }
@@ -78,12 +77,11 @@ class _myPreview extends State<myPreview> {
   }
 
   void areYouSure() async {
-    String fname;
-    var result = await showDialog(
+    await showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text(
+          title: const Text(
             'Are you sure?\nUnsaved changes will be lost.\n',
           ),
           //'You are about to exit to the homepage, any new changes will not be saved.\n Would you like to continue?\n'),
@@ -93,10 +91,9 @@ class _myPreview extends State<myPreview> {
                 backgroundColor: MaterialStatePropertyAll<Color>(
                     Color.fromARGB(255, 163, 6, 6)),
               ),
-              child: Text(
+              child: const Text(
                 'CANCEL',
-                style:
-                    const TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
+                style: TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
               ),
               onPressed: () {
                 Navigator.pop(context);
@@ -118,19 +115,17 @@ class _myPreview extends State<myPreview> {
             ),*/
             TextButton(
               style: const ButtonStyle(
-                backgroundColor: MaterialStatePropertyAll<Color>(
-                    Colors.indigo),
+                backgroundColor: MaterialStatePropertyAll<Color>(Colors.indigo),
               ),
-              child: Text(
+              child: const Text(
                 'CONTINUE',
                 //selectionColor:  Color.fromARGB(255, 0, 0, 0),),
-                style:
-                    const TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
+                style: TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
               ),
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => HomeView()),
+                  MaterialPageRoute(builder: (context) => const HomeView()),
                 );
               },
             ),
@@ -140,43 +135,42 @@ class _myPreview extends State<myPreview> {
     );
   }
 
-  TextEditingController _textFieldController = TextEditingController();
+  final TextEditingController _textFieldController = TextEditingController();
 
   void nameNewFile() {
-    String value = '';
     String fname;
-    var result = showDialog(
+    showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Save under this name:'),
+          title: const Text('Save under this name:'),
           content: TextField(
             controller: _textFieldController,
-            decoration: InputDecoration(hintText: "Name your file:"),
+            decoration: const InputDecoration(hintText: "Name your file:"),
           ),
           actions: <Widget>[
             TextButton(
-              child: Text('CANCEL'),
+              child: const Text('CANCEL'),
               onPressed: () {
                 Navigator.pop(context);
               },
             ),
             TextButton(
-              child: Text('OK'),
+              child: const Text('OK'),
               onPressed: () {
                 // setState(() {
                 fname = _textFieldController.text;
                 if (!fname.endsWith('.txt')) {
-                  fname = fname + ".txt";
+                  fname = '$fname.txt';
                   Navigator.pop(context);
                 }
 
+                // ignore: unnecessary_null_comparison
                 if (saveNewFile(fname) != null) {
-                  print("file was saved");
                   showDialog(
                     context: context,
                     builder: (context2) => AlertDialog(
-                      title: Center(child: const Text('File saved!')),
+                      title: const Center(child: Text('File saved!')),
                       backgroundColor: Colors.green,
                       actions: <Widget>[
                         TextButton(
@@ -195,9 +189,8 @@ class _myPreview extends State<myPreview> {
                   showDialog(
                     context: context,
                     builder: (context3) => AlertDialog(
-                      title: Center(
-                          child:
-                              const Text('File not saved, please try again')),
+                      title: const Center(
+                          child: Text('File not saved, please try again')),
                       backgroundColor: Colors.red,
                       actions: <Widget>[
                         TextButton(
@@ -227,22 +220,8 @@ class _myPreview extends State<myPreview> {
   Future<File> saveNewFile(
     String filename,
   ) async {
-    bool saved = false;
     String path;
-    // String? path = await FilesystemPicker.openDialog(
-    //   context: context,
-    //   title: 'Saved Profiles',
-    //   fsType: FilesystemType.file,
-    //   rootDirectory: Directory(
-    //       '../..'), //set to be downloads page(where the txt file will save to automatically)
-    //   directory: Directory('profiles'),
-    //   showGoUp: (false),
-    //   allowedExtensions: ['.txt'],
-    //   fileTileSelectMode: FileTileSelectMode.wholeTile,
-    // );
-    // path = Directory.current.path;
     path = Directory("profiles").path;
-    print(path);
     File file = File('$path/$filename');
     //FIX clear file first
     file.writeAsStringSync('');
@@ -274,7 +253,6 @@ class _myPreview extends State<myPreview> {
   late Widget _centerPortal;
   late Widget _centerSelectedPortal;
   late Widget _hiddenSelectedPortal;
-  late int _index = -1;
 
   void initState() {
     _zoomPanBehavior = MapZoomPanBehavior(
@@ -301,7 +279,8 @@ class _myPreview extends State<myPreview> {
     _centerPortal = Container(
       height: 20,
       width: 20,
-      decoration: BoxDecoration(color: Colors.green, shape: BoxShape.circle),
+      decoration:
+          const BoxDecoration(color: Colors.green, shape: BoxShape.circle),
     );
 
     _centerSelectedPortal = Container(
@@ -311,7 +290,7 @@ class _myPreview extends State<myPreview> {
           color: Colors.green,
           shape: BoxShape.circle,
           border: Border.all(
-              color: Color.fromARGB(255, 117, 209, 255),
+              color: const Color.fromARGB(255, 117, 209, 255),
               width: 4,
               style: BorderStyle.solid,
               strokeAlign: BorderSide.strokeAlignOutside)),
@@ -324,7 +303,7 @@ class _myPreview extends State<myPreview> {
           color: Colors.red,
           shape: BoxShape.circle,
           border: Border.all(
-              color: Color.fromARGB(255, 117, 209, 255),
+              color: const Color.fromARGB(255, 117, 209, 255),
               width: 4,
               style: BorderStyle.solid,
               strokeAlign: BorderSide.strokeAlignOutside)),
@@ -344,7 +323,7 @@ class _myPreview extends State<myPreview> {
           color: Colors.grey[700],
           shape: BoxShape.circle,
           border: Border.all(
-              color: Color.fromARGB(255, 117, 209, 255),
+              color: const Color.fromARGB(255, 117, 209, 255),
               width: 4,
               style: BorderStyle.solid,
               strokeAlign: BorderSide.strokeAlignOutside)),
@@ -356,7 +335,7 @@ class _myPreview extends State<myPreview> {
     return Scaffold(
       appBar: AppBar(
         //top bar
-        title: Text('Preview Portals'),
+        title: const Text('Preview Portals'),
         centerTitle: true, //centers text
       ),
       body: Row(
@@ -376,8 +355,8 @@ class _myPreview extends State<myPreview> {
                 children: <Widget>[
                   Container(
                     color: Colors.grey[300],
-                    padding:
-                        EdgeInsets.symmetric(vertical: 7.0, horizontal: 140.0),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 7.0, horizontal: 140.0),
                     //child: Text('Load Data'),
                   ),
                   const Text(
@@ -387,8 +366,8 @@ class _myPreview extends State<myPreview> {
                   ),
                   Container(
                     color: Colors.grey[300],
-                    padding:
-                        EdgeInsets.symmetric(vertical: 7.0, horizontal: 140.0),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 7.0, horizontal: 140.0),
                     //child: Text('Load Data'),
                   ),
                   ClipRRect(
@@ -399,8 +378,6 @@ class _myPreview extends State<myPreview> {
                           child: TextButton(
                             onPressed: hasChosenCenter
                                 ? () {
-                                    print(
-                                        'User has pressed the Generate Button');
                                     List<Portal> portals = getPortalList();
                                     Navigator.push(
                                       context,
@@ -410,15 +387,15 @@ class _myPreview extends State<myPreview> {
                                     );
                                   }
                                 : null,
-                            child: Text("Generate"), //generate
                             style: TextButton.styleFrom(
-                                padding: EdgeInsets.symmetric(
+                                padding: const EdgeInsets.symmetric(
                                     vertical: 0.0, horizontal: 22.0),
                                 foregroundColor: Colors.white,
                                 textStyle: const TextStyle(fontSize: 30),
                                 backgroundColor: hasChosenCenter
-                                    ? Color.fromARGB(255, 184, 80, 20)
+                                    ? const Color.fromARGB(255, 184, 80, 20)
                                     : Colors.grey[500]),
+                            child: const Text("Generate"),
                           ),
                         )
                       ],
@@ -426,8 +403,8 @@ class _myPreview extends State<myPreview> {
                   ),
                   Container(
                     color: Colors.grey[300],
-                    padding:
-                        EdgeInsets.symmetric(vertical: 10.0, horizontal: 140.0),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10.0, horizontal: 140.0),
                     //child: Text('Load Data'),
                   ),
                   ClipRRect(
@@ -438,17 +415,12 @@ class _myPreview extends State<myPreview> {
                           child: TextButton(
                             onPressed: () {
                               // User has pressed the Center button
-                              print('User pressed the Center button.');
-                              print(indexPressed);
-
                               // Find the previous center and mark it false.
                               if (indexPressed != -1) {
                                 setState(() {
                                   for (var p in _portalData) {
                                     if (p.center) {
                                       p.center = false;
-                                      print(
-                                          "${p.name} is no longer the center portal");
                                     }
                                   }
 
@@ -464,20 +436,14 @@ class _myPreview extends State<myPreview> {
                                       _controller.markersCount, (i) => i));
                                 });
                               }
-
-                              for (var p in _portalData) {
-                                if (p.center) {
-                                  print("${p.name} is the new center portal");
-                                }
-                              }
-                            },
-                            child: Text("Center"), //Center
+                            }, //Center
                             style: TextButton.styleFrom(
-                                padding: EdgeInsets.symmetric(
+                                padding: const EdgeInsets.symmetric(
                                     vertical: 0.0, horizontal: 39.0),
                                 foregroundColor: Colors.white,
                                 textStyle: const TextStyle(fontSize: 30),
                                 backgroundColor: Colors.indigo),
+                            child: const Text("Center"),
                           ),
                         )
                       ],
@@ -485,8 +451,8 @@ class _myPreview extends State<myPreview> {
                   ),
                   Container(
                     color: Colors.grey[300],
-                    padding:
-                        EdgeInsets.symmetric(vertical: 10.0, horizontal: 140.0),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10.0, horizontal: 140.0),
                     //child: Text('Load Data'),
                   ),
                   ClipRRect(
@@ -499,8 +465,6 @@ class _myPreview extends State<myPreview> {
                                   //create a function that when a portal is clicked it will update a Portal variable,
                                   //the hide function will find that portal in the list and update its +/-
                                   ) {
-                                print('User pressed the Hide/Include Button');
-
                                 // Use the index pressed to change that portal's state to hidden.
                                 setState(() {
                                   // Portal is to be hidden
@@ -512,16 +476,10 @@ class _myPreview extends State<myPreview> {
                                       chosenCenterIndex = -1;
                                     }
                                     _portalData[indexPressed].shown = false;
-
-                                    print(
-                                        "Portal $indexPressed: ${_portalData[indexPressed].name} is now hidden.");
                                   }
                                   // Portal is to be re-included
                                   else {
                                     _portalData[indexPressed].shown = true;
-
-                                    print(
-                                        "Portal $indexPressed: ${_portalData[indexPressed].name} is now included.");
                                   }
 
                                   // Update the markers
@@ -538,8 +496,8 @@ class _myPreview extends State<myPreview> {
                                           vertical: 0.0, horizontal: 52.0),
                                       foregroundColor: Colors.white,
                                       textStyle: const TextStyle(fontSize: 30),
-                                      backgroundColor:
-                                          Color.fromARGB(255, 99, 96, 102))
+                                      backgroundColor: const Color.fromARGB(
+                                          255, 99, 96, 102))
                                   : TextButton.styleFrom(
                                       padding: _portalData[indexPressed].shown
                                           ? const EdgeInsets.symmetric(
@@ -551,7 +509,7 @@ class _myPreview extends State<myPreview> {
                                       backgroundColor: const Color.fromARGB(
                                           255, 99, 96, 102)),
                               child: (indexPressed == -1)
-                                  ? Text("Hide")
+                                  ? const Text("Hide")
                                   : Text(_portalData[indexPressed].shown
                                       ? "Hide"
                                       : "Include")),
@@ -572,7 +530,7 @@ class _myPreview extends State<myPreview> {
                         Container(
                           child: TextButton(
                             onPressed: () {
-                              print('User pressed the Delete button');
+                              //pressed delete button
 
                               setState(() {
                                 // Check if this portal was chosen to be a center portal. If so, update the state to reflect that we no longer have a center portal.
@@ -593,15 +551,15 @@ class _myPreview extends State<myPreview> {
                               // Lastly, update the marker list and tell the Widget to rebuild.
                               _controller.updateMarkers(List.generate(
                                   _controller.markersCount, (i) => i));
-                            },
-                            child: Text("Delete"), //delete
+                            }, //delete
                             style: TextButton.styleFrom(
-                                padding: EdgeInsets.symmetric(
+                                padding: const EdgeInsets.symmetric(
                                     vertical: 0.0, horizontal: 40.0),
                                 foregroundColor: Colors.white,
                                 textStyle: const TextStyle(fontSize: 30),
                                 backgroundColor:
-                                    Color.fromARGB(255, 163, 6, 6)),
+                                    const Color.fromARGB(255, 163, 6, 6)),
+                            child: const Text("Delete"),
                           ),
                         )
                       ],
@@ -609,8 +567,8 @@ class _myPreview extends State<myPreview> {
                   ),
                   Container(
                     color: Colors.grey[300],
-                    padding:
-                        EdgeInsets.symmetric(vertical: 10.0, horizontal: 140.0),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10.0, horizontal: 140.0),
                     //child: Text('Load Data'),
                   ),
                   ClipRRect(
@@ -620,27 +578,17 @@ class _myPreview extends State<myPreview> {
                         Container(
                           child: TextButton(
                             onPressed: () {
-                              print('pressed da Save button'); //remove
-
+                              //pressed save button
                               nameNewFile();
-                              // print(nameNewFile());
-                              // Future<String> filename = nameNewFile();
-                              // print("right before if statement");
-                              // print(filename);
-                              // print("right after filenmae before if statement");
-                              // // if (filename is Future<String>) {
-                              // //   print("in if statement" + filename);
-                              // saveNewFile(filename);
-                              // }
-                            },
-                            child: Text("Save"), //generate
+                            }, //generate
                             style: TextButton.styleFrom(
-                                padding: EdgeInsets.symmetric(
+                                padding: const EdgeInsets.symmetric(
                                     vertical: 0.0, horizontal: 52.0),
                                 foregroundColor: Colors.white,
                                 textStyle: const TextStyle(fontSize: 30),
                                 backgroundColor:
-                                    Color.fromARGB(255, 18, 153, 6)),
+                                    const Color.fromARGB(255, 18, 153, 6)),
+                            child: const Text("Save"),
                           ),
                         )
                       ],
@@ -648,14 +596,14 @@ class _myPreview extends State<myPreview> {
                   ),
                   Container(
                     color: Colors.grey[300],
-                    padding:
-                        EdgeInsets.symmetric(vertical: 15.0, horizontal: 140.0),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 15.0, horizontal: 140.0),
                     //child: Text('Load Data'),
                   ),
                   Container(
-                    color: Color.fromARGB(255, 187, 186, 186),
+                    color: const Color.fromARGB(255, 187, 186, 186),
                     constraints:
-                        BoxConstraints.expand(width: 180.0, height: 40.0),
+                        const BoxConstraints.expand(width: 180.0, height: 40.0),
                     child: Text(
                       selectPortalName(),
                       textAlign: TextAlign.center,
@@ -663,16 +611,16 @@ class _myPreview extends State<myPreview> {
                     ), //FIX get first line to be name bolded
                   ),
                   Container(
-                    color: Color.fromARGB(255, 187, 186, 186),
-                    constraints:
-                        BoxConstraints.expand(width: 180.0, height: 150.0),
+                    color: const Color.fromARGB(255, 187, 186, 186),
+                    constraints: const BoxConstraints.expand(
+                        width: 180.0, height: 150.0),
                     child: Text(
                         selectPortalInfo()), //FIX get first line to be name bolded
                   ),
                   Container(
                     color: Colors.grey[300],
-                    padding:
-                        EdgeInsets.symmetric(vertical: 10.0, horizontal: 140.0),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10.0, horizontal: 140.0),
                     //child: Text('Load Data'),
                   ),
                   ClipRRect(
@@ -682,23 +630,16 @@ class _myPreview extends State<myPreview> {
                         Container(
                           child: TextButton(
                             onPressed: () {
-                              //nameNewFile();
-                              /*Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => HomeView()),
-                              );
-                              */
-                              print('pressed da Go Back button');
+                              //pressed go back button
                               areYouSure();
-                            },
-                            child: Text("Go Home"), //generate
+                            }, //generate
                             style: TextButton.styleFrom(
-                                padding: EdgeInsets.symmetric(
+                                padding: const EdgeInsets.symmetric(
                                     vertical: 0.0, horizontal: 19.0),
                                 foregroundColor: Colors.white,
                                 textStyle: const TextStyle(fontSize: 30),
                                 backgroundColor: Colors.indigo),
+                            child: const Text("Go Home"),
                           ),
                         )
                       ],
@@ -710,13 +651,13 @@ class _myPreview extends State<myPreview> {
           ),
           Container(
             width: MediaQuery.of(context).size.width - 220,
-            color: Color.fromRGBO(46, 46, 46, 1),
+            color: const Color.fromRGBO(46, 46, 46, 1),
             child: Padding(
               padding: const EdgeInsets.all(1.0),
               child: SfMapsTheme(
                 data: SfMapsThemeData(
-                    shapeHoverColor: Color.fromRGBO(46, 46, 46, 1),
-                    layerColor: Color.fromRGBO(46, 46, 46, 1),
+                    shapeHoverColor: const Color.fromRGBO(46, 46, 46, 1),
+                    layerColor: const Color.fromRGBO(46, 46, 46, 1),
                     layerStrokeWidth: 0),
                 child: SfMaps(layers: <MapLayer>[
                   MapShapeLayer(
@@ -737,8 +678,7 @@ class _myPreview extends State<myPreview> {
                                   cursor: SystemMouseCursors.click,
                                   child: GestureDetector(
                                     onTap: () {
-                                      print(
-                                          'Pressed the $index: ${_portalData[index].name} Portal.');
+                                      //clicked on portal
                                       setState(() {
                                         indexPressed = index;
 
@@ -762,7 +702,7 @@ class _myPreview extends State<myPreview> {
                                           overflow: TextOverflow.ellipsis,
                                           textAlign: TextAlign.center,
                                           maxLines: 2,
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                               color: Colors.white,
                                               fontSize: 11),
                                         )),
@@ -781,8 +721,7 @@ class _myPreview extends State<myPreview> {
                                   cursor: SystemMouseCursors.click,
                                   child: GestureDetector(
                                     onTap: () {
-                                      print(
-                                          'Pressed the $index: ${_portalData[index].name} Portal.');
+                                      //clicked on portal
                                       setState(() {
                                         indexPressed = index;
 
@@ -806,7 +745,7 @@ class _myPreview extends State<myPreview> {
                                           overflow: TextOverflow.ellipsis,
                                           textAlign: TextAlign.center,
                                           maxLines: 2,
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                               color: Colors.white,
                                               fontSize: 11),
                                         )),
@@ -825,8 +764,7 @@ class _myPreview extends State<myPreview> {
                                   cursor: SystemMouseCursors.click,
                                   child: GestureDetector(
                                     onTap: () {
-                                      print(
-                                          'Pressed the $index: ${_portalData[index].name} Portal.');
+                                      //clicked on portal
                                       setState(() {
                                         indexPressed = index;
 
@@ -850,7 +788,7 @@ class _myPreview extends State<myPreview> {
                                           overflow: TextOverflow.ellipsis,
                                           textAlign: TextAlign.center,
                                           maxLines: 2,
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                               color: Colors.white,
                                               fontSize: 11),
                                         )),
@@ -872,8 +810,7 @@ class _myPreview extends State<myPreview> {
                                   cursor: SystemMouseCursors.click,
                                   child: GestureDetector(
                                     onTap: () {
-                                      print(
-                                          'Pressed the $index: ${_portalData[index].name} Portal.');
+                                      //clicked on portal
                                       setState(() {
                                         indexPressed = index;
 
@@ -897,7 +834,7 @@ class _myPreview extends State<myPreview> {
                                           overflow: TextOverflow.ellipsis,
                                           textAlign: TextAlign.center,
                                           maxLines: 2,
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                               color: Colors.white,
                                               fontSize: 11),
                                         )),
@@ -916,8 +853,7 @@ class _myPreview extends State<myPreview> {
                                   cursor: SystemMouseCursors.click,
                                   child: GestureDetector(
                                     onTap: () {
-                                      print(
-                                          'Pressed the $index: ${_portalData[index].name} Portal.');
+                                      //clicked on portal
                                       setState(() {
                                         indexPressed = index;
 
@@ -941,7 +877,7 @@ class _myPreview extends State<myPreview> {
                                           overflow: TextOverflow.ellipsis,
                                           textAlign: TextAlign.center,
                                           maxLines: 2,
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                               color: Colors.white,
                                               fontSize: 11),
                                         )),
@@ -960,8 +896,7 @@ class _myPreview extends State<myPreview> {
                                   cursor: SystemMouseCursors.click,
                                   child: GestureDetector(
                                     onTap: () {
-                                      print(
-                                          'Pressed the $index: ${_portalData[index].name} Portal.');
+                                      //clicked on portal
                                       setState(() {
                                         indexPressed = index;
 
@@ -974,7 +909,7 @@ class _myPreview extends State<myPreview> {
                                     child: Container(
                                       height: 20,
                                       width: 20,
-                                      decoration: BoxDecoration(
+                                      decoration: const BoxDecoration(
                                           color: Colors.red,
                                           shape: BoxShape.circle),
                                     ),
@@ -991,7 +926,7 @@ class _myPreview extends State<myPreview> {
                                           overflow: TextOverflow.ellipsis,
                                           textAlign: TextAlign.center,
                                           maxLines: 2,
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                               color: Colors.white,
                                               fontSize: 11),
                                         )),
@@ -1022,7 +957,7 @@ Uint8List updateJSONTemplate(List<Portal> portals) {
 
   // * Save a copy of the file in a new dir
   if (!Directory('map').existsSync()) {
-    var mapdir = Directory('map').create();
+    Directory('map').create();
   }
   File newFile = File('map/map.json');
   newFile.writeAsStringSync(assetFileStr);

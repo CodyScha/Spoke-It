@@ -1,11 +1,11 @@
+// ignore_for_file: file_names
+
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:filesystem_picker/filesystem_picker.dart';
 import '../home/homeView.dart';
-import '../Preview/Preview.dart';
+import '../Preview/PreviewPage.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter/widgets.dart';
 import '../../source/portals.dart';
 
 class HomeView extends StatelessWidget {
@@ -20,12 +20,14 @@ class HomeView extends StatelessWidget {
 
         primarySwatch: Colors.indigo, //title color
       ),
-      home: LoadSelection(), //displayed title
+      home: const LoadSelection(), //displayed title
     );
   }
 }
 
 class LoadSelection extends StatefulWidget {
+  const LoadSelection({super.key});
+
   @override
   State<LoadSelection> createState() => _LoadSelection();
 }
@@ -48,7 +50,7 @@ class _LoadSelection extends State<LoadSelection> {
 
       for (var line in lines) {
         List<String> ports = line.split(";");
-        Portal portal = new Portal(
+        Portal portal = Portal(
             name: ports[0],
             lat: double.parse(ports[1]),
             long: double.parse(ports[2]),
@@ -67,7 +69,7 @@ class _LoadSelection extends State<LoadSelection> {
 
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => myPreview(portals: portals)),
+        MaterialPageRoute(builder: (context) => MyPreview(portals: portals)),
       );
     }
 
@@ -92,38 +94,10 @@ class _LoadSelection extends State<LoadSelection> {
       }
     }
 
-    loadFile() async {
-      String? path = await FilesystemPicker.openDialog(
-        context: context,
-        title: 'Saved Profiles',
-        fsType: FilesystemType.file,
-        rootDirectory: Directory(
-            '../..'), //set to be downloads page(where the txt file will save to automatically)
-        directory: Directory('profiles'),
-        showGoUp: (false),
-        allowedExtensions: ['.txt'],
-        fileTileSelectMode: FileTileSelectMode.wholeTile,
-      );
-
-      if (path != null) {
-        File file = File(path);
-        //use file
-        //myPreview(File)
-        // ignore: use_build_context_synchronously
-        /*Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => myPreview(file: file)),
-        );*/
-        file.readAsLines().then(processLines);
-      } else {
-        // User canceled the picker
-      }
-    }
-
     return Scaffold(
       appBar: AppBar(
         //top bar
-        title: Text('Prototype - Load'),
+        title: const Text('Prototype - Load'),
         centerTitle: true, //centers text
       ),
 
@@ -193,43 +167,43 @@ class _LoadSelection extends State<LoadSelection> {
               Container(
                 color: Colors.grey[300],
                 padding:
-                    EdgeInsets.symmetric(vertical: 20.0, horizontal: 120.0),
+                    const EdgeInsets.symmetric(vertical: 20.0, horizontal: 120.0),
                 //child: Text('Load Data'),
               ),
               Container(
                 color: Colors.grey[300],
-                padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 92.0),
+                padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 92.0),
                 child: TextButton(
                     onPressed: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) =>
-                                MyHomePage(title: 'Prototype: Load')),
+                                const MyHomePage(title: 'Prototype: Load')),
                       );
                     },
-                    child: Text('Home')),
+                    child: const Text('Home')),
               ),
               Container(
                 color: Colors.grey[300],
                 padding:
-                    EdgeInsets.symmetric(vertical: 20.0, horizontal: 120.0),
+                    const EdgeInsets.symmetric(vertical: 20.0, horizontal: 120.0),
                 //child: Text('Inport Data'),
               ),
               Container(
                 color: Colors.grey[300],
-                padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 73.0),
+                padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 73.0),
                 child: TextButton(
                     onPressed: () {
                       pickFile();
                     },
-                    child: Text('Import Data')),
+                    child: const Text('Import Data')),
               ),
               Expanded(
                 child: Container(
                   color: Colors.grey[300],
                   padding:
-                      EdgeInsets.symmetric(vertical: 20.0, horizontal: 120.0),
+                      const EdgeInsets.symmetric(vertical: 20.0, horizontal: 120.0),
                   //child: Text('empty'),
                 ),
               ),
@@ -239,18 +213,18 @@ class _LoadSelection extends State<LoadSelection> {
             children: [
               Container(
                 padding:
-                    EdgeInsets.symmetric(vertical: 40.0, horizontal: 150.0),
+                    const EdgeInsets.symmetric(vertical: 40.0, horizontal: 150.0),
               ),
             ],
           ),
           Column(
             children: [
               Container(
-                padding: EdgeInsets.symmetric(vertical: 40.0, horizontal: 70.0),
+                padding: const EdgeInsets.symmetric(vertical: 40.0, horizontal: 70.0),
               ),
               Container(
                 color: Colors.grey[300],
-                padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 71.0),
+                padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 71.0),
                 child: TextButton(
                     onPressed: () {
                       /*Navigator.push(
@@ -258,17 +232,17 @@ class _LoadSelection extends State<LoadSelection> {
                         MaterialPageRoute(builder: (context) => Preview()),
                       );*/
                     },
-                    child: Text('option 1')),
+                    child: const Text('option 1')),
               ),
               Container(
                 color: Colors.grey[300],
-                padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 70.0),
-                child: TextButton(onPressed: () {}, child: Text('option 2')),
+                padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 70.0),
+                child: TextButton(onPressed: () {}, child: const Text('option 2')),
               ),
               Container(
                 color: Colors.grey[300],
-                padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 70.0),
-                child: TextButton(onPressed: () {}, child: Text('option 3')),
+                padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 70.0),
+                child: TextButton(onPressed: () {}, child: const Text('option 3')),
               ),
             ],
           )

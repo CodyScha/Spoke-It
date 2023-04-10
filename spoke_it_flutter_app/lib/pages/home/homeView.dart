@@ -1,15 +1,12 @@
-import 'dart:async';
-import 'dart:ffi';
+// ignore_for_file: file_names
+
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import '../load/LoadView.dart';
 import 'package:filesystem_picker/filesystem_picker.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter/widgets.dart';
 import '../Preview/previewPage.dart';
 import '../../source/portals.dart';
-import 'dart:typed_data';
 
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
@@ -23,7 +20,7 @@ class HomeView extends StatelessWidget {
 
         primarySwatch: Colors.indigo, //title color
       ),
-      home: MyHomePage(title: 'Prototype: Spoke-It'), //displayed title
+      home: const MyHomePage(title: 'Prototype: Spoke-It'), //displayed title
     );
   }
 }
@@ -52,7 +49,7 @@ class _MyHomePageState extends State<MyHomePage> {
         } else {
           isShown = false;
         }
-        Portal portal = new Portal(
+        Portal portal = Portal(
             name: ports[0],
             lat: double.parse(ports[1]),
             long: double.parse(ports[2]),
@@ -131,38 +128,38 @@ class _MyHomePageState extends State<MyHomePage> {
               Container(
                 color: Colors.grey[300],
                 padding:
-                    EdgeInsets.symmetric(vertical: 20.0, horizontal: 120.0),
+                    const EdgeInsets.symmetric(vertical: 20.0, horizontal: 120.0),
                 //child: Text('Load Data'),
               ),
               Container(
                 color: Colors.grey[300],
-                padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 74.0),
+                padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 74.0),
                 child: TextButton(
                     onPressed: () {
                       loadFile();
                     },
-                    child: Text('Load Profile')),
+                    child: const Text('Load Profile')),
               ),
               Container(
                 color: Colors.grey[300],
                 padding:
-                    EdgeInsets.symmetric(vertical: 20.0, horizontal: 120.0),
+                    const EdgeInsets.symmetric(vertical: 20.0, horizontal: 120.0),
                 //child: Text('Inport Data'),
               ),
               Container(
                 color: Colors.grey[300],
-                padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 73.0),
+                padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 73.0),
                 child: TextButton(
                     onPressed: () {
                       pickFile();
                     },
-                    child: Text('Import Data')),
+                    child: const Text('Import Data')),
               ),
               Expanded(
                 child: Container(
                   color: Colors.grey[300],
                   padding:
-                      EdgeInsets.symmetric(vertical: 20.0, horizontal: 120.0),
+                      const EdgeInsets.symmetric(vertical: 20.0, horizontal: 120.0),
                 ),
               ),
             ],

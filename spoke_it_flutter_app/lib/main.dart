@@ -6,7 +6,7 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
   // if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
-  setWindowMinSize(Size(600, 730));
+  setWindowMinSize(const Size(600, 730));
 
   // }
   runApp(const MyApp());
@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
 
         primarySwatch: Colors.yellow,
       ),
-      home: HomeView(),
+      home: const HomeView(),
     );
   }
 }

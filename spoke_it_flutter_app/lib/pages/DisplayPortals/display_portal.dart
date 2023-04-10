@@ -2,12 +2,9 @@ import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
 
-import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_maps/maps.dart';
-import '../load/LoadView.dart';
 import '../../source/portals.dart';
-import 'package:filesystem_picker/filesystem_picker.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 
 class Display extends StatelessWidget {
@@ -24,22 +21,22 @@ class Display extends StatelessWidget {
         primarySwatch: Colors.red, //title color
         // scaffoldBackgroundColor: Color.fromRGBO(46, 46, 46, 1),
       ),
-      home: myDisplay(
+      home: MyDisplay(
         portals: portals,
       ), //displayed title
     );
   }
 }
 
-class myDisplay extends StatefulWidget {
-  const myDisplay({super.key, required this.portals});
+class MyDisplay extends StatefulWidget {
+  const MyDisplay({super.key, required this.portals});
 
   final List<Portal> portals;
   @override
-  State<myDisplay> createState() => _myDisplayState();
+  State<MyDisplay> createState() => _MyDisplayState();
 }
 
-class _myDisplayState extends State<myDisplay> {
+class _MyDisplayState extends State<MyDisplay> {
   late MapShapeSource _mapSource;
   late List<MarkerModel> _portalData;
   late List<LineModel> _vectordata;
@@ -81,9 +78,9 @@ class _myDisplayState extends State<myDisplay> {
 
     _vectordata = <LineModel>[
       LineModel(
-          MapLatLng(38.793988, -89.999159), MapLatLng(38.792097, -89.999033)),
+          const MapLatLng(38.793988, -89.999159), const MapLatLng(38.792097, -89.999033)),
       LineModel(
-          MapLatLng(38.793547, -89.997771), MapLatLng(38.793463, -89.996867))
+          const MapLatLng(38.793547, -89.997771), const MapLatLng(38.793463, -89.996867))
     ];
 
     _controller = MapShapeLayerController();
@@ -97,7 +94,7 @@ class _myDisplayState extends State<myDisplay> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Portal testing"),
+        title: const Text("Portal testing"),
         centerTitle: true,
       ),
       body: Padding(
@@ -113,7 +110,7 @@ class _myDisplayState extends State<myDisplay> {
                 // source: MapShapeSource.memory(
                 //   getJSON(_markerData),
                 // ),
-                color: Color.fromRGBO(46, 46, 46, 1),
+                color: const Color.fromRGBO(46, 46, 46, 1),
                 zoomPanBehavior: _zoomPanBehavior,
                 initialMarkersCount: _portalData.length,
                 sublayers: [
@@ -138,10 +135,6 @@ class _myDisplayState extends State<myDisplay> {
                       onLongPress: () {
                         // Set of code that will allow the user to delete a portal from the view.
                         // As far as I can tell, this is the order that actions need to happen to avoid errors.
-
-                        print("deleted " + _portalData[index].name);
-                        // print(index);
-                        // print(_data);
                         setState(() {
                           _portalData.removeAt(index);
                         });
@@ -154,12 +147,9 @@ class _myDisplayState extends State<myDisplay> {
                         _controller.updateMarkers(temp);
                       },
                       onTap: () {
-                        print("hid " + _portalData[index].name);
 
                         setState(() {
                           _portalData[index].color = Colors.blueGrey;
-                          
-                          // _vectordata.removeAt(0);
                         });
 
                         var temp = List.generate(1, (i) => index);
@@ -178,7 +168,7 @@ class _myDisplayState extends State<myDisplay> {
                 },
                 controller: _controller, //Needed to update markers
                 markerTooltipBuilder: (BuildContext context, int index) {
-                  return Container(
+                  return SizedBox(
                       width: 150,
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -214,9 +204,6 @@ Uint8List updateJSONTemplate(List<MarkerModel> markers) {
   double buffer = 0.00005;
   String aggregiousTabs = '\t\t\t\t\t\t\t';
 
-  List<int> coordLatLines = [14, 18, 22, 26, 30];
-  List<int> coordLongLines = [13, 17, 21, 25, 29];
-
   // * First, need to get the JSON from the assets folder
   var assetFileStr = File(
           '/Users/codyschaefer/Documents/SIUE/2023 Spring/CS499/Spoke-It/spoke_it_flutter_app/assets/siue2.json')
@@ -226,11 +213,9 @@ Uint8List updateJSONTemplate(List<MarkerModel> markers) {
 
   // * Save a copy of the file in a new dir
   if (!Directory('map').existsSync()) {
-    var mapdir = Directory('map').create();
+    Directory('map').create();
   }
   File newFile = File('map/map.json');
-  print('testingtesting');
-  print('this is a test $assetFileStr');
   newFile.writeAsStringSync(assetFileStr);
 
   // * Now, we need to change the coords in the new file
@@ -255,10 +240,10 @@ Uint8List updateJSONTemplate(List<MarkerModel> markers) {
   }
 
   // * Print the results
-  print('maxLat: $maxLat');
-  print('minLat: $minLat');
-  print('maxLong: $maxLong');
-  print('minLong: $minLong');
+  // print('maxLat: $maxLat');
+  // print('minLat: $minLat');
+  // print('maxLong: $maxLong');
+  // print('minLong: $minLong');
 
   // * Now, change the newFile lines to the max and mins
   String minLatStr = aggregiousTabs + (minLat - buffer).toString();

@@ -1,3 +1,5 @@
+// ignore_for_file: file_names, no_logic_in_create_state, must_call_super
+
 import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
@@ -130,7 +132,7 @@ class _myOutputState extends State<myOutput> {
 
   void nameNewFile() async {
     String fname;
-    var result = await showDialog(
+    await showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
@@ -277,6 +279,7 @@ class _myOutputState extends State<myOutput> {
   bool toggleCenterLinks = true;
   NumberFormat formatter = NumberFormat.decimalPattern();
 
+  @override
   void initState() {
     _zoomPanBehavior = MapZoomPanBehavior(
         enableDoubleTapZooming: true,

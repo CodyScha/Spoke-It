@@ -110,8 +110,9 @@ class Spoke {
 
     // Find the leftmost point
     int l = 0;
-    for (int i = 1; i < portals.length; i++)
+    for (int i = 1; i < portals.length; i++) {
       if (portals[i].lat < portals[l].lat) l = i;
+    }
 
     // Start from leftmost point, keep moving counterclockwise
     // until reach the start point again.  This loop runs O(h)
@@ -150,14 +151,14 @@ class Spoke {
     } while (p != l); // While we don't come to first point
     for (int i = 0; i < hullList.length; i++) {
       if (i < hullList.length - 1) {
-        Link link = new Link(
+        Link link = Link(
             from: hullList[i],
             to: hullList[i + 1],
             isCenterLink: false,
             isHullLink: true);
         links.add(link);
       } else {
-        Link link = new Link(
+        Link link = Link(
             from: hullList[i],
             to: hullList[0],
             isCenterLink: false,
@@ -179,7 +180,7 @@ class Spoke {
         for (var portal in portals) {
           //if portal is hull, link to center
           if (portal.hull == true) {
-            Link link = new Link(
+            Link link = Link(
                 from: portal,
                 to: isCenter,
                 isCenterLink: true,
@@ -202,7 +203,7 @@ class Spoke {
         for (var portal in portals) {
           //if portal is internal, link to center
           if (portal.hull == false) {
-            Link link = new Link(
+            Link link = Link(
                 from: portal,
                 to: isCenter,
                 isCenterLink: true,
@@ -220,12 +221,6 @@ class Spoke {
   List<Link> internalLinks(List<Portal> portals, List<Portal> hullPortals) {
     List<Link> links = [];
     List<Portal> wedgePortals = [];
-    Portal center;
-
-    //find center portal
-    for (Portal portal in portals) {
-      if (portal.center == true) center = portal;
-    }
 
     //for all wedges in G, call maxWedge(list of portals in wedge, hull point 1, hull point 2)
     for (int i = 0; i < hullPortals.length - 1; ++i) {
@@ -284,18 +279,12 @@ class Spoke {
   //find the furthest portal in a wedge from the center portal
   Portal findClosestToWedgePortals(
       List<Portal> portals, Portal wedgeOne, Portal wedgeTwo) {
-    Portal furthest, center;
+    Portal furthest;
     double distance = double.maxFinite;
     double xDifOne, yDifOne, xDifTwo, yDifTwo;
 
-    //initialize non-nullable furthest and center (will be overridden)
-    center = portals[0];
+    //initialize non-nullable furthest (will be overridden)
     furthest = portals[0];
-
-    //find center portal
-    for (Portal portal in portals) {
-      if (portal.center == true) center = portal;
-    }
 
     //find closest to wedge portals (sum result of distance equation)
     for (Portal portal in portals) {
@@ -417,11 +406,11 @@ class Spoke {
         (i) => List.generate(shownPortalList.length,
             (j) => 0), //creates the adjacency list to store where the links are
         growable: false);
-    var tempAdjacencyOne = List.generate(
+    List.generate(
         shownPortalList.length, //dummy 2d list for adjacency
         (i) => List.generate(shownPortalList.length, (j) => 0),
         growable: false);
-    var tempAdjacencyTwo = List.generate(
+    List.generate(
         shownPortalList.length, //dummy 2d list for adjacency
         (i) => List.generate(shownPortalList.length, (j) => 0),
         growable: false);
@@ -444,7 +433,7 @@ class Spoke {
       }
     }
     // Step Four: get the trace of tempAdjacencyTwoa and divide it by six to get the field count
-    
+
     for (int i = 0; i < shownPortalList.length; i++) {
       for (int j = 0; j < shownPortalList.length; j++) {
         if (adjacency[i][j] == 1) {
