@@ -1,6 +1,7 @@
-import 'package:spoke_it_flutter_app/model/portals.dart';
-import 'package:spoke_it_flutter_app/model/links.dart';
 import 'dart:math';
+
+import '../model/portals.dart';
+import '../model/links.dart';
 
 class Spoke {
   late int numFields;

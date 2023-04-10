@@ -1,4 +1,4 @@
-import 'package:spoke_it_flutter_app/model/portals.dart';
+import 'portals.dart';
 
 class Link {
   Portal to;
