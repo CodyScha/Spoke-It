@@ -5,8 +5,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:filesystem_picker/filesystem_picker.dart';
 import 'package:file_picker/file_picker.dart';
-import '../Preview/previewPage.dart';
-import '../../model/portals.dart';
+import 'preview_page.dart';
+import '../model/portals.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({super.key});

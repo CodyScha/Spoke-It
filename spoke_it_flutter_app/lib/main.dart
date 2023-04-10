@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'pages/home/homeView.dart';
+import 'pages/home_page.dart';
 import 'package:window_size/window_size.dart';
 
 void main() {

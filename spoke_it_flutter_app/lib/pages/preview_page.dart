@@ -5,11 +5,11 @@ import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:spoke_it_flutter_app/pages/Output/OutputScreen.dart';
-import 'package:spoke_it_flutter_app/pages/home/homeView.dart';
+import 'package:spoke_it_flutter_app/pages/output_page.dart';
+import 'package:spoke_it_flutter_app/pages/home_page.dart';
 import 'package:syncfusion_flutter_maps/maps.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
-import '../../model/portals.dart';
+import '../model/portals.dart';
 
 class Preview extends StatelessWidget {
   const Preview({super.key, required this.portals});
