@@ -7,7 +7,7 @@ class Spoke {
   late int numFields;
   late int points;
 
-  //main algorithm function called from output_page
+  // main algorithm function called from output_page
   List<Link> algorithm(List<Portal> portals, bool showCenterLinks) {
     // new algorithm, reset fields
     numFields = 0;
