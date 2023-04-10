@@ -430,7 +430,7 @@ class Spoke {
         }
       }
     }
-    // Step Four: get the trace of tempAdjacencyTwoa and divide it by six to get the field count
+    // Step Four: get the trace of tempAdjacencyTwo and divide it by six to get the field count
 
     for (int i = 0; i < shownPortalList.length; i++) {
       for (int j = 0; j < shownPortalList.length; j++) {
