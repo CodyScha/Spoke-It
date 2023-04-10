@@ -205,9 +205,6 @@ class _myOutputState extends State<myOutput> {
         );
       },
     );
-    // result = _textFieldController.text;
-    // print(result);
-    // return saveNewFile(result);
   }
 
   Future<File> saveNewFile(
@@ -377,8 +374,6 @@ class _myOutputState extends State<myOutput> {
               child: Column(
                 // Center is a layout widget. It takes a single child and positions it
                 // in the middle of the parent.
-                // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                // crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   Container(
                     color: Colors.grey[300],
@@ -1038,10 +1033,6 @@ class _myOutputState extends State<myOutput> {
                   // ignore: prefer_const_constructors
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
-                    // child: Text(
-                    //   "Total Points: ${_portalData.length * 100}",
-                    //   textScaleFactor: 1.35,
-                    //   style: const TextStyle(fontWeight: FontWeight.bold),
                     child: RichText(
                       text: TextSpan(
                           style: const TextStyle(

@@ -40,13 +40,7 @@ class Spoke {
 
     //calculates points
     calculatePoints(shownPortalList.length, links.length);
-    //for testing point calculations
-    /* print(
-        "Total points:$points # of fields:$numFields # of links:${links.length} # of portals: ${shownPortalList.length}");
-    //for testing recalculating points after delete or hide
-    recalcPoints(shownPortalList, links);
-    print(
-        "AFTER RECALC Total points:$points # of fields:$numFields # of links:${links.length} # of portals: ${shownPortalList.length}"); */
+    
     return links;
   }
 

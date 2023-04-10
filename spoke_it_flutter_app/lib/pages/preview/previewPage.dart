@@ -99,20 +99,6 @@ class _MyPreview extends State<MyPreview> {
                 Navigator.pop(context);
               },
             ),
-            /*TextButton(
-              style: const ButtonStyle(
-                backgroundColor: MaterialStatePropertyAll<Color>(
-                    Color.fromARGB(255, 18, 153, 6)),
-              ),
-              child: Text(
-                'SAVE',
-                style:
-                    const TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
-              ),
-              onPressed: () {
-                nameNewFile();
-              },
-            ),*/
             TextButton(
               style: const ButtonStyle(
                 backgroundColor: MaterialStatePropertyAll<Color>(Colors.indigo),
@@ -212,9 +198,6 @@ class _MyPreview extends State<MyPreview> {
         );
       },
     );
-    // result = _textFieldController.text;
-    // print(result);
-    // return saveNewFile(result);
   }
 
   Future<File> saveNewFile(
@@ -350,8 +333,6 @@ class _MyPreview extends State<MyPreview> {
               child: Column(
                 // Center is a layout widget. It takes a single child and positions it
                 // in the middle of the parent.
-                // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                // crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   Container(
                     color: Colors.grey[300],

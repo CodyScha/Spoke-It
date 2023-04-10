@@ -33,15 +33,6 @@ class LoadSelection extends StatefulWidget {
 }
 
 class _LoadSelection extends State<LoadSelection> {
-  /*
-    String? path = await FilesystemPicker.openDialog(
-      context: context,
-      fsType: FilesystemType.file,
-      rootDirectory: Directory.current,
-      allowedExtensions: ['.txt'],
-      fileTileSelectMode: FileTileSelectMode.wholeTile,
-    );
-   */
 
   @override
   Widget build(BuildContext context) {
@@ -82,12 +73,6 @@ class _LoadSelection extends State<LoadSelection> {
       if (result != null) {
         File file = File(result.files.first.path.toString());
         //use file
-        //myPreview(File)
-        // ignore: use_build_context_synchronously
-        /*Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => myPreview(file: file)),
-        );*/
         file.readAsLines().then(processLines);
       } else {
         // User canceled the picker
@@ -100,62 +85,6 @@ class _LoadSelection extends State<LoadSelection> {
         title: const Text('Prototype - Load'),
         centerTitle: true, //centers text
       ),
-
-      /*drawer: Drawer(
-        child: ListView(
-          // Important: Remove any padding from the ListView.
-          //padding: EdgeInsets.zero,
-          children: [
-            const DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.indigo,
-              ),
-              child: Text('Menu'),
-            ),
-            ListTile(
-              title: const Text('Load Data'),
-              onTap: () {
-                // Update the state of the app.
-                // ...
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              title: const Text('Import Data'),
-              onTap: () {
-                // Update the state of the app.
-                // ...
-
-                pickFile();
-              },
-            ),
-          ],
-        ),
-      ),
-      body: Center(
-        child: Column(
-          children: [
-            Container(
-              padding: EdgeInsets.symmetric(vertical: 40.0, horizontal: 70.0),
-            ),
-            Container(
-              color: Colors.grey[300],
-              padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 70.0),
-              child: TextButton(onPressed: () {}, child: Text('option 1')),
-            ),
-            Container(
-              color: Colors.grey[300],
-              padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 70.0),
-              child: TextButton(onPressed: () {}, child: Text('option 2')),
-            ),
-            Container(
-              color: Colors.grey[300],
-              padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 70.0),
-              child: TextButton(onPressed: () {}, child: Text('option 3')),
-            ),
-          ],
-        ),
-      ),*/
       body: Row(
         children: [
           Column(
